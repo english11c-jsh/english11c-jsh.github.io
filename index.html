@@ -554,15 +554,19 @@ html.exammode body{min-height:100vh;min-height:100dvh}
 .glist{display:flex;flex-direction:column;gap:4px;font-size:.9rem;border-top:1px solid var(--line,#ddd);padding-top:8px}
 .sayk:hover{background:var(--copper);color:#fff}
 .duebar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--copper-l);border-inline-start:6px solid var(--copper);border-radius:12px;padding:12px 16px}
+.mpu{display:grid;gap:6px 18px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}.mpr{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.mpr b{min-width:64px}
+.subnav{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;margin-bottom:6px;scrollbar-width:thin}.subnav button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:7px 14px;font:inherit;font-weight:700;font-size:.88rem;cursor:pointer}.subnav button.on{background:var(--deep);border-color:var(--deep);color:#fff}html.dark .subnav button.on{background:var(--ink);color:var(--paper)}html.dark .subnav .nb{color:#0E1424}.subnav .nb{display:inline-grid;place-items:center;min-width:20px;height:20px;border-radius:99px;background:var(--copper);color:#fff;font-size:.7rem;padding:0 5px}
+.prg{display:inline-block;vertical-align:middle;width:90px;height:8px;border-radius:99px;background:var(--line2);overflow:hidden;margin-inline-end:8px}.prg i{display:block;height:100%;border-radius:99px;background:var(--teal)}.prg.mid i{background:var(--mid)}.prg.bad i{background:var(--bad)}.pnum{font-variant-numeric:tabular-nums}
+.newsbar{position:fixed;z-index:9999;top:12px;inset-inline:12px;margin:0 auto;max-width:560px;background:var(--card);color:var(--ink);border:2px solid var(--teal);border-radius:14px;box-shadow:0 10px 30px rgba(0,0,0,.25);padding:12px 14px;display:flex;gap:10px 14px;align-items:center;justify-content:space-between;flex-wrap:wrap}
 .livegrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}.lvc{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--card);display:flex;flex-direction:column;gap:4px}
 .lvc .nm{font-weight:700;background:none;border:0;padding:0;color:inherit;font:inherit;text-align:start;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
 .dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#9aa3ad;margin-inline-end:6px;vertical-align:middle}.dot.on{background:#2f9e5b;box-shadow:0 0 0 3px rgba(47,158,91,.2)}
 .lvt{font-variant-numeric:tabular-nums;font-weight:700}.sdnav{display:flex;gap:6px;flex-wrap:wrap}.sdnav button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px 12px;font:inherit;font-size:.85rem;cursor:pointer}
 .cdbox{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:12px 16px}.cdbox h3{margin:0 0 4px}
 .cdrow{display:flex;justify-content:space-between;align-items:center;gap:10px 16px;flex-wrap:wrap;padding:10px 0;border-top:1px dashed var(--line)}.cdrow:first-of-type{border-top:0}
-.cd{display:inline-flex;gap:6px;direction:rtl;flex-wrap:wrap}.cd span{display:inline-flex;flex-direction:column;align-items:center;min-width:48px;padding:4px 6px;border-radius:10px;background:var(--copper-l);line-height:1.15}
-.cd b{font-size:1.25rem;font-variant-numeric:tabular-nums}.cd i{font-style:normal;font-size:.72rem;opacity:.8}.cd.sm span{min-width:40px;padding:2px 5px}.cd.sm b{font-size:1rem}
-.cd.go{font-weight:700;color:var(--ok,#2f7a4b)}
+span.cd{display:inline-flex;gap:6px;direction:rtl;flex-wrap:wrap}span.cd span{display:inline-flex;flex-direction:column;align-items:center;min-width:48px;padding:4px 6px;border-radius:10px;background:var(--copper-l);line-height:1.15}
+span.cd b{font-size:1.25rem;font-variant-numeric:tabular-nums}span.cd i{font-style:normal;font-size:.72rem;opacity:.8}span.cd.sm span{min-width:40px;padding:2px 5px}span.cd.sm b{font-size:1rem}
+span.cd.go{font-weight:700;color:var(--ok,#2f7a4b)}
 .practice{border-inline-start:6px solid var(--copper)}
 @media print{ body.printing *{visibility:hidden} body.printing #xSheet, body.printing #xSheet *{visibility:visible} body.printing #xSheet{position:absolute;inset:0;border:0;padding:0} body.printing{background:#fff} }
 /* was @media (max-width:720px) */
@@ -1158,6 +1162,27 @@ html.w-lt600 #cfV .cert{aspect-ratio:auto}
 details.xsched{border:1px dashed var(--line);border-radius:12px;padding:10px 12px}details.xsched summary{cursor:pointer}
 select{max-width:100%}
 .cact{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.cin{width:100%;max-width:130px;min-width:0;padding:6px 8px;font-size:.9rem}html.w-lt600 .cin{max-width:none;flex:1 1 100%}
+
+/* night mode: text on the light accent colours turns dark; anything drawn on white or in navy follows the night palette */
+html.dark .tab.on,html.dark .nav .badge,html.dark .hn,html.dark .opt.sel .k,html.dark .opt.right .k,html.dark .opt.wrong .k,html.dark .xpin span,html.dark .sb .badge,html.dark .annbar em,html.dark .pseg button.on.ok,html.dark .pseg button.on.bad,html.dark .tile .tb,html.dark .qo.ok .k,html.dark .sayk:hover,html.dark.w-ge900[data-theme="lexicon"] .tnav .nl.on .lx,html.dark.w-lt900[data-theme="lexicon"] body:not(.tview) .tnav .nl.on .lx,html.dark[data-theme="lexicon"] .band .semsw button.on,html.dark[data-theme="lexicon"] .pin span,html.dark[data-theme="lexicon"] .uchips button.on,html.dark[data-theme="lexicon"] .say,html.dark[data-theme="lexicon"] .sb.on{color:#0E1424}
+html.dark .btn:not(.ghost):not(.link):not(.light):not(.copper){color:#0E1424}
+html.dark[data-theme="lexicon"] .next .btn{color:#fff}
+html.dark .lnum{color:#0E1424}
+html.dark span.cd span{color:var(--ink)}
+html.dark .revc .cd{color:#0E1424}
+html.dark .qrhead span{color:#5D6578}
+html.dark input[type=text],html.dark input[type=password],html.dark input[type=number],html.dark input[type=date],html.dark input[type=datetime-local],html.dark input[type=search],html.dark input:not([type]),html.dark textarea,html.dark select{background:var(--card);color:var(--ink);border-color:var(--line)}
+html.dark input::placeholder,html.dark textarea::placeholder{color:var(--muted)}
+html.dark th,html.dark .gb th.stk{background:var(--sky);color:var(--muted)}
+html.dark .gb td.stk,html.dark details.xu,html.dark .xu,html.dark .sut tr.sub td,html.dark .opt,html.dark .dots button,html.dark.w-lt600 table.cards tr,html.dark .finish,html.dark .pspanel{background:var(--card);color:var(--ink)}
+html.dark tbody tr:hover,html.dark .sut .uh{background:var(--sky)}
+html.dark .seg2 button.on{background:var(--sky);color:var(--ink)}
+html.dark .lsec h2.hd,html.dark .para summary,html.dark .a-info,html.dark .um,html.dark .kpi .v,html.dark .v,html.dark bdi{color:inherit}
+html.dark .lsec h2.hd,html.dark .para summary,html.dark .a-info,html.dark .um,html.dark .kpi .v{color:var(--ink)}
+html.dark .a-weak{color:var(--bad)}html.dark .a-good{color:var(--teal)}html.dark .note{color:var(--ink)}html.dark .note .en,html.dark .note b{color:var(--teal)}
+html.dark .chip.now,html.dark .miss span{color:var(--copper)}
+html.dark .qrbox .qrcard,html.dark .qrimg,html.dark .qrfoot,html.dark #xSheet,html.dark #xSheet *,html.dark .pvsheet,html.dark .pvsheet *{color:#14203A}
+html.dark #xSheet th{background:#EEF3F8}
 </style>
 </head>
 <body>
@@ -1256,9 +1281,9 @@ function prTick() {
   if (!S.token || VIEW === 'teacher' || document.hidden) return;
   var w = prWhere(), key = w.k + '|' + w.id, now = Date.now();
   if (key !== PR.key) { PR.key = key; PR.since = now + CD.off; PR.sent = 0; }
-  if (now - PR.sent < 30000) return;
-  PR.sent = now; w.since = PR.since;
-  call('apiPing', S.token, w).catch(function () {});
+  if (now - PR.sent < 20000) return;
+  PR.sent = now; w.since = PR.since; w.seen = PR.seen || (S.data && S.data.calendar.now) || 0;
+  call('apiPing', S.token, w).then(function (r) { if (r && r.nt && r.nt.at > (PR.seen || 0)) { PR.seen = r.nt.at; newsBar(r.nt); } }).catch(function () {});
 }
 /** He closed the page, switched app, locked the phone or logged out: tell the platform right away (a beacon still goes out while the page closes). */
 function prOff() {
@@ -1268,12 +1293,24 @@ function prOff() {
   if (WEB && window.API_URL && navigator.sendBeacon) { try { if (navigator.sendBeacon(window.API_URL, new Blob([body], { type: 'text/plain' }))) return; } catch (e) {} }
   call('apiPing', S.token, { k: 'off' }).catch(function () {});
 }
+/** "The teacher opened a quiz again for you": a bar at the top, with a refresh button that brings the new state in. */
+function newsBar(nt) {
+  var old = $('newsBar'); if (old) old.remove();
+  var d = document.createElement('div'); d.id = 'newsBar'; d.className = 'newsbar'; d.setAttribute('role', 'alert');
+  var busyNow = !!(Q && Q.r);
+  d.innerHTML = '<div><b>' + (nt.kind === 'reopen' ? 'تم السماح لك بالإعادة' : 'رسالة جديدة من الأستاذ') + '</b><div class="small">' + esc(nt.text) + '</div>' +
+    '<div class="small">' + (busyNow ? 'لما تخلّص وتسلّم، اعمل تحديث للصفحة لتشوفها.' : 'اعمل تحديث للصفحة لتشوفها.') + '</div></div>' +
+    '<div class="row">' + (busyNow ? '' : '<button class="btn sm" type="button" data-nbgo>تحديث الصفحة</button>') + '<button class="btn ghost sm" type="button" data-nbx>إغلاق</button></div>';
+  document.body.appendChild(d);
+  var go = d.querySelector('[data-nbgo]'); if (go) go.onclick = function () { d.remove(); winCloseAll(); stopLessonTimer(); loadHome(S.tab); };
+  d.querySelector('[data-nbx]').onclick = function () { d.remove(); };
+}
 function prStart() { if (PR.iv || VIEW === 'teacher') return; PR.iv = setInterval(prTick, 3000); document.addEventListener('visibilitychange', function () { if (document.hidden) prOff(); else { PR.sent = 0; prTick(); } }); window.addEventListener('pagehide', prOff); prTick(); }
 /** Teacher: who is active now. Reloads every 10 s while the page is open; the clocks tick every second. */
 var LV = { d: null, at: 0, iv: null, busy: false };
 var KIND_AR = { lesson: 'درس', quiz: 'كويز', homework: 'واجب', test: 'امتحان', practice: 'تدريب', page: 'يتصفّح' };
 function mmss(sec) { sec = Math.max(0, Math.round(sec)); var h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), s2 = sec % 60, p = function (n) { return (n < 10 ? '0' : '') + n; }; return (h ? h + ':' + p(m) : m) + ':' + p(s2); }
-function agoAr(ms) { var m = Math.round(ms / 60000); if (m < 1) return 'هلّأ'; if (m < 60) return 'قبل ' + m + ' دقيقة'; var h = Math.round(m / 60); if (h < 24) return 'قبل ' + h + (h === 1 ? ' ساعة' : ' ساعات'); var d = Math.round(h / 24); return 'قبل ' + d + (d === 1 ? ' يوم' : d === 2 ? ' يومين' : ' أيام'); }
+function agoAr(ms) { var m = Math.round(ms / 60000); if (m < 1) return 'الآن'; if (m < 60) return 'قبل ' + m + ' دقيقة'; var h = Math.round(m / 60); if (h < 24) return 'قبل ' + h + (h === 1 ? ' ساعة' : ' ساعات'); var d = Math.round(h / 24); return 'قبل ' + d + (d === 1 ? ' يوم' : d === 2 ? ' يومين' : ' أيام'); }
 function liveLoad() {
   if (LV.busy) return; LV.busy = true;
   call('apiTeacherNow', S.token).then(function (d) { LV.busy = false; LV.d = d; LV.at = Date.now(); LV.off = d.now - Date.now(); var b = $('liveBox'); if (b) { b.innerHTML = liveHtml(d); wireTeacher(b); liveTick(); } }).catch(function () { LV.busy = false; });
@@ -1292,10 +1329,10 @@ function liveHtml(d) {
     (on.length ? '<div class="livegrid">' + on.map(function (s) {
       var L = s.live;
       return '<div class="lvc"><button type="button" class="nm" data-stu="' + s.number + '">' + s.number + ' ' + esc(firstTwo(s.name)) + '</button><div class="small">' + where(L) + '</div>' +
-        '<div class="small">' + (L.k === 'page' ? 'على المنصة' : 'على ' + noun(L.k) + ' هلّأ') + ' من <span class="lvt" data-lsince="' + L.since + '">' + mmss((now - L.since) / 1000) + '</span></div>' +
-        (s.cur ? '<div class="small muted">مجموع وقته على ' + noun(L.k) + ': <b>' + fmtDur(s.cur.sec) + '</b>، ' + (L.k === 'lesson' ? 'فتحه ' : 'حاوله ') + s.cur.n + (s.cur.n === 1 ? ' مرة' : ' مرات') + '</div>' : '') + '</div>';
-    }).join('') + '</div>' : '<div class="small muted">ما في ولا طالب فاتح المنصة هلّأ.</div>') + '</div>' +
-    '<div class="panel flush"><div class="ph"><h2>كل الطلاب</h2><span class="small muted">مين نشط، وآخر إشي فتحه كل واحد، ووقته على المنصة.</span></div><div class="tbl"><table><thead><tr><th>الطالب</th><th>الحالة</th><th>وين</th><th class="num">وقته الكلي</th></tr></thead><tbody>' +
+        '<div class="small">' + (L.k === 'page' ? 'على المنصة' : 'على ' + noun(L.k) + ' الآن') + ' من <span class="lvt" data-lsince="' + L.since + '">' + mmss((now - L.since) / 1000) + '</span></div>' +
+        (s.cur ? '<div class="small muted">مجموع وقته على ' + noun(L.k) + ': <b>' + fmtDur(s.cur.sec) + '</b>، ' + (L.k === 'lesson' ? 'دخله ' : 'حاوله ') + s.cur.n + (s.cur.n === 1 ? ' مرة' : ' مرات') + '</div>' : '') + '</div>';
+    }).join('') + '</div>' : '<div class="small muted">ما في ولا طالب فاتح المنصة الآن.</div>') + '</div>' +
+    '<div class="panel flush"><div class="ph"><h2>كل الطلاب</h2><span class="small muted">مين نشط، وآخر إشي دخل عليه كل واحد، ووقته على المنصة.</span></div><div class="tbl"><table><thead><tr><th>الطالب</th><th>الحالة</th><th>وين</th><th class="num">وقته الكلي</th></tr></thead><tbody>' +
     rest.map(function (s) {
       var w = s.live || s.lastWhat;
       return '<tr><td><button type="button" class="btn link sm" data-stu="' + s.number + '">' + s.number + ' ' + esc(firstTwo(s.name)) + '</button></td><td class="small">' + (s.live ? '<span class="dot on"></span>نشط الآن' : '<span class="dot"></span>' + (s.lastTs ? agoAr(now - s.lastTs) : 'ما دخل لسا')) + '</td><td class="small">' + (w ? where(w) : '—') + '</td><td class="num small">' + fmtDur(s.total) + '</td></tr>';
@@ -1303,12 +1340,12 @@ function liveHtml(d) {
 }
 function tLive() {
   setTimeout(function () { var b = $('liveBox'); if (!b) return; if (LV.d) { b.innerHTML = liveHtml(LV.d); wireTeacher(b); } if (!LV.d || Date.now() - LV.at > 10000) liveLoad(); if (!LV.iv) LV.iv = setInterval(liveTick, 1000); }, 0);
-  return '<div class="stack"><h2>الطلاب الآن</h2><div class="small muted">مين فاتح المنصة هلّأ، وعلى أي درس أو كويز أو واجب، من قديش، ومجموع وقته على نفس الإشي. اكبس على اسم الطالب لتفتح ملفه.</div><div id="liveBox" class="stack"><div class="small muted">جاري التحميل…</div></div></div>';
+  return '<div class="stack"><h2>الطلاب الآن</h2><div class="small muted">مين فاتح المنصة الآن، وعلى أي درس أو كويز أو واجب، من قديش، ومجموع وقته على نفس الإشي. اكبس على اسم الطالب لتعرض ملفه.</div><div id="liveBox" class="stack"><div class="small muted">جاري التحميل…</div></div></div>';
 }
 /** In a student's file: what he did and how long, item by item. */
 function actHtml(s) {
   var A = s.activity || [], L = s.live;
-  var head = L ? '<div class="small"><span class="dot on"></span><b>نشط الآن</b>: ' + KIND_AR[L.k] + ' ' + (L.k === 'page' ? esc(L.t) : '<span class="en" style="display:inline">' + esc(L.t) + '</span>') + '، من ' + mmss((s.now - L.since) / 1000) + '</div>' : '<div class="small"><span class="dot"></span>مش نشط هلّأ' + (A[0] ? '، آخر نشاط ' + agoAr(s.now - A[0].last) : '') + '</div>';
+  var head = L ? '<div class="small"><span class="dot on"></span><b>نشط الآن</b>: ' + KIND_AR[L.k] + ' ' + (L.k === 'page' ? esc(L.t) : '<span class="en" style="display:inline">' + esc(L.t) + '</span>') + '، من ' + mmss((s.now - L.since) / 1000) + '</div>' : '<div class="small"><span class="dot"></span>مش نشط الآن' + (A[0] ? '، آخر نشاط ' + agoAr(s.now - A[0].last) : '') + '</div>';
   var tot = A.reduce(function (x, e) { return x + e.sec; }, 0), by = function (k) { return A.filter(function (e) { return k === 'lesson' ? e.k === 'lesson' : e.k !== 'lesson'; }).reduce(function (x, e) { return x + e.sec; }, 0); };
   return '<div class="panel stack" id="sdAct"><h3>النشاط والوقت</h3>' + head +
     '<div class="small muted">وقته الكلي ' + fmtDur(tot) + ': بالدروس ' + fmtDur(by('lesson')) + '، وبالكويزات والواجبات والامتحانات ' + fmtDur(by('x')) + '.</div>' +
@@ -1321,6 +1358,24 @@ function upcomingExams(d) {
   d.items.filter(function (i) { return i.type === 'test' && i.state === 'soon' && i.openTs > now; }).forEach(function (i) { out.push({ id: i.id, name: exName(i.id, true), ts: i.openTs, min: i.minutes, end: i.closeTs, set: true }); });
   (d.calendar.exams || []).forEach(function (e) { if (e.ts > now && !d.items.some(function (i) { return i.id === e.id && i.type === 'test'; })) out.push({ id: e.id, name: exName(e.id, true), ts: e.ts, min: e.minutes }); });
   return out.sort(function (a, b) { return a.ts - b.ts; });
+}
+/** The student's own completion: of what has opened so far, how much he finished, overall and in each unit. */
+function myProg(d) {
+  return d.course.map(function (u) {
+    var ls = lessonsOf(d, u.id).filter(function (l) { return l.open; }), ids = ls.map(function (l) { return l.id; });
+    var qz = d.items.filter(function (i) { return i.type === 'quiz' && ids.indexOf(i.lesson) >= 0; });
+    var hw = d.items.filter(function (i) { return i.type === 'homework' && i.unit === u.id && i.state !== 'soon'; });
+    var dl = ls.filter(function (l) { return d.studied[l.id]; }).length, dq = qz.filter(function (i) { return i.done; }).length, dh = hw.filter(function (i) { return i.done; }).length;
+    var tot = ls.length + qz.length + hw.length;
+    return { u: u, tot: tot, done: dl + dq + dh, pct: tot ? Math.round((dl + dq + dh) * 100 / tot) : null, l: [dl, ls.length], q: [dq, qz.length], h: [dh, hw.length] };
+  });
+}
+function myProgHtml(d, full) {
+  var P = myProg(d), t = 0, dn = 0; P.forEach(function (x) { t += x.tot; dn += x.done; });
+  var all = t ? Math.round(dn * 100 / t) : null, U = P.filter(function (x) { return x.tot; });
+  return '<div class="panel stack myprog"><div class="row between"><h3 style="margin:0">إنجازي</h3><div class="row" style="gap:8px"><span class="small">الإنجاز الكلي</span>' + pbar(all) + '</div></div>' +
+    '<div class="small muted">نسبة اللي خلّصته من الدروس اللي أُتيحت وكويزاتها والواجبات اللي أُتيحت.</div>' +
+    '<div class="mpu">' + U.map(function (x) { return '<div class="mpr"><b>الوحدة ' + x.u.no + '</b>' + pbar(x.pct) + (full ? '<span class="tiny muted">دروس ' + x.l[0] + '/' + x.l[1] + '، كويزات ' + x.q[0] + '/' + x.q[1] + '، واجبات ' + x.h[0] + '/' + x.h[1] + '</span>' : '') + '</div>'; }).join('') + '</div></div>';
 }
 function cdCard(d) {
   var L = upcomingExams(d); if (!L.length) return '';
@@ -1406,11 +1461,18 @@ function siteNav(items, cur, attr, extra) {
   $('menuBtn').classList.toggle('hidden', false);
   var badges = items ? items.reduce(function (x, i) { return x + (Number(i[2]) || 0); }, 0) : 0;
   $('menuBtn').classList.toggle('dot', badges > 0);
-  if (SN.attr) each('[' + SN.attr + ']', function (b2) { b2.onclick = function () { menu(false); if (SN.attr === 'data-tab') { winCloseAll(); S.tab = b2.dataset.tab; renderHome(); toContent(); } else { winCloseAll(); T.tab = b2.dataset.ttab; T.bank = null; renderTeacher(); toContent(); } }; }, $('top'));
+  if (SN.attr) each('[' + SN.attr + ']', function (b2) { b2.onclick = function () { menu(false); if (SN.attr === 'data-tab') goTab(b2.dataset.tab); else goTTab(b2.dataset.ttab); }; }, $('top'));
   each('[data-install]', function (b2) { b2.onclick = function () { menu(false); installWin(); }; }, $('top'));
   var sff = $('dFindF');
   if (sff) { var go = function () { var v = $('dFind').value.trim(); if (!v) return; var hit = findStudent(v); if (hit) { $('dFind').value = ''; menu(false); studentDetail(hit.number); } }; sff.onsubmit = function (ev) { ev.preventDefault(); go(); }; $('dFind').onchange = go; }
 }
+/** A tab in the menu always takes you straight to that section: any page or window still open on top (a lesson, a quiz list, a student's file) closes first. */
+function goTab(t) {
+  if (Q && Q.r) { notice('سلّم الاختبار أو ارجع منه أول، وبعدها روح لأي قسم.'); return; }
+  winCloseAll(); if (window.stopLessonTimer) stopLessonTimer(); PG.stack = []; PG.saved = false;
+  S.tab = t; renderHome(); toContent();
+}
+function goTTab(t) { winCloseAll(); T.tab = t; T.bank = null; renderTeacher(); toContent(); }
 function menu(open) {
   var d = $('drawer'), b = $('menuBtn'); if (!d) return;
   if (open === undefined) open = d.classList.contains('hidden');
@@ -1458,7 +1520,7 @@ function saveCred(id, pw) { try { if (window.PasswordCredential && navigator.cre
 function fail(msg) {
   busy(false); msg = String(msg || '');
   if (/الجلسة/.test(msg) && !/جهاز ثاني/.test(msg) && rmKey() && !S.resuming) { S.resuming = true; store('tk_' + VIEW, null); rmResume(function () { S.resuming = false; VIEW === 'teacher' ? loadTeacher() : loadHome(); }, function () { S.resuming = false; logout(); }); return; }
-  if (/الجلسة/.test(msg)) { logout(); if (/جهاز ثاني/.test(msg)) { var e0 = $('err'); if (e0) e0.textContent = 'طلعت من هون لأنه حسابك انفتح من جهاز ثاني. إذا هاد جهازك، ادخل مرة ثانية.'; } return; }
+  if (/الجلسة/.test(msg)) { logout(); if (/جهاز ثاني/.test(msg)) { var e0 = $('err'); if (e0) e0.textContent = 'طلعت من هون لأنه تم الدخول على حسابك من جهاز ثاني. إذا هاد جهازك، ادخل مرة ثانية.'; } return; }
   if (/مقفل/.test(msg) && Q && Q.r && Q.r.guard) { lockScreen(); return; }
   if (/لم يفتح|يفتح|يتاح|لم يُتح|سمح لك|لم يحن|خلّص دراسة|مقفل|انتهى وقت|انتهى وقته|حليت هذا|الإجابات/.test(msg)) { notice(msg); return; }
   var e = $('err'); if (e) e.textContent = msg; else notice(msg, 'تنبيه');
@@ -1625,7 +1687,7 @@ function renderHome(keep) {
     d.items.filter(function (i) { return i.type === 'homework' && i.canStart && !i.done && i.closeTs - d.calendar.now < 864e5 && i.closeTs > d.calendar.now; }).map(function (i) {
       return '<div class="duebar"><div><b>تذكير: موعد تسليم واجب قرّب</b><div class="small"><span class="en" style="display:inline">' + esc(i.title) + '</span> يخلص ' + dFull(i.closeTs) + '</div></div><button class="btn copper sm" data-start="' + i.id + '" type="button">حلّه الآن</button></div>';
     }).join('') +
-    cdCard(d) +
+    cdCard(d) + myProgHtml(d, false) +
     (ann && newAnn ? '<button class="annbar" type="button" data-tab="teacher"><b>إعلان جديد من الأستاذ</b><span>' + esc(ann.text.length > 90 ? ann.text.slice(0, 90) + '…' : ann.text) + '</span>' + (newAnn > 1 ? '<em>+' + (newAnn - 1) + ' إعلان</em>' : '') + '</button>' : '');
   var y = window.scrollY;
   h('<div class="stack">' + top + body + '</div>', !!keep);
@@ -1651,7 +1713,7 @@ function renderHome(keep) {
 }
 
 function wireStudent(root) {
-  each('[data-tab]', function (b) { b.onclick = function () { S.tab = b.dataset.tab; renderHome(); toContent(); }; }, root);
+  each('[data-tab]', function (b) { b.onclick = function () { goTab(b.dataset.tab); }; }, root);
   each('[data-hub]', function (b) { b.onclick = function () { hubGo(b.dataset.hub); }; }, root);
   wireInstall(root);
   each('[data-unit]', function (b) { b.onclick = function () { S.unit = b.dataset.unit; renderHome(true); }; }, root);
@@ -1709,7 +1771,7 @@ function itemRow(i) {
     : (i.state === 'soon' ? '<span class="chip lock">يتاح ' + dDay(i.openTs) + '</span>' : (i.state === 'closed' ? '<span class="chip bad">انتهى ولم تسلّم</span>' : '<span class="chip now">مسموح الآن</span>'));
   return '<div class="li"><div class="row between"><div style="min-width:0;flex:1"><div class="row">' + status + '</div>' +
     '<div class="en" style="font-weight:600;margin-top:4px">' + esc(i.title.replace('Quiz – ', '')) + '</div>' +
-    (i.type === 'test' && i.state === 'soon' && !i.done ? '<div class="small">يفتح <b>' + dFull(i.openTs) + '</b></div><div class="row small" style="margin:4px 0">باقي ' + cdHtml(i.openTs, true) + '</div>' : '') +
+    (i.type === 'test' && i.state === 'soon' && !i.done ? '<div class="small">يُتاح <b>' + dFull(i.openTs) + '</b></div><div class="row small" style="margin:4px 0">باقي ' + cdHtml(i.openTs, true) + '</div>' : '') +
     '<div class="small muted">' + (i.type === 'test' ? 'يغلق ' : 'التسليم ') + dFull(i.closeTs) + (i.minutes ? '، ' + i.minutes + ' دقيقة' : '') + '</div>' +
     (i.bookTask ? '<div class="small">من الكتاب: ' + fmtMixed(i.bookTask) + '</div>' : '') +
     (i.done && !i.reviewReady && !i.canStart ? '<div class="small muted">الإجابات تظهر بعد الإغلاق.</div>' : '') +
@@ -1785,7 +1847,7 @@ function sResults() {
   var exDone = d.items.filter(function (i) { return i.done && i.unit === 'EX'; }).sort(byTs);
   var exBox = exDone.length ? '<details class="ru" data-ru="EX"><summary><span class="ru-dot" style="background:var(--ink)"></span><span class="ru-t"><b>الامتحانات</b><span class="small muted">على المنصة</span></span><span class="ru-s"><b class="ru-avg v-' + lvl(avgOf(exDone)) + '">' + avgOf(exDone) + '%</b><span class="tiny muted">' + exDone.length + ' امتحان</span></span><span class="ru-ch" aria-hidden="true"></span></summary><div class="ru-b">' + markTable(exDone) + '</div></details>' : '';
   var practice = '<div class="panel stack practice"><div class="row between"><div><b>تدرّب على أخطائي</b><div class="small muted">أسئلة جديدة على المهارات اللي غلطت فيها، مع الحل والسبب. للتدريب بس، وما تدخل بالعلامات.</div></div><button class="btn copper" type="button" data-practice>ابدأ التدريب</button></div></div>';
-  return '<div class="stack">' + practice + (d.marks ? officialMarks(d.marks, d.markScheme, 'buttons') : '') +
+  return '<div class="stack">' + myProgHtml(d, true) + practice + (d.marks ? officialMarks(d.marks, d.markScheme, 'buttons') : '') +
     '<div class="row between" style="margin-top:8px"><h2>نتائجي على المنصة</h2><span class="small muted">معدلي العام <b>' + (allAvg === null ? '—' : allAvg + '%') + '</b></span></div>' +
     (urgent.length ? '<div class="panel stack"><h3>شو تحتاج الآن</h3><ol style="margin:0;padding-inline-start:20px">' + urgent.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ol></div>' : '') +
     '<div class="small muted">اضغط على أي وحدة لتشوف تفاصيلها.</div>' +
@@ -1815,7 +1877,7 @@ function sectionHtml(s) {
 
 function readingHtml(r) {
   if (!r) return '';
-  return '<div class="rbar"><button class="btn ghost sm" id="gloTog" type="button">إخفاء المعاني</button><button class="btn ghost sm" id="trAll" type="button">افتح كل الترجمات</button></div>' +
+  return '<div class="rbar"><button class="btn ghost sm" id="gloTog" type="button">إخفاء المعاني</button><button class="btn ghost sm" id="trAll" type="button">اعرض كل الترجمات</button></div>' +
     '<div class="panel"><h2 class="en" style="font-size:1.35rem">' + esc(r.title) + '</h2><div class="muted">' + esc(r.titleAr) + '</div><div class="small muted">' + fmtMixed(r.source) + '</div></div>' +
     '<div id="passage" class="stack">' + r.paras.map(function (p) {
       return '<div class="para"><div class="row" style="justify-content:space-between"><div class="lab">' + esc(p.label) + '</div>' + (TTS.ok ? '<button type="button" class="btn ghost sm" data-say="' + esc(p.tokens.map(function (t) { return t[0]; }).join(' ')) + '">' + ICO.sound + ' استمع للفقرة</button>' : '') + '</div><div class="glossed">' +
@@ -1833,7 +1895,7 @@ function openLesson(id) {
     var d = S.data, st = d.studied[l.id], q = quizOf(d, l.id);
     var fin = st
       ? '<div class="panel finish stack"><b>درست هذا الدرس</b>' + (q ? (q.done ? '<div>علامتك بالكويز ' + frac(q.score, q.total) + '</div>' + (q.reviewReady ? '<div><button class="btn ghost" data-review="' + q.id + '" type="button">شوف حلّك والإجابات الصحيحة</button></div>' : '') : '<div><button class="btn copper" data-start="' + q.id + '" type="button">ابدأ كويز الدرس</button></div>') : '') + '</div>'
-      : '<div class="panel finish stack"><b>خلّصت دراسة الدرس؟</b><div class="small muted">لما تضغط يتاح لك الكويز (' + (q ? q.minutes : 15) + ' دقيقة)، وتشوف علامتك والإجابات أول ما تسلّم.</div><div><button class="btn copper" id="markDone" type="button">خلصت الدراسة، افتح الكويز</button></div><div class="err" id="err"></div></div>';
+      : '<div class="panel finish stack"><b>خلّصت دراسة الدرس؟</b><div class="small muted">لما تضغط يتاح لك الكويز (' + (q ? q.minutes : 15) + ' دقيقة)، وتشوف علامتك والإجابات أول ما تسلّم.</div><div><button class="btn copper" id="markDone" type="button">خلصت الدراسة، أتِح لي الكويز</button></div><div class="err" id="err"></div></div>';
     var hasReading = l.sections.some(function (s) { return s.k === 'reading'; });
     var body = l.sections.filter(function (s) { return s.k !== 'reading'; });
     pagePush({ kind: 'lesson', id: l.id });
@@ -1847,7 +1909,7 @@ function openLesson(id) {
       (hasReading ? readingHtml(l.reading) : '') + fin + '</div>');
     wirePageBar(); wireSay(app);
     var g = $('gloTog'); if (g) g.onclick = function () { var on = $('passage').classList.toggle('noglo'); g.textContent = on ? 'إظهار المعاني' : 'إخفاء المعاني'; };
-    var t = $('trAll'); if (t) t.onclick = function () { var ds = document.querySelectorAll('#passage details'); var open = !ds[0] || !ds[0].open; each('#passage details', function (x) { x.open = open; }); t.textContent = open ? 'سكّر الترجمات' : 'افتح كل الترجمات'; };
+    var t = $('trAll'); if (t) t.onclick = function () { var ds = document.querySelectorAll('#passage details'); var open = !ds[0] || !ds[0].open; each('#passage details', function (x) { x.open = open; }); t.textContent = open ? 'سكّر الترجمات' : 'اعرض كل الترجمات'; };
     var m = $('markDone'); if (m) m.onclick = function () {
       stopLessonTimer(); busy(true);
       call('apiMarkStudied', S.token, l.id).then(function () { return call('apiHome', S.token); }).then(function (d2) {
@@ -1971,7 +2033,7 @@ function renderQuiz() {
   h((r.minutes ? '<div class="timer"><span>الوقت المتبقي</span><span id="clock" class="en">--:--</span></div>' : '') +
     '<div class="stack" style="padding-top:14px">' +
     '<div class="row between"><div><span class="chip">' + typeName(r.type) + '</span> <b class="en small" style="display:inline">' + esc(r.title.replace('Quiz – ', '')) + '</b></div><span class="small muted" id="acount">جاوبت ' + frac(ans, tot) + '</span></div>' +
-    (r.guard ? '<div class="alert a-info small">الامتحان على كامل الشاشة. لا تطلع منه ولا تفتح أي إشي ثاني: كل طلعة توصل للأستاذ، وبعد ' + (Q.next || r.guard.limit) + ' طلعات يتقفل امتحانك لحد ما يسمحلك تكمل.' + (Q.leaves ? ' <b>طلعت ' + Q.leaves + ' من ' + (Q.next || r.guard.limit) + '.</b>' : '') + '</div>' : '') +
+    (r.guard ? '<div class="alert a-info small">الامتحان على كامل الشاشة. لا تطلع منه ولا تشغّل أي إشي ثاني: كل طلعة توصل للأستاذ، وبعد ' + (Q.next || r.guard.limit) + ' طلعات يتقفل امتحانك لحد ما يسمحلك تكمل.' + (Q.leaves ? ' <b>طلعت ' + Q.leaves + ' من ' + (Q.next || r.guard.limit) + '.</b>' : '') + '</div>' : '') +
     '<div class="qprog"><i style="width:' + Math.round((i + 1) * 100 / tot) + '%"></i></div>' + psHtml +
     '<div class="qcard" role="group" aria-labelledby="qtx"><div class="small muted">سؤال ' + (i + 1) + ' من ' + tot + '</div><div class="qt" id="qtx">' + esc(q.q) + '</div>' +
       q.c.map(function (c, k) { var sel = Q.answers[i] === k; return '<label class="opt' + (sel ? ' sel' : '') + '"><input type="radio" name="opt" value="' + k + '"' + (sel ? ' checked' : '') + '><span class="k">' + 'abcd'.charAt(k) + '</span><span class="tx">' + esc(c) + '</span></label>'; }).join('') + '</div>' +
@@ -2044,7 +2106,7 @@ function review(id) {
     var it = S.data.items.filter(function (x) { return x.id === id; })[0] || {};
     if (!PG.stack.length && !it.lesson) PG.homeTab = it.type === 'homework' ? 'hw' : it.type === 'test' ? 'exams' : (S.tab || 'lessons');
     pagePush({ kind: 'review', id: id });
-    var back = it.lesson ? '<div class="row"><button class="btn ghost sm" data-lesson="' + it.lesson + '" type="button">افتح الدرس</button></div>' : '';
+    var back = it.lesson ? '<div class="row"><button class="btn ghost sm" data-lesson="' + it.lesson + '" type="button">اعرض الدرس</button></div>' : '';
     h(pageBar('حلّك والإجابات: ' + r.title.replace('Quiz – ', '')) + '<div class="stack" style="padding-top:16px">' + reviewHtml(r) + back + '</div>');
     wirePageBar();
     wireStudent(app);
@@ -2087,10 +2149,53 @@ function loadTeacher() {
 function tUnits() { return T.data.course.map(function (u) { return { id: u.id, label: 'الوحدة ' + u.no }; }); }
 function asOf(id) { return T.data.assessments.filter(function (a) { return a.id === id; })[0]; }
 var TNAV = [
-  ['طلابي', [['home', 'الرئيسية'], ['live', 'الطلاب الآن'], ['students', 'الطلاب'], ['class', 'المشاركة الصفية'], ['follow', 'بحاجة متابعة'], ['book', 'جدول النتائج'], ['marks', 'العلامات الرسمية']]],
+  ['طلابي', [['home', 'الرئيسية'], ['students', 'الطلاب']]],
   ['المحتوى', [['lessons', 'الدروس والتقويم'], ['assess', 'الكويزات والواجبات'], ['exams', 'الامتحانات'], ['analysis', 'تحليل الأسئلة']]],
   ['التواصل والأدوات', [['inbox', 'الرسائل والإعلانات'], ['export', 'تصدير العلامات'], ['settings', 'الإعدادات']]]
 ];
+/** Everything about the students lives under one tab, with its own row of sections. */
+var STU_SUB = [['students', 'كل الطلاب وإنجازهم'], ['live', 'مين نشط الآن'], ['follow', 'بحاجة متابعة'], ['reopen', 'الإعادة والسماح'], ['book', 'جدول النتائج'], ['marks', 'العلامات الرسمية'], ['class', 'المشاركة الصفية'], ['codes', 'الرموز']];
+function isStuTab(k) { return STU_SUB.some(function (x) { return x[0] === k; }); }
+function stuSubnav() {
+  var badge = { follow: followList().length };
+  return '<nav class="subnav" aria-label="أقسام الطلاب">' + STU_SUB.map(function (t) { return '<button type="button" data-ttab="' + t[0] + '"' + (T.tab === t[0] ? ' class="on" aria-current="page"' : '') + '>' + t[1] + (badge[t[0]] ? ' <span class="nb">' + badge[t[0]] + '</span>' : '') + '</button>'; }).join('') + '</nav>';
+}
+/** Completion: of what has opened so far in each unit (lessons, their quizzes, homework), how much the student finished. */
+function progUnits(num) {
+  var d = T.data, s = d.students.filter(function (x) { return x.number === num; })[0] || { grades: {} }, st = d.studiedMap[num] || {};
+  return d.course.map(function (u) {
+    var ls = u.lessons.filter(function (l) { return l.open; }), ids = ls.map(function (l) { return l.id; });
+    var qz = d.assessments.filter(function (a) { return a.type === 'quiz' && ids.indexOf(a.lesson) >= 0; });
+    var hw = d.assessments.filter(function (a) { return a.type === 'homework' && a.unit === u.id && a.state !== 'soon'; });
+    var dl = ls.filter(function (l) { return st[l.id]; }).length, dq = qz.filter(function (a) { return s.grades[a.id]; }).length, dh = hw.filter(function (a) { return s.grades[a.id]; }).length;
+    var tot = ls.length + qz.length + hw.length, done = dl + dq + dh;
+    return { u: u, tot: tot, done: done, pct: tot ? Math.round(done * 100 / tot) : null, l: [dl, ls.length], q: [dq, qz.length], h: [dh, hw.length] };
+  });
+}
+function progAll(list) { var t = 0, d = 0; list.forEach(function (x) { t += x.tot; d += x.done; }); return t ? Math.round(d * 100 / t) : null; }
+function pbar(p) { return p === null ? '<span class="muted">—</span>' : '<span class="prg ' + (p >= 80 ? 'ok' : p >= 50 ? 'mid' : 'bad') + '"><i style="width:' + p + '%"></i></span><b class="pnum">' + p + '%</b>'; }
+function progHtml(num) {
+  var P = progUnits(num), all = progAll(P);
+  return '<div class="panel stack" id="sdProg"><h3>إنجازه</h3><div class="row" style="gap:10px"><b>الإنجاز الكلي</b>' + pbar(all) + '</div><div class="small muted">نسبة اللي خلّصه من الدروس اللي أُتيحت وكويزاتها والواجبات اللي أُتيحت.</div>' +
+    '<div class="tbl"><table><thead><tr><th>الوحدة</th><th>الإنجاز</th><th class="num">الدروس</th><th class="num">الكويزات</th><th class="num">الواجبات</th></tr></thead><tbody>' +
+    P.map(function (x) { return '<tr><td>الوحدة ' + x.u.no + '</td><td>' + pbar(x.pct) + '</td><td class="num">' + (x.tot ? frac(x.l[0], x.l[1]) : '—') + '</td><td class="num">' + (x.tot ? frac(x.q[0], x.q[1]) : '—') + '</td><td class="num">' + (x.tot ? frac(x.h[0], x.h[1]) : '—') + '</td></tr>'; }).join('') + '</tbody></table></div></div>';
+}
+function tReopen() {
+  var d = T.data, now = d.calendar.now;
+  var g = d.assessments.filter(function (a) { return a.grants && a.grants.length; });
+  return '<div class="stack"><h2>الإعادة والسماح</h2>' +
+    '<div class="panel stack" style="background:var(--sky);border:0"><b>اسمح بإعادة كويزات أو واجبات</b><div class="small muted">الوحدة كاملة أو كويزات تختارها، للصف كامل أو لطلاب معيّنين أو للي علامتهم أقل من حد معيّن. الطالب اللي فاتح المنصة بتوصله رسالة فورًا.</div><div><button class="btn teal" type="button" data-bulkg>اسمح بالإعادة</button></div></div>' +
+    '<div class="panel stack"><b>لطالب واحد</b><div class="small muted">اختار الطالب وبيطلعلك ملفه على قسم «اسمح له».</div><div class="row"><select id="roStu" style="width:auto;max-width:100%">' + d.students.map(function (s) { return '<option value="' + s.number + '">' + s.number + ' ' + esc(s.name) + '</option>'; }).join('') + '</select><button class="btn ghost sm" type="button" id="roGo">اعرض ملفه</button></div></div>' +
+    '<div class="panel flush"><div class="ph"><h2>المسموح حاليًا</h2><span class="small muted">' + (g.length ? g.length + ' كويز/واجب' : '') + '</span></div>' + (g.length ? '<div class="tbl"><table><thead><tr><th>الكويز / الواجب</th><th>لمين</th><th>لحد</th><th></th></tr></thead><tbody>' +
+      g.map(function (a) { return '<tr><td><span class="chip">' + typeName(a.type) + '</span> <span class="en" style="display:inline">' + esc(a.title.replace('Quiz – ', '')) + '</span></td><td class="small">' + a.grants.map(function (x) { return x.target === 'ALL' ? 'الصف كامل' : x.target + ' ' + esc(firstTwo((d.students.filter(function (s) { return s.number === x.target; })[0] || {}).name || '')); }).join('، ') + '</td><td class="small">' + esc(a.grants[0].until) + '</td><td><button class="btn ghost sm" type="button" data-rorev="' + a.id + '">أغلقه</button></td></tr>'; }).join('') + '</tbody></table></div>' : '<div class="li muted small">ما في إشي مفتوح من جديد الآن.</div>') + '</div></div>';
+}
+function tCodes() {
+  var d = T.data;
+  return '<div class="stack"><h2>رموز الدخول</h2>' + '<div class="panel stack"><h2>رموز الدخول</h2><div class="alert a-info small">وزّع على كل طالب رقمه ورمزه لحاله برسالة خاصة، ولا تنشر القائمة كاملة بمجموعة الصف.</div><div class="row"><button class="btn ghost sm" id="copyCodes" type="button">نسخ القائمة</button><span class="small" id="copied"></span></div><div class="small muted">أو نزّلها كقصاصات تقصّها وتعطي كل طالب قصاصته:</div>' + xbar('codes', true) +
+    '<details><summary>اعرض الرموز</summary><div class="tbl" style="margin-top:8px"><table><thead><tr><th class="num">رقم</th><th>الاسم</th><th class="num">الرمز</th><th></th></tr></thead><tbody>' +
+    d.students.map(function (s) { return '<tr><td class="num">' + s.number + '</td><td>' + esc(s.name) + '</td><td class="num"><bdi data-code="' + s.number + '">' + esc(s.code) + '</bdi></td><td><div class="cact"><input class="cin" type="text" inputmode="numeric" maxlength="8" placeholder="رمز تختاره" data-cin="' + s.number + '" aria-label="رمز جديد للطالب ' + esc(s.name) + '"><button class="btn sm" data-setcode="' + s.number + '" type="button">حفظ</button><button class="btn ghost sm" data-newcode="' + s.number + '" type="button">عشوائي</button></div></td></tr>'; }).join('') + '</tbody></table></div></details>' +
+    '<div class="tiny muted">للطالب اللي نسي رمزه أو عرفه غيره: اكتب رمز من 4 لـ 8 أرقام واكبس «حفظ»، أو اكبس «عشوائي» والمنصة بتختار. الرمز القديم بيوقف، وإذا كان فاتح المنصة بيطلع منها. والطالب كمان بيقدر يغيّر رمزه بنفسه من «غيّر رمزي».</div></div>' + '</div>';
+}
 function renderTeacher() {
   var d = T.data;
   if (!T.sem) T.sem = d.calendar.now >= d.calendar.sem2.start ? 2 : 1;
@@ -2098,14 +2203,14 @@ function renderTeacher() {
   if (T.sem === 2) {
     h('<div class="panel stack" style="text-align:center"><h2>الفصل الثاني</h2><div class="muted">محتوى الفصل الثاني (الوحدات 6–10) لسا ما انضاف للمنصة. لما نجهّزه تظهر هون دروسه وكويزاته وواجباته وامتحاناته بنفس طريقة الفصل الأول.</div></div>', true);
   } else {
-    var views = { home: tHome, live: tLive, students: tStudents, class: tClass, follow: tFollow, book: tBook, marks: tMarks, lessons: tCal, assess: tAssess, exams: tExams, analysis: tAnalysis, export: tExport, inbox: tInbox, settings: tMore };
+    var views = { home: tHome, live: tLive, reopen: tReopen, codes: tCodes, students: tStudents, class: tClass, follow: tFollow, book: tBook, marks: tMarks, lessons: tCal, assess: tAssess, exams: tExams, analysis: tAnalysis, export: tExport, inbox: tInbox, settings: tMore };
     if (!views[T.tab]) T.tab = 'home';
     var badge = { inbox: d.messages.length, follow: followList().length };
     var side = '<aside class="side" aria-label="أقسام صفحة المعلم"><form class="sfind" id="stuFindF" role="search"><input id="stuFind" list="stuList" placeholder="ابحث عن طالب" aria-label="ابحث عن طالب بالاسم أو الرقم" autocomplete="off"><datalist id="stuList">' + d.students.map(function (x) { return '<option value="' + x.number + ' ' + esc(x.name) + '"></option>'; }).join('') + '</datalist></form>' + TNAV.map(function (g) {
-      return '<div class="sg"><div class="sgl">' + g[0] + '</div>' + g[1].map(function (t) { return '<button type="button" class="sb' + (T.tab === t[0] ? ' on' : '') + '" data-ttab="' + t[0] + '"' + (T.tab === t[0] ? ' aria-current="page"' : '') + '>' + '<span class="si">' + ti(t[0]) + '</span><span class="st">' + t[1] + '</span>' + (badge[t[0]] ? '<span class="badge">' + badge[t[0]] + '</span>' : '') + '</button>'; }).join('') + '</div>';
+      return '<div class="sg"><div class="sgl">' + g[0] + '</div>' + g[1].map(function (t) { var on = T.tab === t[0] || (t[0] === 'students' && isStuTab(T.tab)); return '<button type="button" class="sb' + (on ? ' on' : '') + '" data-ttab="' + t[0] + '"' + (on ? ' aria-current="page"' : '') + '>' + '<span class="si">' + ti(t[0]) + '</span><span class="st">' + t[1] + '</span>' + (badge[t[0]] ? '<span class="badge">' + badge[t[0]] + '</span>' : '') + '</button>'; }).join('') + '</div>';
     }).join('') + '</aside>';
     var y = window.scrollY;
-    h('<div class="tlay">' + side + '<section class="tmain">' + views[T.tab]() + '</section></div>', true);
+    h('<div class="tlay">' + side + '<section class="tmain">' + (isStuTab(T.tab) ? stuSubnav() : '') + views[T.tab]() + '</section></div>', true);
     siteNav([['home', 'الرئيسية'], ['inbox', 'الرسائل والإعلانات', badge.inbox], ['follow', 'بحاجة متابعة', badge.follow]].concat([].concat.apply([], TNAV.map(function (g) { return g[1]; })).filter(function (x) { return ['home', 'inbox', 'follow'].indexOf(x[0]) < 0; })), T.tab, 'data-ttab',
       '<form class="sfind" id="dFindF" role="search"><input id="dFind" list="stuList" placeholder="ابحث عن طالب بالاسم أو الرقم" aria-label="ابحث عن طالب" autocomplete="off"></form>');
     who('أ. مصطفى العواملة'); routeTo(T.tab);
@@ -2114,7 +2219,7 @@ function renderTeacher() {
   $('refresh').onclick = loadTeacher;
   var sff = $('stuFindF');
   if (sff) { var go = function () { var v = $('stuFind').value.trim(); if (!v) return; var hit = findStudent(v); if (hit) { $('stuFind').value = ''; $('stuFind').blur(); studentDetail(hit.number); } }; sff.onsubmit = function (ev) { ev.preventDefault(); go(); }; $('stuFind').onchange = go; }
-  each('[data-ttab]', function (b) { b.onclick = function () { T.tab = b.dataset.ttab; T.bank = null; renderTeacher(); toContent(); }; });
+  each('[data-ttab]', function (b) { b.onclick = function () { goTTab(b.dataset.ttab); }; });
   each('[data-tsem]', function (b) { b.onclick = function () { T.sem = Number(b.dataset.tsem); renderTeacher(); }; });
   wireTeacher(app);
   wireMarks();
@@ -2122,6 +2227,8 @@ function renderTeacher() {
   if (T.tab === 'class' && T.sem !== 2) clsInit();
 }
 function wireTeacher(root) {
+  var rg = root && root.querySelector ? root.querySelector('#roGo') : null; if (rg) rg.onclick = function () { studentDetail($('roStu').value, 'sdOpen'); };
+  each('[data-rorev]', function (b) { b.onclick = function () { if (b.dataset.c !== '1') { b.dataset.c = '1'; b.textContent = 'متأكد؟'; return; } busy(true); call('apiTeacherRevoke', S.token, b.dataset.rorev, '*').then(loadTeacher).catch(fail); }; }, root);
   var qmFlash = function (el, ok) { el.style.outline = '2px solid ' + (ok ? '#2f9e5b' : '#b3261e'); setTimeout(function () { el.style.outline = ''; }, 1500); };
   each('[data-qmin]', function (inp) { inp.onchange = function () {
     var v = Math.round(Number(inp.value)); if (!(v >= 0 && v <= 180)) { qmFlash(inp, false); inp.value = (asOf(inp.dataset.qmin) || {}).minutes || 0; return; }
@@ -2148,7 +2255,7 @@ function wireTeacher(root) {
   each('[data-openx]', function (b) { b.onclick = function () { openExam(b.dataset.openx); }; }, root);
   each('[data-sugx]', function (b) { b.onclick = function () { var i = $('xm_' + b.dataset.sugx); if (i) { i.value = b.dataset.m; i.focus(); } }; }, root);
   each('[data-schedx]', function (b) { b.onclick = function () { var id = b.dataset.schedx, msg = $('xsm_' + id); msg.textContent = 'جاري الحفظ…';
-    call('apiTeacherScheduleExam', S.token, id, $('xf_' + id).value, $('xt_' + id).value, $('xm_' + id) ? $('xm_' + id).value : 45).then(function (r) { msg.textContent = 'تم. يفتح ' + dFull(parseS(r.openText)) + ' ويسكّر ' + dFull(parseS(r.closeText)) + '.'; setTimeout(loadTeacher, 900); }).catch(function (e) { msg.textContent = String(e && e.message || e); }); }; }, root);
+    call('apiTeacherScheduleExam', S.token, id, $('xf_' + id).value, $('xt_' + id).value, $('xm_' + id) ? $('xm_' + id).value : 45).then(function (r) { msg.textContent = 'تم. يُتاح ' + dFull(parseS(r.openText)) + ' ويسكّر ' + dFull(parseS(r.closeText)) + '.'; setTimeout(loadTeacher, 900); }).catch(function (e) { msg.textContent = String(e && e.message || e); }); }; }, root);
   each('[data-unschedx]', function (b) { b.onclick = function () { if (b.dataset.c !== '1') { b.dataset.c = '1'; b.textContent = 'متأكد؟'; return; } busy(true); call('apiTeacherUnscheduleExam', S.token, b.dataset.unschedx).then(loadTeacher).catch(fail); }; }, root);
   each('[data-closex]', function (b) { b.onclick = function () { closeExam(b.dataset.closex, b); }; }, root);
   each('[data-gb]', function (b) { b.onclick = function () { T.gb = b.dataset.gb; renderTeacher(); }; }, root);
@@ -2159,6 +2266,7 @@ function wireTeacher(root) {
   var cp = $('copyCodes'); if (cp) cp.onclick = copyCodes;
   XB.codes = { name: function () { return 'رموز دخول الأول ثانوي ج'; }, html: codesHtml, xlsx: function () { return needLibs(['xlsx']).then(function () { var X = window.XLSX, ws = X.utils.aoa_to_sheet([['الرقم', 'اسم الطالب', 'الرمز']].concat(T.data.students.map(function (s) { return [s.number, s.name, String(s.code)]; }))); ws['!cols'] = [{ wch: 8 }, { wch: 36 }, { wch: 12 }]; var wb = X.utils.book_new(); wb.Workbook = { Views: [{ RTL: true }] }; X.utils.book_append_sheet(wb, ws, 'الرموز'); return new Blob([X.write(wb, { type: 'array', bookType: 'xlsx' })]); }); } };
   var sq = $('sq'); if (sq) sq.oninput = function () { T.q = sq.value; filterStudents(); };
+  var so = $('ssort'); if (so) so.onchange = function () { T.ssort = so.value; renderTeacher(); };
   wireExport();
 }
 function missingOf(a) { return T.data.students.filter(function (s) { return !a.results.some(function (r) { return r.number === s.number; }); }); }
@@ -2176,15 +2284,15 @@ function examCard(a) {
   var f0 = sched ? toInput(a.openAt) : inp(Math.ceil(nowTs / 36e5) * 36e5), t0 = sched ? toInput(a.closeAt) : inp(Math.ceil(nowTs / 36e5) * 36e5 + 864e5);
   var ex = (T.data.exams || []).filter(function (x) { return x.id === a.id; })[0], sk = ex && ex.skills;
   var sug = sk ? Math.max(10, Math.ceil(((sk.R ? 4 : 0) + sk.R * 2 + sk.W * 1.5 + sk.V * 1) / 5) * 5) : null;
-  var plan = live ? '' : '<details class="xsched"' + (sched ? ' open' : '') + '><summary class="small"><b>أو افتحه بوقت محدّد</b> (يفتح ويسكّر لحاله)</summary><div class="stack" style="margin-top:8px">' +
-    '<div class="grid" style="display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))"><label class="f small">يفتح<input type="datetime-local" id="xf_' + a.id + '" value="' + f0 + '"></label><label class="f small">يسكّر<input type="datetime-local" id="xt_' + a.id + '" value="' + t0 + '"></label></div>' +
+  var plan = live ? '' : '<details class="xsched"' + (sched ? ' open' : '') + '><summary class="small"><b>أو أتِحه بوقت محدّد</b> (يُتاح ويسكّر لحاله)</summary><div class="stack" style="margin-top:8px">' +
+    '<div class="grid" style="display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))"><label class="f small">يُتاح<input type="datetime-local" id="xf_' + a.id + '" value="' + f0 + '"></label><label class="f small">يسكّر<input type="datetime-local" id="xt_' + a.id + '" value="' + t0 + '"></label></div>' +
     (sug ? '<div class="row small"><span>مدة الامتحان المقترحة حسب عدد أسئلته (' + (sk.R + sk.W + sk.V) + ' سؤال): <b>' + sug + ' دقيقة</b></span><button class="btn ghost sm" type="button" data-sugx="' + a.id + '" data-m="' + sug + '">استخدمها</button></div>' : '') +
     '<div class="tiny muted">الطالب بيحل الامتحان مرة وحدة: أول ما يبلّش بياخذ مدة الامتحان، وأول ما يسلّم (أو يخلص وقته) بيتسكّر عنده. والمدة ما بتتعدّى وقت السكّر، فاللي بيبلّش متأخر بياخذ وقت أقل.</div>' +
     '<div class="row"><button class="btn" type="button" data-schedx="' + a.id + '">' + (sched ? 'تعديل الموعد' : 'حفظ الموعد') + '</button>' + (sched ? '<button class="btn ghost" type="button" data-unschedx="' + a.id + '">إلغاء الجدولة</button>' : '') + '<span class="small" id="xsm_' + a.id + '"></span></div></div></details>';
   var inner;
   if (live) inner = '<div class="row between"><div><span class="chip ok">مسموح الآن</span> <span class="small muted">يغلق ' + dTime(parseS(a.closeText)) + '</span><div style="margin-top:6px"><b style="font-size:1.6rem"><bdi>' + a.submitted + '/' + a.of + '</bdi></b> <span class="muted small">سلّموا</span></div></div><button class="btn danger" data-closex="' + a.id + '" type="button">أغلق الامتحان الآن</button></div>';
-  else inner = (sched ? '<div class="row"><span class="chip now">مجدول</span><span class="small">يفتح <b>' + dFull(parseS(a.openText)) + '</b> ويسكّر <b>' + dFull(parseS(a.closeText)) + '</b></span></div>' : '') + (sched ? '' : never ? '<div class="small muted">مخفي عن الطلاب لحد ما تتيحه لهم. أسئلته من بنك الأسئلة، ولكل طالب أسئلة مختلفة.</div>' : '<div class="row"><span class="chip">انتهى</span><span class="small">سلّم ' + frac(a.submitted, a.of) + '، المعدل ' + (a.average === null ? '—' : a.average + '%') + '. الطلاب يشوفوا إجاباتهم والصحيح الآن.</span></div>') +
-      '<div class="row"><label class="row small" style="font-weight:700">المدة <input type="number" min="5" id="xm_' + a.id + '" value="' + (a.minutes || 45) + '" style="width:84px"> دقيقة</label><button class="btn teal" data-openx="' + a.id + '" type="button">' + (never ? 'افتح الامتحان الآن' : 'افتحه مرة ثانية') + '</button></div>';
+  else inner = (sched ? '<div class="row"><span class="chip now">مجدول</span><span class="small">يُتاح <b>' + dFull(parseS(a.openText)) + '</b> ويسكّر <b>' + dFull(parseS(a.closeText)) + '</b></span></div>' : '') + (sched ? '' : never ? '<div class="small muted">مخفي عن الطلاب لحد ما تتيحه لهم. أسئلته من بنك الأسئلة، ولكل طالب أسئلة مختلفة.</div>' : '<div class="row"><span class="chip">انتهى</span><span class="small">سلّم ' + frac(a.submitted, a.of) + '، المعدل ' + (a.average === null ? '—' : a.average + '%') + '. الطلاب يشوفوا إجاباتهم والصحيح الآن.</span></div>') +
+      '<div class="row"><label class="row small" style="font-weight:700">المدة <input type="number" min="5" id="xm_' + a.id + '" value="' + (a.minutes || 45) + '" style="width:84px"> دقيقة</label><button class="btn teal" data-openx="' + a.id + '" type="button">' + (never ? 'أتِح الامتحان الآن' : 'أتِحه مرة ثانية') + '</button></div>';
   inner += plan;
   return '<div class="panel stack' + (live ? ' examlive' : '') + '"><div class="row between"><div class="row"><span class="chip">امتحان</span><b><bdi dir="ltr" class="en">' + esc(a.title) + '</bdi></b></div><div class="row">' + (a.submitted ? solvedLine(a) : '') + (a.published && a.state !== 'soon' ? '<button class="btn sm" data-live="' + a.id + '" type="button">متابعة مباشرة</button>' : '') + (a.submitted ? '<button class="btn ghost sm" data-ianal="' + a.id + '" type="button">تحليل الأسئلة</button><button class="btn ghost sm" data-xpgo="' + a.id + '" type="button">تصدير العلامات</button>' : '') + '</div></div>' + inner + '</div>';
 }
@@ -2221,7 +2329,7 @@ function tHome() {
   if (nx) today.push('<button type="button" class="tday" data-ttab="exams"><b>' + Math.max(0, Math.ceil((nx.ts - d.calendar.now) / 864e5)) + '</b><span>يوم على ' + esc(exName(nx.id)) + '</span></button>');
   var G = [
     ['طلابي', [['students', 'الطلاب', 'ملف كل طالب وتقريره ورسالة لولي أمره'], ['board', 'لوحة تطريز الصف', 'الصف كامل بنظرة: كل طالب غرزة'], ['class', 'المشاركة الصفية', 'ارصد مشاركة كل طالب بالحصة'], ['follow', 'بحاجة متابعة', fol ? fol + ' طالب' : 'كل الطلاب ماشيين تمام'], ['book', 'جدول النتائج', 'كل العلامات، واضغط أي علامة لورقته'], ['marks', 'العلامات الرسمية', 'الميد والأداء والفاينل والمشاركة']]],
-    ['المحتوى', [['lessons', 'الدروس والتقويم', 'افتح أو سكّر درس، ومواعيد الوحدات'], ['assess', 'الكويزات والواجبات', 'مواعيد الواجبات، وفتح لطلاب تختارهم'], ['exams', 'الامتحانات', 'الموعد والمادة، والامتحان التجريبي'], ['analysis', 'تحليل الأسئلة', 'شو أصعب الأسئلة على الصف']]],
+    ['المحتوى', [['lessons', 'الدروس والتقويم', 'أتِح أو سكّر درس، ومواعيد الوحدات'], ['assess', 'الكويزات والواجبات', 'مواعيد الواجبات، والسماح لطلاب تختارهم'], ['exams', 'الامتحانات', 'الموعد والمادة، والامتحان التجريبي'], ['analysis', 'تحليل الأسئلة', 'شو أصعب الأسئلة على الصف']]],
     ['التواصل والأدوات', [['inbox', 'الرسائل والإعلانات', msgs ? msgs + ' رسالة جديدة' : 'انشر إعلان للطلاب'], ['remind', 'تذكير للصف', 'نص جاهز لمجموعة واتساب'], ['export', 'تصدير العلامات', 'ملفات Word، Excel، PDF'], ['settings', 'الإعدادات', 'كلمة السر، الرموز، النسخ الاحتياطي، الألوان']]]
   ];
   var tile = function (t) { return '<button type="button" class="tile" ' + (t[0] === 'remind' ? 'data-remind' : t[0] === 'board' ? 'data-board' : 'data-ttab="' + t[0] + '"') + '><span class="ti">' + ti(t[0]) + '</span><span class="tt2"><b>' + t[1] + '</b><span>' + esc(t[2]) + '</span></span></button>'; };
@@ -2287,7 +2395,7 @@ function tBook() {
       '<tr><td class="stk"><b>الصف</b></td>' + oc.map(function (o) { return '<td class="num">' + cell(o.pct) + '</td>'; }).join('') + '<td></td><td></td></tr></tbody></table>';
   }
   var legend = (T.gb === 'grades' || sel === 'EX')
-    ? '<div class="tiny muted">اضغط على علامة أي طالب لتشوف ورقته كيف حلّها. اضغط على رأس العمود لتشوف مين حلّ ومين ما حلّ، وتفتحه من جديد أو تصدّر علاماته. اضغط على اسم الطالب لتفاصيله.</div>'
+    ? '<div class="tiny muted">اضغط على علامة أي طالب لتشوف ورقته كيف حلّها. اضغط على رأس العمود لتشوف مين حلّ ومين ما حلّ، وتسمح بإعادته أو تصدّر علاماته. اضغط على اسم الطالب لتفاصيله.</div>'
     : '<div class="tiny muted" style="columns:2;column-gap:20px">' + oc.map(function (o) { return '<div><b class="en" style="display:inline">' + oshort(o) + '</b> ' + esc(o.ar) + '</div>'; }).join('') + '</div>';
   return '<div class="stack">' + unitChips(units, sel, 'data-tunit') + '<div class="panel flush"><div class="ph"><h2>جدول النتائج' + (sel === 'EX' ? ': الامتحانات' : ': الوحدة ' + sel.slice(1)) + '</h2>' + (sel === 'EX' ? '' : '<div class="seg2"><button type="button" data-gb="grades" class="' + (T.gb === 'grades' ? 'on' : '') + '">العلامات</button><button type="button" data-gb="outcomes" class="' + (T.gb === 'outcomes' ? 'on' : '') + '">النتاجات</button></div>') + '</div>' +
     '<div class="tbl" id="gbTable" data-title="' + esc('جدول النتائج' + (sel === 'EX' ? ': الامتحانات' : ': الوحدة ' + sel.slice(1)) + (T.gb === 'outcomes' ? ' (النتاجات)' : '')) + '">' + table + '</div><div style="padding:12px 16px" class="stack">' +
@@ -2308,10 +2416,24 @@ function tStudents() {
     '<div class="panel stack"><b>التقرير الشامل</b><div class="small muted">تقرير لكل طالب فيه: العلامات الرسمية، تقييم الأداء لكل وحدة، المادة المقطوعة لغاية اليوم وإنجازه فيها (دخول الدروس، الوقت، الكويزات، الواجبات)، النتاجات ونقاط القوة والضعف، وكل الاختبارات اللي حلّها.</div>' +
     '<div class="row"><select id="repWho" style="width:auto;max-width:100%"><option value="ALL">كل الطلاب (ملف واحد، كل طالب بصفحة)</option>' + T.data.students.map(function (s) { return '<option value="' + s.number + '">' + s.number + ' ' + esc(s.name) + '</option>'; }).join('') + '</select>' +
     '</div>' + xbar('rep') + '</div>' +
-    '<div class="small muted">اضغط على أي طالب لتشوف إنجازه بكل وحدة، وتطلع تقريره.</div>' +
-    '<div class="scards" id="slist">' + T.data.students.map(stuCard).join('') + '</div></div>';
+    stuTable() + '</div>';
 }
-function filterStudents() { var q = T.q.trim(); each('#slist .sc', function (c) { c.classList.toggle('hidden', !!q && c.dataset.name.indexOf(q) < 0); }); }
+function stuTable() {
+  var d = T.data, U = d.course.filter(function (u) { return u.lessons.some(function (l) { return l.open; }); });
+  var rows = d.students.map(function (s) { var P = progUnits(s.number); return { s: s, P: P, all: progAll(P) }; });
+  var sort = T.ssort || 'num';
+  if (sort === 'low') rows.sort(function (a, b) { return (a.all === null ? 999 : a.all) - (b.all === null ? 999 : b.all); });
+  if (sort === 'high') rows.sort(function (a, b) { return (b.all || 0) - (a.all || 0); });
+  if (sort === 'avg') rows.sort(function (a, b) { return (a.s.average === null ? 999 : a.s.average) - (b.s.average === null ? 999 : b.s.average); });
+  var cls = progAll([].concat.apply([], rows.map(function (r) { return r.P; })));
+  return '<div class="panel flush"><div class="ph"><h2>إنجاز الطلاب</h2><span class="small muted">إنجاز الصف ككل: ' + (cls === null ? '—' : cls + '%') + '</span></div>' +
+    '<div class="row small" style="padding:10px 16px;gap:8px"><span>رتّب حسب</span><select id="ssort" style="width:auto">' + [['num', 'الرقم'], ['low', 'الأقل إنجازًا أول'], ['high', 'الأعلى إنجازًا أول'], ['avg', 'الأقل معدلًا أول']].map(function (o) { return '<option value="' + o[0] + '"' + (sort === o[0] ? ' selected' : '') + '>' + o[1] + '</option>'; }).join('') + '</select><span class="tiny muted">الإنجاز = اللي خلّصه من الدروس اللي أُتيحت وكويزاتها والواجبات. اضغط اسم الطالب لملفه: إنجازه، وقته، علاماته، والسماح له بالإعادة.</span></div>' +
+    '<div class="tbl"><table id="slist"><thead><tr><th>الطالب</th><th>الإنجاز الكلي</th>' + U.map(function (u) { return '<th class="num">الوحدة ' + u.no + '</th>'; }).join('') + '<th class="num">المعدل</th><th class="num">واجبات فاتته</th></tr></thead><tbody>' +
+    rows.map(function (r) { return '<tr class="srow" data-name="' + esc(r.s.name) + ' ' + r.s.number + '"><td><button class="btn link sm" type="button" data-stu="' + r.s.number + '">' + r.s.number + ' ' + esc(firstTwo(r.s.name)) + '</button></td><td style="min-width:150px">' + pbar(r.all) + '</td>' +
+      U.map(function (u) { var x = r.P.filter(function (y) { return y.u.id === u.id; })[0]; return '<td class="num">' + (x && x.pct !== null ? x.pct + '%' : '—') + '</td>'; }).join('') +
+      '<td class="num">' + cell(r.s.average) + '</td><td class="num">' + (r.s.missingHomework ? '<span style="color:var(--bad);font-weight:700">' + r.s.missingHomework + '</span>' : '0') + '</td></tr>'; }).join('') + '</tbody></table></div></div>';
+}
+function filterStudents() { var q = T.q.trim(); each('#slist .sc, #slist .srow', function (c) { c.classList.toggle('hidden', !!q && c.dataset.name.indexOf(q) < 0); }); }
 
 function tAssess() {
   var d = T.data, sel = T.unit;
@@ -2321,10 +2443,10 @@ function tAssess() {
   return '<div class="stack"><h2>الكويزات والواجبات</h2><div class="small muted">الامتحانات (الميد والفاينل) صارت بقسم «الامتحانات وبنك الأسئلة».</div>' +
     '<div class="panel row between" style="background:var(--sky);border:0"><div><b>إعادة عدة كويزات وواجبات مرة وحدة</b><div class="small muted">الوحدة كاملة أو كويزات تختارها، للصف كامل أو لطلاب معيّنين.</div></div><button class="btn teal sm" type="button" data-bulkg>اسمح بالإعادة</button></div>' +
     unitChips(tUnits(), sel, 'data-tunit') +
-    '<div class="panel flush"><div class="ph"><h2>كويزات الوحدة ' + sel.slice(1) + '</h2><span class="small muted">كل كويز يتاح للطالب بعد ما يدرس الدرس، ويضل مسموح لأسبوع بعد نهاية الوحدة. بعدها بس أنت تفتحه.</span></div><div class="row small" style="padding:10px 16px;gap:8px"><b>مدة كل كويزات الوحدة</b><input type="number" id="qmAll" min="0" max="180" inputmode="numeric" style="width:84px" value="' + (qz.length && qz.every(function (a) { return (a.minutes || 0) === (qz[0].minutes || 0); }) ? (qz[0].minutes || 0) : '') + '" aria-label="مدة كل كويزات الوحدة بالدقائق"> دقيقة<button class="btn ghost sm" type="button" data-qmall>طبّق على الكل</button><span class="tiny muted">0 يعني بدون وقت. وبتقدر تغيّر مدة كل كويز لحاله من الجدول.</span><span class="small" id="qmMsg"></span></div><div class="tbl"><table><thead><tr><th>الكويز</th><th>الحالة</th><th class="num">حلّوا</th><th class="num">المعدل</th><th class="num">المدة (دقيقة)</th><th></th></tr></thead><tbody>' +
+    '<div class="panel flush"><div class="ph"><h2>كويزات الوحدة ' + sel.slice(1) + '</h2><span class="small muted">كل كويز يتاح للطالب بعد ما يدرس الدرس، ويضل مسموح لأسبوع بعد نهاية الوحدة. بعدها بس أنت بتسمح فيه.</span></div><div class="row small" style="padding:10px 16px;gap:8px"><b>مدة كل كويزات الوحدة</b><input type="number" id="qmAll" min="0" max="180" inputmode="numeric" style="width:84px" value="' + (qz.length && qz.every(function (a) { return (a.minutes || 0) === (qz[0].minutes || 0); }) ? (qz[0].minutes || 0) : '') + '" aria-label="مدة كل كويزات الوحدة بالدقائق"> دقيقة<button class="btn ghost sm" type="button" data-qmall>طبّق على الكل</button><span class="tiny muted">0 يعني بدون وقت. وبتقدر تغيّر مدة كل كويز لحاله من الجدول.</span><span class="small" id="qmMsg"></span></div><div class="tbl"><table><thead><tr><th>الكويز</th><th>الحالة</th><th class="num">حلّوا</th><th class="num">المعدل</th><th class="num">المدة (دقيقة)</th><th></th></tr></thead><tbody>' +
     qz.map(function (a) {
       var st = a.grants.length ? '<span class="chip now">مسموح من جديد</span>' : a.state === 'open' ? '<span class="chip ok">مسموح</span>' : a.state === 'soon' ? '<span class="chip lock">يتاح ' + dDay(parseS(a.openText)) + '</span>' : '<span class="chip">مغلق</span>';
-      return '<tr><td class="en">' + esc(a.title.replace('Quiz – ', '')) + '</td><td>' + st + '</td><td class="num">' + frac(a.submitted, a.of) + '</td><td class="num">' + cell(a.average) + '</td><td class="num"><input type="number" min="0" max="180" inputmode="numeric" style="width:72px;text-align:center" value="' + (a.minutes || 0) + '" data-qmin="' + a.id + '" aria-label="مدة الكويز بالدقائق"></td><td><button class="btn ghost sm" data-item="' + a.id + '" type="button">مين حلّ / افتح</button></td></tr>';
+      return '<tr><td class="en">' + esc(a.title.replace('Quiz – ', '')) + '</td><td>' + st + '</td><td class="num">' + frac(a.submitted, a.of) + '</td><td class="num">' + cell(a.average) + '</td><td class="num"><input type="number" min="0" max="180" inputmode="numeric" style="width:72px;text-align:center" value="' + (a.minutes || 0) + '" data-qmin="' + a.id + '" aria-label="مدة الكويز بالدقائق"></td><td><button class="btn ghost sm" data-item="' + a.id + '" type="button">مين حلّ / اسمح</button></td></tr>';
     }).join('') + '</tbody></table></div><div style="padding:10px 16px"><button class="btn ghost sm" data-xpgo="QZ|' + sel + '" type="button">تصدير علامات كويزات الوحدة (الأدائي)</button></div></div>' +
     '<h2>واجبات الوحدة ' + sel.slice(1) + '</h2><div class="small muted">التسليم الأحد والأربعاء حسب أسابيع الوحدة. الواجب يتاح لحاله قبل يومين، وتقدر تغيّر الموعد.</div>' + hws.map(function (a) { return hwCard(a, true); }).join('') + '</div>';
 }
@@ -2338,9 +2460,9 @@ function itemModal(id, reuse) {
   var keepTop = reuse ? m.scrollTop : 0, keepDoc = window.scrollY;
   m.innerHTML = '<div class="panel stack" role="dialog" aria-modal="true"><div class="row between"><div><span class="chip">' + typeName(a.type) + '</span> <b class="en" style="display:inline">' + esc(a.title.replace('Quiz – ', '')) + '</b></div><button class="btn ghost sm" data-close type="button">إغلاق</button></div>' +
     '<div class="row"><span class="chip ok">حلّ ' + a.submitted + '</span><span class="chip bad">ما حلّ ' + miss.length + '</span>' + (a.average !== null ? '<span class="chip">المعدل ' + a.average + '%</span>' : '') + '</div>' +
-    '<div class="panel stack" style="background:var(--sky);border:0"><b>افتحه من جديد</b><div class="small muted">للطالب اللي ما حلّ: يقدر يحلّه. للطالب اللي حلّ: يقدر يعيده، والعلامة الجديدة تحلّ محل القديمة.</div>' +
+    '<div class="panel stack" style="background:var(--sky);border:0"><b>اسمح به من جديد</b><div class="small muted">للطالب اللي ما حلّ: يقدر يحلّه. للطالب اللي حلّ: يقدر يعيده، والعلامة الجديدة تحلّ محل القديمة.</div>' +
       '<div class="row"><select id="gt" style="width:auto"><option value="MISS">كل اللي ما حلّوا (' + miss.length + ')</option><option value="ALL">الصف كامل</option><option value="PICK">طلاب أختارهم أنا…</option>' + d.students.map(function (s) { return '<option value="' + s.number + '">' + s.number + ' ' + esc(s.name) + '</option>'; }).join('') + '</select>' +
-      '<select id="gh" style="width:auto"><option value="2">لمدة ساعتين</option><option value="24" selected>لمدة يوم</option><option value="48">لمدة يومين</option><option value="168">لمدة أسبوع</option></select><button class="btn teal sm" id="gGo" type="button">افتح</button><span class="small" id="gMsg"></span></div>' +
+      '<select id="gh" style="width:auto"><option value="2">لمدة ساعتين</option><option value="24" selected>لمدة يوم</option><option value="48">لمدة يومين</option><option value="168">لمدة أسبوع</option></select><button class="btn teal sm" id="gGo" type="button">اسمح</button><span class="small" id="gMsg"></span></div>' +
       (a.grants.length ? '<div class="small">مسموح حاليًا: ' + a.grants.map(function (g) { return (g.target === 'ALL' ? 'الصف كامل' : g.target + ' ' + esc(firstTwo((d.students.filter(function (s) { return s.number === g.target; })[0] || {}).name || ''))) + ' حتى ' + esc(g.until); }).join('، ') + ' <button class="btn link sm" id="gRevoke" type="button">أغلق الآن</button></div>' : '') + '</div>' +
     '<div class="two"><div><b>حلّوا (' + a.submitted + ')</b><div class="tbl" style="border:1px solid var(--line);border-radius:10px;margin-top:6px"><table><tbody>' +
       d.students.filter(function (s) { return byNum[s.number]; }).map(function (s) { var r = byNum[s.number]; return '<tr><td class="small">' + s.number + ' ' + esc(firstTwo(s.name)) + '</td><td class="num">' + cell(r.percent, '<bdi>' + r.score + '/' + r.total + '</bdi>') + (r.leaves ? '<div class="tiny" style="color:var(--copper)">طلع ' + r.leaves + ' مرة</div>' : '') + '</td><td><button class="btn ghost sm" data-paper="' + s.number + '|' + a.id + '" type="button">ورقته</button>' + (a.grants.some(function (g) { return g.target === s.number; }) ? ' <span class="chip now">مسموح إعادته</span> <button class="btn link sm" data-icancel="' + s.number + '" type="button">إلغاء السماح</button>' : '') + '</td></tr>'; }).join('') + '</tbody></table></div></div>' +
@@ -2362,7 +2484,7 @@ function itemModal(id, reuse) {
     var t = gt.value, hrs = m.querySelector('#gh').value, msg = m.querySelector('#gMsg');
     var targets = t === 'MISS' ? miss.map(function (s) { return s.number; }) : t === 'PICK' ? [].map.call(gp.querySelectorAll('[data-gp]:checked'), function (c) { return c.dataset.gp; }) : [t];
     if (!targets.length) { msg.textContent = 'ما اخترت ولا طالب.'; return; }
-    msg.textContent = 'جاري الفتح…';
+    msg.textContent = 'جاري السماح…';
     (targets.length > 1 ? call('apiTeacherGrantMany', S.token, a.id, targets, hrs) : call('apiTeacherGrant', S.token, a.id, targets[0], hrs))
       .then(function (r) { msg.textContent = 'تم' + (targets.length > 1 ? ' لـ ' + targets.length + ' طلاب' : '') + '. مسموح حتى ' + r.until; loadTeacher().then(function () { itemModal(id, m); }); })
       .catch(function (e) { msg.textContent = e; });
@@ -2380,13 +2502,13 @@ function bulkGrantWin(preNum) {
     '<div class="small muted">اللي ما حلّ بيقدر يحلّ، واللي حلّ بيعيد بأسئلة جديدة والعلامة الجديدة بتحلّ محل القديمة. كل طالب بيوصله تنبيه واحد.</div>' +
     '<label class="f">الوحدة<select id="bgU">' + units.map(function (u) { return '<option value="' + u[0] + '"' + (u[0] === T.unit ? ' selected' : '') + '>' + u[1] + '</option>'; }).join('') + '</select></label>' +
     '<div id="bgItems" class="stack" style="gap:8px"></div>' +
-    (preNum ? '<label class="f">شو يفتحله<select id="bgM"><option value="PICK">كل اللي علّمتهم</option><option value="MISS">بس اللي ما حلّها منهم</option><option value="BELOW">بس اللي علامته فيها أقل من حد معيّن، واللي ما حلّها</option></select></label>'
+    (preNum ? '<label class="f">شو يتاح له<select id="bgM"><option value="PICK">كل اللي علّمتهم</option><option value="MISS">بس اللي ما حلّها منهم</option><option value="BELOW">بس اللي علامته فيها أقل من حد معيّن، واللي ما حلّها</option></select></label>'
       : '<label class="f">مين<select id="bgM"><option value="MISS">اللي ما حلّوا (كل كويز لحاله)</option><option value="BELOW">اللي علامتهم أقل من حد معيّن، واللي ما حلّوا</option><option value="ALL">الصف كامل</option><option value="PICK">طلاب أختارهم أنا…</option></select></label>') +
     '<label class="f hidden" id="bgBw">أقل من (%)<input type="number" id="bgB" min="1" max="100" value="60" style="max-width:120px"></label>' +
     '<div class="gpick hidden" id="bgP"><div class="row between"><b class="small">اختر الطلاب</b><span class="row"><button class="btn link sm" type="button" data-bpall>الكل</button><button class="btn link sm" type="button" data-bpnone>ولا حدا</button></span></div><div class="gpg">' +
       st.map(function (x) { return '<label class="small"><input type="checkbox" data-bp="' + x.number + '"> ' + x.number + ' ' + esc(firstTwo(x.name)) + '</label>'; }).join('') + '</div></div>' +
     '<label class="f">المدة<select id="bgH"><option value="2">ساعتين</option><option value="24">يوم</option><option value="48" selected>يومين</option><option value="72">3 أيام</option><option value="168">أسبوع</option></select></label>' +
-    '<div class="row"><button class="btn teal" id="bgGo" type="button">افتح</button><span class="small" id="bgMsg"></span></div>');
+    '<div class="row"><button class="btn teal" id="bgGo" type="button">اسمح</button><span class="small" id="bgMsg"></span></div>');
   var q = function (sel) { return w.querySelector(sel); };
   var group = function (title, list, key) {
     if (!list.length) return '';
@@ -2396,7 +2518,7 @@ function bulkGrantWin(preNum) {
   var drawItems = function () {
     var u = q('#bgU').value, pick = function (t) { return d.assessments.filter(function (a) { return a.type === t && (u === 'ALL' || a.unit === u) && a.state !== 'soon'; }); };
     var qz = pick('quiz'), hw = pick('homework');
-    q('#bgItems').innerHTML = (qz.length || hw.length) ? group('الكويزات', qz, 'q') + group('الواجبات', hw, 'h') : '<div class="small muted">ما في كويزات أو واجبات انفتحت بهاي الوحدة لسا.</div>';
+    q('#bgItems').innerHTML = (qz.length || hw.length) ? group('الكويزات', qz, 'q') + group('الواجبات', hw, 'h') : '<div class="small muted">ما في كويزات أو واجبات أُتيحت بهاي الوحدة لسا.</div>';
     each('[data-bgall]', function (b) { b.onclick = function () { each('[data-k="' + b.dataset.bgall + '"]', function (c) { c.checked = true; }, w); }; }, w);
     each('[data-bgnone]', function (b) { b.onclick = function () { each('[data-k="' + b.dataset.bgnone + '"]', function (c) { c.checked = false; }, w); }; }, w);
   };
@@ -2410,10 +2532,10 @@ function bulkGrantWin(preNum) {
     if (!ids.length) { msg.textContent = 'علّم كويز أو واجب واحد على الأقل.'; return; }
     if (!preNum && m !== 'PICK') nums = [];
     if (m === 'PICK' && !nums.length) { msg.textContent = 'ما اخترت ولا طالب.'; return; }
-    var go = q('#bgGo'); go.disabled = true; msg.textContent = 'جاري الفتح…';
+    var go = q('#bgGo'); go.disabled = true; msg.textContent = 'جاري السماح…';
     call('apiTeacherGrantBulk', S.token, ids, m, nums, q('#bgH').value, q('#bgB').value).then(function (r) {
       go.disabled = false;
-      msg.textContent = r.students ? 'تم: انفتح ' + r.items + ' (كويز/واجب)' + (preNum ? '' : m === 'ALL' ? ' للصف كامل' : ' لـ ' + r.students + ' طالب') + '، لحد ' + r.until + '، ووصل تنبيه.' : 'ما في إشي ينطبق عليه الاختيار، فما انفتح إشي.';
+      msg.textContent = r.students ? 'تم: أُتيح ' + r.items + ' (كويز/واجب)' + (preNum ? '' : m === 'ALL' ? ' للصف كامل' : ' لـ ' + r.students + ' طالب') + '، لحد ' + r.until + '، ووصل تنبيه.' : 'ما في إشي ينطبق عليه الاختيار، فما أُتيح إشي.';
       loadTeacher();
     }).catch(function (e) { go.disabled = false; msg.textContent = String(e && e.message || e); });
   };
@@ -2584,7 +2706,7 @@ function wireExport() {
 function tCal() {
   var d = T.data, cal = d.calendar;
   return '<div class="stack"><div class="panel stack"><h2>تقويم الفصل الأول ' + esc(cal.year) + '</h2>' + ribbon(cal, true) +
-    '<div class="small muted">حسب تقويم وزارة التربية: دوام الطلبة من ' + dDay(cal.semStart) + '، وامتحانات نهاية الفصل من ' + dDay(cal.examsFrom) + ' إلى ' + dDay(cal.examsTo) + '. كل وحدة 3 أسابيع. إذا تقدّمت أو تأخرت بالخطة غيّر بداية الوحدة، ودروسها تتحرك معها. وتقدر تفتح أي درس قبل موعده أو تسكّره من الجداول تحت.</div></div>' +
+    '<div class="small muted">حسب تقويم وزارة التربية: دوام الطلبة من ' + dDay(cal.semStart) + '، وامتحانات نهاية الفصل من ' + dDay(cal.examsFrom) + ' إلى ' + dDay(cal.examsTo) + '. كل وحدة 3 أسابيع. إذا تقدّمت أو تأخرت بالخطة غيّر بداية الوحدة، ودروسها تتحرك معها. وتقدر تتيح أي درس قبل موعده أو تسكّره من الجداول تحت.</div></div>' +
     '<div class="panel flush"><div class="ph"><h2>خطة الوحدات</h2></div><div class="tbl"><table><thead><tr><th>الوحدة</th><th>الفترة</th><th>على المنصة</th><th>بداية الوحدة</th></tr></thead><tbody>' +
     cal.units.map(function (u) {
       return '<tr><td style="white-space:nowrap"><b>' + u.no + '</b> <span class="en" style="display:inline">' + esc(u.title) + '</span></td><td class="small" style="white-space:nowrap">' + dDay(u.startTs) + ' – ' + dDay(u.endTs - 2 * 864e5) + '</td><td>' + (u.ready ? '<span class="chip ok">جاهزة</span>' : '<span class="chip lock">قيد الإعداد</span>') + '</td>' +
@@ -2592,11 +2714,11 @@ function tCal() {
     }).join('') + '</tbody></table></div></div>' +
     unitChips(tUnits(), T.unit, 'data-tunit') +
     d.course.filter(function (u) { return u.id === T.unit; }).map(function (u) {
-      return '<div class="panel flush"><div class="ph"><h2>دروس الوحدة ' + u.no + '</h2><span class="small muted">الدرس يتاح للطلاب يوم الأحد من أسبوعه، إلا إذا فتحته أو سكّرته أنت.</span></div><div class="tbl"><table><thead><tr><th>الدرس</th><th>موعده</th><th>الحالة الآن</th><th>تحكّم المعلم</th></tr></thead><tbody>' +
+      return '<div class="panel flush"><div class="ph"><h2>دروس الوحدة ' + u.no + '</h2><span class="small muted">الدرس يتاح للطلاب يوم الأحد من أسبوعه، إلا إذا أتحته أو سكّرته أنت.</span></div><div class="tbl"><table><thead><tr><th>الدرس</th><th>موعده</th><th>الحالة الآن</th><th>تحكّم المعلم</th></tr></thead><tbody>' +
         u.lessons.map(function (l) {
           var stc = l.force === 'closed' ? '<span class="chip bad">مسكّر من المعلم</span>' : l.force === 'open' && Date.now() < l.ts ? '<span class="chip now">متاح قبل موعده</span>' : l.open ? '<span class="chip ok">مسموح</span>' : '<span class="chip lock">مغلق</span>';
           return '<tr><td><span class="en" style="display:inline;font-weight:600">' + esc(l.title) + '</span><div class="tiny muted">' + esc(l.titleAr) + '</div></td><td class="small" style="white-space:nowrap">' + dDay(l.ts) + '<div class="tiny muted">الأسبوع ' + l.week + '</div></td><td>' + stc + '</td>' +
-            '<td><select data-lstate="' + l.id + '" style="width:auto;min-height:38px"><option value=""' + (!l.force ? ' selected' : '') + '>حسب التقويم</option><option value="open"' + (l.force === 'open' ? ' selected' : '') + '>افتحه الآن</option><option value="closed"' + (l.force === 'closed' ? ' selected' : '') + '>سكّره</option></select></td></tr>';
+            '<td><select data-lstate="' + l.id + '" style="width:auto;min-height:38px"><option value=""' + (!l.force ? ' selected' : '') + '>حسب التقويم</option><option value="open"' + (l.force === 'open' ? ' selected' : '') + '>أتِحه الآن</option><option value="closed"' + (l.force === 'closed' ? ' selected' : '') + '>سكّره</option></select></td></tr>';
         }).join('') + '</tbody></table></div></div>';
     }).join('') + '</div>';
 }
@@ -2617,10 +2739,7 @@ function tMore() {
       '<div class="row"><button class="btn" id="pwSave" type="button">غيّر كلمة السر</button><span class="small" id="pwMsg"></span></div></div>' +
     '<div class="panel stack"><h2>نسخة احتياطية</h2><div class="small muted">ملف Excel فيه كل بيانات المنصة: الطلاب، المحاولات، العلامات، الرسائل… احفظه عندك كل فترة، وخصوصًا قبل رصد العلامات النهائية.</div><div class="row"><button class="btn" id="bkNow" type="button">نزّل نسخة احتياطية</button><span class="small" id="bkMsg"></span></div>' +
       '<div class="bkauto"><div><b>نسخة تلقائية كل أسبوع على Google Drive</b><div class="small muted">كل جمعة الساعة 10 بالليل تنحفظ نسخة من ملف البيانات بمجلد «نسخ احتياطية – منصة الأول ثانوي ج» على Drive تبعك، وتضل آخر 8 نسخ.</div><div class="small" id="bkAutoMsg">' + (d.backup && d.backup.auto ? 'شغّال' + (d.backup.lastAuto ? '. آخر نسخة: ' + esc(d.backup.lastAuto) : '') : 'مطفي') + '</div></div><button class="btn ' + (d.backup && d.backup.auto ? 'ghost' : 'teal') + '" id="bkAuto" type="button">' + (d.backup && d.backup.auto ? 'أطفئ النسخ التلقائي' : 'شغّل النسخ التلقائي') + '</button></div></div>' +
-    '<div class="panel stack"><h2>رموز الدخول</h2><div class="alert a-info small">وزّع على كل طالب رقمه ورمزه لحاله برسالة خاصة، ولا تنشر القائمة كاملة بمجموعة الصف.</div><div class="row"><button class="btn ghost sm" id="copyCodes" type="button">نسخ القائمة</button><span class="small" id="copied"></span></div><div class="small muted">أو نزّلها كقصاصات تقصّها وتعطي كل طالب قصاصته:</div>' + xbar('codes', true) +
-    '<details><summary>اعرض الرموز</summary><div class="tbl" style="margin-top:8px"><table><thead><tr><th class="num">رقم</th><th>الاسم</th><th class="num">الرمز</th><th></th></tr></thead><tbody>' +
-    d.students.map(function (s) { return '<tr><td class="num">' + s.number + '</td><td>' + esc(s.name) + '</td><td class="num"><bdi data-code="' + s.number + '">' + esc(s.code) + '</bdi></td><td><div class="cact"><input class="cin" type="text" inputmode="numeric" maxlength="8" placeholder="رمز تختاره" data-cin="' + s.number + '" aria-label="رمز جديد للطالب ' + esc(s.name) + '"><button class="btn sm" data-setcode="' + s.number + '" type="button">حفظ</button><button class="btn ghost sm" data-newcode="' + s.number + '" type="button">عشوائي</button></div></td></tr>'; }).join('') + '</tbody></table></div></details>' +
-    '<div class="tiny muted">للطالب اللي نسي رمزه أو عرفه غيره: اكتب رمز من 4 لـ 8 أرقام واكبس «حفظ»، أو اكبس «عشوائي» والمنصة بتختار. الرمز القديم بيوقف، وإذا كان فاتح المنصة بيطلع منها. والطالب كمان بيقدر يغيّر رمزه بنفسه من «غيّر رمزي».</div></div></div>';
+    '<div class="panel row between"><div><b>رموز دخول الطلاب</b><div class="small muted">صارت بتبويب «الطلاب» ← «الرموز».</div></div><button class="btn ghost sm" type="button" data-ttab="codes">اعرض الرموز</button></div></div>';
 }
 function drawQR() {
   var box = $('qrImg'); if (!box) return;
@@ -2651,7 +2770,7 @@ function codesHtml() {
 function copyCodes() {
   var txt = T.data.students.map(function (s) { return s.number + ' - ' + s.name + ' - الرمز: ' + s.code; }).join('\n');
   var done = function () { $('copied').textContent = 'تم النسخ'; };
-  if (navigator.clipboard) navigator.clipboard.writeText(txt).then(done).catch(function () { $('copied').textContent = 'افتح الجدول وانسخه يدويًا.'; });
+  if (navigator.clipboard) navigator.clipboard.writeText(txt).then(done).catch(function () { $('copied').textContent = 'اعرض الجدول وانسخه يدويًا.'; });
 }
 function saveDue(id) {
   var msg = $('ds_' + id); msg.textContent = 'جاري الحفظ…';
@@ -2673,7 +2792,7 @@ function sendAnn() {
   var t = $('annText').value; busy(true);
   call('apiTeacherAnnounce', S.token, t).then(loadTeacher).catch(fail);
 }
-function studentDetail(num) {
+function studentDetail(num, goTo) {
   busy(true);
   call('apiTeacherStudent', S.token, num).then(function (s) {
     busy(false);
@@ -2682,13 +2801,13 @@ function studentDetail(num) {
     var draw = function () {
       var keepTop = m.scrollTop, keepDoc = window.scrollY;
       m.innerHTML = '<div class="panel stack" role="dialog" aria-modal="true"><div class="row between"><div><h2>' + esc(s.name) + '</h2><div class="small muted">رقم ' + s.number + '، الرمز <bdi>' + esc(s.code) + '</bdi>، المعدل ' + (p.average === null ? '—' : p.average + '%') + '</div></div><div class="row"><button class="btn teal sm" data-parent type="button">رسالة لولي الأمر</button><button class="btn ghost sm" data-ppage type="button">صفحة تقرير لولي الأمر</button><button class="btn ghost sm" data-cert type="button">شهادة تقدير</button>' + xbar('rep1', true) + '<button class="btn ghost sm" data-close type="button">إغلاق</button></div></div><div class="small" id="sdMsg"></div>' +
-        '<div class="sdnav" aria-label="أقسام ملف الطالب"><button type="button" data-sdgo="sdAct">النشاط والوقت</button><button type="button" data-sdgo="sdUnits">الوحدات</button><button type="button" data-sdgo="sdMarks">العلامات الرسمية</button><button type="button" data-sdgo="sdOpen">افتح له</button><button type="button" data-sdgo="sdAtt">المحاولات</button></div>' +
-        actHtml(s) + '<span id="sdUnits"></span>' +
+        '<div class="sdnav" aria-label="أقسام ملف الطالب"><button type="button" data-sdgo="sdProg">إنجازه</button><button type="button" data-sdgo="sdAct">النشاط والوقت</button><button type="button" data-sdgo="sdUnits">الوحدات</button><button type="button" data-sdgo="sdMarks">العلامات الرسمية</button><button type="button" data-sdgo="sdOpen">اسمح له</button><button type="button" data-sdgo="sdAtt">المحاولات</button></div>' +
+        progHtml(s.number) + actHtml(s) + '<span id="sdUnits"></span>' +
         studentUnits(s.number, scope) + '<span id="sdMarks"></span>' +
         officialMarks(T.data.marks.students[s.number], T.data.markScheme, true).replace('علاماتي الرسمية', 'العلامات الرسمية') + '<div><button class="btn ghost sm" data-mdet type="button">تفصيل العلامات الرسمية</button></div>' +
         '<div class="two"><div><b style="color:var(--teal)">نقاط القوة</b><div class="small">' + (p.strong.length ? p.strong.map(function (o) { return esc(o.ar) + ' (' + o.pct + '%)'; }).join('، ') : '—') + '</div></div>' +
         '<div><b style="color:var(--bad)">بحاجة تقوية</b><div class="small">' + (p.weak.length ? p.weak.map(function (o) { return esc(o.ar) + ' (' + o.pct + '%)'; }).join('، ') : '—') + '</div></div></div>' +
-        '<div class="panel stack" id="sdOpen" style="background:var(--sky);border:0"><b>افتح له شيئًا سابقًا</b><div class="row"><select id="sgA" style="width:auto">' + T.data.assessments.map(function (a) { return '<option value="' + a.id + '">' + (a.unit === 'EX' ? '' : a.unit.replace('U', 'الوحدة ') + ' – ') + esc(a.title.replace('Quiz – ', '')) + (s.attempts.some(function (t) { return t.id === a.id; }) ? ' (حلّه)' : '') + '</option>'; }).join('') + '</select><select id="sgH" style="width:auto"><option value="2">ساعتين</option><option value="24" selected>يوم</option><option value="168">أسبوع</option></select><button class="btn teal sm" id="sgGo" type="button">افتح له</button><button class="btn ghost sm" type="button" data-bulkg="' + s.number + '">عدة كويزات وواجبات…</button><span class="small" id="sgMsg"></span></div><div class="tiny muted">إذا كان حلّه من قبل، تجيه أسئلة مختلفة.</div></div>' +
+        '<div class="panel stack" id="sdOpen" style="background:var(--sky);border:0"><b>اسمح له بإشي سابق</b><div class="row"><select id="sgA" style="width:auto">' + T.data.assessments.map(function (a) { return '<option value="' + a.id + '">' + (a.unit === 'EX' ? '' : a.unit.replace('U', 'الوحدة ') + ' – ') + esc(a.title.replace('Quiz – ', '')) + (s.attempts.some(function (t) { return t.id === a.id; }) ? ' (حلّه)' : '') + '</option>'; }).join('') + '</select><select id="sgH" style="width:auto"><option value="2">ساعتين</option><option value="24" selected>يوم</option><option value="168">أسبوع</option></select><button class="btn teal sm" id="sgGo" type="button">اسمح له</button><button class="btn ghost sm" type="button" data-bulkg="' + s.number + '">عدة كويزات وواجبات…</button><span class="small" id="sgMsg"></span></div><div class="tiny muted">إذا كان حلّه من قبل، تجيه أسئلة مختلفة.</div></div>' +
         '<h3 id="sdAtt">المحاولات</h3>' + (s.attempts.length ? s.attempts.map(function (a) {
           var act = a.allowed
             ? '<span class="chip now">مسموح إعادته' + (a.until ? ' لحد ' + esc(a.until) : '') + '</span>' + (a.forAll ? '<span class="tiny muted">مسموح للصف كامل</span>' : '<button class="btn ghost sm" data-cancel="' + a.id + '" type="button">إلغاء السماح</button>')
@@ -2709,7 +2828,7 @@ function studentDetail(num) {
       each('[data-bulkg]', function (b) { b.onclick = function () { bulkGrantWin(s.number); }; }, m);
       each('[data-sdgo]', function (b) { b.onclick = function () { var t = m.querySelector('#' + b.dataset.sdgo); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }; }, m);
       m.querySelector('#sgGo').onclick = function () {
-        var msg = m.querySelector('#sgMsg'); msg.textContent = 'جاري الفتح…';
+        var msg = m.querySelector('#sgMsg'); msg.textContent = 'جاري السماح…';
         call('apiTeacherGrant', S.token, m.querySelector('#sgA').value, s.number, m.querySelector('#sgH').value).then(function (r) { msg.textContent = 'تم. مسموح له حتى ' + r.until + '، ووصله تنبيه.'; loadTeacher(); }).catch(function (e) { msg.textContent = e; });
       };
       each('[data-cancel]', function (b) {
@@ -2729,6 +2848,7 @@ function studentDetail(num) {
     };
     draw();
     winify(m, 'الطالب: ' + s.name);
+    if (goTo) setTimeout(function () { var t = m.querySelector('#' + goTo); if (t) t.scrollIntoView({ block: 'start' }); }, 150);
   }).catch(fail);
 }
 
@@ -2757,7 +2877,7 @@ function ribbon2(cal, light) {
 }
 
 function sem2View() {
-  return '<div class="panel stack" style="text-align:center"><h2>الفصل الثاني</h2><div class="muted">محتوى الفصل الثاني (الوحدات 6–10) لسا ما انضاف للمنصة. يتاح مع بداية الفصل حسب التقويم المدرسي.</div><div><button class="btn ghost" type="button" data-early="الفصل الثاني لسا ما بدأ. يتاح حسب التقويم المدرسي.">افتح الدروس</button></div></div>';
+  return '<div class="panel stack" style="text-align:center"><h2>الفصل الثاني</h2><div class="muted">محتوى الفصل الثاني (الوحدات 6–10) لسا ما انضاف للمنصة. يتاح مع بداية الفصل حسب التقويم المدرسي.</div><div><button class="btn ghost" type="button" data-early="الفصل الثاني لسا ما بدأ. يتاح حسب التقويم المدرسي.">اعرض الدروس</button></div></div>';
 }
 
 /** Official marks (side record). Read-only for the student. */
@@ -2798,7 +2918,7 @@ function examSettings(e) {
     return '<details class="xu"' + (inU && inU < u.lessons.length ? ' open' : '') + '><summary class="row between"><b>الوحدة ' + u.no + ' <span class="tiny muted">(' + inU + ' من ' + u.lessons.length + ')</span></b><label class="small row" style="gap:6px" onclick="event.stopPropagation()"><input type="checkbox" data-xall="' + e.id + '|' + u.id + '"' + (inU === u.lessons.length ? ' checked' : '') + '> كل الوحدة</label></summary><div class="xls">' +
       u.lessons.map(function (l) { return '<label class="small"><input type="checkbox" data-xl="' + e.id + '" data-u="' + u.id + '" value="' + l.id + '"' + (e.lessons.indexOf(l.id) >= 0 ? ' checked' : '') + '> <span class="en" style="display:inline">' + esc(l.title) + '</span></label>'; }).join('') + '</div></details>';
   }).join('');
-  return '<div class="panel stack"><div class="row between"><h2>' + name + '</h2>' + (e.id === 'EX-TRY' ? '<div class="small muted" style="flex-basis:100%">امتحان قصير بدون علامة، عشان الطلاب يجرّبوا ملء الشاشة وقوانين الخروج قبل الميد. افتحه بالحصة أو قبل الميد بيومين، ويقدروا يعيدوه.</div>' : '') + '' + (a ? '<span class="chip' + (a.published && a.state === 'open' ? ' ok">مسموح الآن' : '">مغلق') + '</span>' : '') + '</div>' +
+  return '<div class="panel stack"><div class="row between"><h2>' + name + '</h2>' + (e.id === 'EX-TRY' ? '<div class="small muted" style="flex-basis:100%">امتحان قصير بدون علامة، عشان الطلاب يجرّبوا ملء الشاشة وقوانين الخروج قبل الميد. أتِحه بالحصة أو قبل الميد بيومين، ويقدروا يعيدوه.</div>' : '') + '' + (a ? '<span class="chip' + (a.published && a.state === 'open' ? ' ok">مسموح الآن' : '">مغلق') + '</span>' : '') + '</div>' +
     '<div class="grid" style="display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));align-items:start"><label class="f small">الموعد<input type="datetime-local" id="xd_' + e.id + '" value="' + esc(toInput(e.date)) + '"></label><label class="f small">المدة بالدقائق<input type="number" min="5" max="240" id="xn_' + e.id + '" value="' + e.minutes + '"></label></div>' +
     '<div class="row between xmat"><div><b class="small">مادة الامتحان</b><div class="small">' + d.course.map(function (u) { var n = u.lessons.filter(function (l) { return e.lessons.indexOf(l.id) >= 0; }).length; return n ? 'الوحدة ' + u.no + (n < u.lessons.length ? ' (' + n + ' من ' + u.lessons.length + ')' : ' كاملة') : ''; }).filter(Boolean).join('، ') + '</div></div><button class="btn ghost sm" type="button" data-xpick="' + e.id + '">اختر مادة الامتحان</button></div>' +
     examSkillsHtml(e) +
@@ -2829,7 +2949,7 @@ function tMarks() {
     '<div class="panel stack"><div class="small"><b>الميد (30)</b> و<b>الفاينل (40)</b> يتوزعوا على القراءة والكتابة والمعاني. <b>تقييم الأداء (30)</b> ينحسب لكل وحدة لحالها: القراءة 6 + الكتابة والقواعد 6 + المعاني 6 (من حلّه بالكويزات والواجبات) + دراسة الدروس 4 + الحضور 4 (دخوله الدروس بأسبوعها) + المشاركة داخل الصف 4 (تكتبها أنت). علامة الفصل = معدل الوحدات المقطوعة، وتتحدّث تلقائيًا.</div></div>' +
     midBaseHtml(d) +
     '<div class="panel flush"><div class="ph"><h2>المادة المقطوعة</h2><span class="small muted">الأدائي ينحسب من المقطوع بس</span></div><div class="tbl"><table><thead><tr><th>الوحدة</th><th>شو انقطع منها</th><th class="num">دروس محسوبة</th></tr></thead><tbody>' + cov + '</tbody></table></div>' +
-      '<div class="tiny muted" style="padding:10px 16px">«تلقائي» يعني حسب التقويم: كل درس وصل موعده (أو فتحته أنت) ينحسب.</div></div>' +
+      '<div class="tiny muted" style="padding:10px 16px">«تلقائي» يعني حسب التقويم: كل درس وصل موعده (أو أتحته أنت) ينحسب.</div></div>' +
     '<div class="panel flush"><div class="ph"><h2>المشاركة داخل الصف</h2><button class="btn sm" type="button" data-ttab="class">ارصد مشاركة حصة</button></div><div class="small muted" style="padding:8px 16px 0">مشاركة الوحدة (من ' + sc.CLASS.max + ') تنحسب لحالها من رصد الحصص: شارك 4، جزئيًا 2، ما شارك 0، والغايب ما تنحسب عليه. إذا بدك تعتمد علامة غيرها لطالب، اكتبها بخانة «يدوي».</div><div style="padding:12px 16px">' + unitChips(tUnits(), T.punit, 'data-punit') + '</div>' +
       '<div class="tbl"><table class="gb"><thead><tr><th>الطالب</th><th class="num">من الحصص <bdi>(' + sc.CLASS.max + ')</bdi></th><th class="num">يدوي (اختياري)</th><th class="num">أدائي الوحدة (30)</th></tr></thead><tbody>' + prow + '</tbody></table></div>' +
       '<div class="row" style="padding:12px 16px"><button class="btn" id="pSave" type="button">حفظ المشاركة</button><span class="small" id="pMsg"></span></div></div>' +
@@ -2989,7 +3109,7 @@ function studentUnits(num, scope) {
   }).join('');
   var total = rows.reduce(function (x, r) { return x + r.secs; }, 0);
   return '<div class="row between"><b>إنجازه بكل وحدة</b><div class="seg2"><button type="button" data-sscope="cov" class="' + (scope === 'cov' ? 'on' : '') + '">المقطوع لغاية اليوم</button><button type="button" data-sscope="all" class="' + (scope === 'all' ? 'on' : '') + '">كل المنهاج</button></div></div>' +
-    '<div class="tbl bx"><table class="sut">' + head + body + '</table></div><div class="tiny muted">اضغط على أي وحدة لتنفتح بنافذة: كل درس دخله أو لا، ومتى، وكم وقت قعد عليه، وعلامة الكويز وواجباته. مجموع وقته على الدروس: <b>' + fmtDur(total) + '</b>. الوقت ينحسب بس والصفحة مفتوحة قدامه.</div>';
+    '<div class="tbl bx"><table class="sut">' + head + body + '</table></div><div class="tiny muted">اضغط على أي وحدة لتطلع بنافذة: كل درس دخله أو لا، ومتى، وكم وقت قعد عليه، وعلامة الكويز وواجباته. مجموع وقته على الدروس: <b>' + fmtDur(total) + '</b>. الوقت ينحسب بس والصفحة مفتوحة قدامه.</div>';
 }
 
 function tExams() {
@@ -3523,9 +3643,11 @@ function sendPractice(arr) {
 
 // ---------- 10: hear the English (the phone/computer reads it aloud)
 // Listening: the device's own voice when it has one; otherwise (e.g. a link opened inside WhatsApp or another app) an English voice from the internet.
-var TTS = { ok: true, native: typeof window.speechSynthesis !== 'undefined' && typeof window.SpeechSynthesisUtterance !== 'undefined', audio: null, q: [], warned: false };
+var TTS = { ok: true, native: typeof window.speechSynthesis !== 'undefined' && typeof window.SpeechSynthesisUtterance !== 'undefined', audio: null, q: [], warned: false, gen: 0, rate: 0.75 };
+/** Slow and clear for learners: single words slowest, passages read sentence by sentence with a short pause. */
+function ttsRate(text) { var w = String(text).trim().split(/\s+/).length; return w <= 3 ? 0.62 : (String(text).length > 60 ? 0.7 : 0.75); }
 function speakStop() {
-  TTS.q = [];
+  TTS.q = []; TTS.gen++;
   if (TTS.audio) { try { TTS.audio.pause(); } catch (e) {} TTS.audio = null; }
   if (TTS.native) try { speechSynthesis.cancel(); } catch (e) {}
 }
@@ -3541,32 +3663,41 @@ function chunks(text) {
 function audioNext() {
   var t = TTS.q.shift(); if (!t) { TTS.audio = null; return; }
   var a = new Audio('https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=en-GB&q=' + encodeURIComponent(t));
-  TTS.audio = a; a.onended = audioNext; try { a.playbackRate = 0.85; a.preservesPitch = true; } catch (e) {}
-  a.onerror = function () { TTS.q = []; if (!TTS.warned) { TTS.warned = true; notice('ما قدرنا نشغّل الصوت على هذا الجهاز. تأكد إنك متصل بالإنترنت، أو افتح المنصة بمتصفح Chrome أو Safari بدل ما تفتحها من داخل واتساب أو تطبيق ثاني.', 'الاستماع'); } };
+  TTS.audio = a; a.onended = function () { var g = TTS.gen; setTimeout(function () { if (g === TTS.gen) audioNext(); }, 350); }; try { a.playbackRate = TTS.rate < 0.7 ? 0.7 : 0.8; a.preservesPitch = true; } catch (e) {}
+  a.onerror = function () { TTS.q = []; if (!TTS.warned) { TTS.warned = true; notice('ما قدرنا نشغّل الصوت على هذا الجهاز. تأكد إنك متصل بالإنترنت، أو ادخل على المنصة من متصفح Chrome أو Safari بدل ما تدخلها من داخل واتساب أو تطبيق ثاني.', 'الاستماع'); } };
   var pr = a.play(); if (pr && pr.catch) pr.catch(function () { a.onerror(); });
 }
 var MALE = /\b(daniel|arthur|oliver|george|ryan|thomas|alex|fred|aaron|rishi|guy|david|james|mark|richard|brian|eric|male|man)\b/i;
 var FEMALE = /\b(female|woman|samantha|karen|moira|tessa|serena|kate|susan|zira|hazel|libby|sonia|victoria|fiona|martha|catherine|allison|ava|nicky)\b/i;
+var CLEAR = /natural|neural|enhanced|premium|online|google/i;
+/** The clearest English voice on the device: a high-quality (natural / enhanced) voice first, then British, then a male voice. */
 function pickVoice(vs) {
   var en = vs.filter(function (x) { return /^en/i.test(x.lang); });
-  var gb = function (x) { return /en[-_]GB/i.test(x.lang); };
-  return en.filter(function (x) { return gb(x) && MALE.test(x.name); })[0] || en.filter(function (x) { return MALE.test(x.name); })[0]
-    || en.filter(function (x) { return gb(x) && !FEMALE.test(x.name); })[0] || en.filter(function (x) { return !FEMALE.test(x.name); })[0] || en[0] || null;
+  var score = function (x) { return (CLEAR.test(x.name) ? 6 : 0) + (/en[-_]GB/i.test(x.lang) ? 3 : /en[-_]US/i.test(x.lang) ? 1 : 0) + (MALE.test(x.name) ? 2 : 0) - (/compact|eloquence|novelty|whisper|bad|bells|bubbles|zarvox|trinoids|cellos|organ|albert|jester|superstar/i.test(x.name) ? 10 : 0); };
+  return en.sort(function (a, b) { return score(b) - score(a); })[0] || null;
 }
-function speakAudio(text) { TTS.q = chunks(text); audioNext(); }
+/** One sentence at a time (long sentences cut at commas), so the reader pauses where a teacher would. */
+function sentences(text) { var out = []; (String(text).replace(/\s+/g, ' ').match(/[^.!?]+[.!?]*["'\u201D\u2019)]*\s*/g) || []).forEach(function (x) { x = x.trim(); if (!x) return; if (x.length > 180) out = out.concat(chunks(x)); else out.push(x); }); return out.length ? out : [String(text)]; }
+function speakAudio(text) { TTS.q = sentences(text); audioNext(); }
 function speak(text) {
   speakStop();
   text = String(text || ''); if (!text) return;
+  TTS.rate = ttsRate(text);
   if (!TTS.native) { speakAudio(text); return; }
   try {
-    var vs = speechSynthesis.getVoices(), started = false;
-    var v = pickVoice(vs);
-    var u = new SpeechSynthesisUtterance(text);
-    if (v) u.voice = v; u.lang = v ? v.lang : 'en-GB'; u.rate = 0.8; u.pitch = 0.9;
-    u.onstart = function () { started = true; };
-    speechSynthesis.speak(u);
+    var v = pickVoice(speechSynthesis.getVoices()), started = false, g = TTS.gen;
+    var parts = String(text).trim().split(/\s+/).length <= 3 ? [text] : sentences(text);
+    var next = function (i) {
+      if (g !== TTS.gen || i >= parts.length) return;
+      var u = new SpeechSynthesisUtterance(parts[i]);
+      if (v) u.voice = v; u.lang = v ? v.lang : 'en-GB'; u.rate = TTS.rate; u.pitch = 1;
+      u.onstart = function () { started = true; };
+      u.onend = function () { setTimeout(function () { next(i + 1); }, 350); };
+      speechSynthesis.speak(u);
+    };
+    next(0);
     // some in-app browsers have the feature but no voice: fall back to the internet voice
-    setTimeout(function () { if (!started && !speechSynthesis.speaking) { try { speechSynthesis.cancel(); } catch (e) {} speakAudio(text); } }, 1500);
+    setTimeout(function () { if (g === TTS.gen && !started && !speechSynthesis.speaking) { try { speechSynthesis.cancel(); } catch (e) {} speakAudio(text); } }, 1500);
   } catch (e) { speakAudio(text); }
 }
 function sayBtn(text, label) { return TTS.ok ? '<button type="button" class="say" data-say="' + esc(text) + '" aria-label="' + esc(label || 'استمع') + '" title="' + esc(label || 'استمع') + '">' + ICO.sound + '</button>' : ''; }
@@ -3597,7 +3728,7 @@ function parentWin(num) {
     (weak.length ? '• بحاجة تقوية في: ' + weak.join('، ') + '.\n' : '') +
     'نرجو متابعته في المنصة، وشكرًا لتعاونكم.\nمعلم المادة: أ. مصطفى العواملة';
   var w = winOpen('رسالة لولي أمر ' + s.name, '<div class="small muted">نص جاهز تقدر تعدّل عليه قبل ما تبعته.</div><textarea id="parTx" rows="12">' + esc(txt) + '</textarea>' +
-    '<div class="row"><button class="btn" id="parCopy" type="button">نسخ النص</button><a class="btn teal" id="parWa" target="_blank" rel="noopener" href="#">فتح واتساب</a><span class="small" id="parMsg"></span></div>');
+    '<div class="row"><button class="btn" id="parCopy" type="button">نسخ النص</button><a class="btn teal" id="parWa" target="_blank" rel="noopener" href="#">إرسال بواتساب</a><span class="small" id="parMsg"></span></div>');
   var upd = function () { w.querySelector('#parWa').href = 'https://wa.me/?text=' + encodeURIComponent(w.querySelector('#parTx').value); };
   upd(); w.querySelector('#parTx').oninput = upd;
   w.querySelector('#parCopy').onclick = function () { var t = w.querySelector('#parTx').value; var ok = function () { w.querySelector('#parMsg').textContent = 'تم النسخ.'; }; if (navigator.clipboard) navigator.clipboard.writeText(t).then(ok).catch(function () { w.querySelector('#parTx').select(); }); };
@@ -3609,7 +3740,7 @@ function backupNow(msgEl) {
   call('apiTeacherBackup', S.token).then(function (r) {
     return (window.XLSX ? Promise.resolve() : loadScript(LIB_XLSX)).then(function () {
       var X = window.XLSX, wb = X.utils.book_new(); wb.Workbook = { Views: [{ RTL: true }] };
-      var names = { students: 'الطلاب', assessments: 'الاختبارات', attempts: 'المحاولات', settings: 'الإعدادات', announcements: 'الإعلانات', progress: 'الدروس المدروسة', grants: 'الفتح من جديد', marks: 'العلامات اليدوية', views: 'دخول الدروس', messages: 'الرسائل', notes: 'التنبيهات', qbank: 'تعديلات البنك' };
+      var names = { students: 'الطلاب', assessments: 'الاختبارات', attempts: 'المحاولات', settings: 'الإعدادات', announcements: 'الإعلانات', progress: 'الدروس المدروسة', grants: 'السماح بالإعادة', marks: 'العلامات اليدوية', views: 'دخول الدروس', messages: 'الرسائل', notes: 'التنبيهات', qbank: 'تعديلات البنك' };
       Object.keys(r.sheets).forEach(function (k) { X.utils.book_append_sheet(wb, X.utils.aoa_to_sheet(r.sheets[k].length ? r.sheets[k] : [['']]), (names[k] || k).slice(0, 31)); });
       return saveFile('نسخة احتياطية منصة الأول ثانوي ج ' + r.at.replace(/[\/: ]/g, '-') + '.xlsx', new Blob([X.write(wb, { type: 'array', bookType: 'xlsx' })]));
     }).then(function () { msgEl.textContent = 'تم. احفظ الملف بمكان آمن.'; });
@@ -3635,7 +3766,7 @@ function beep() {
 function exitToast(e) {
   var box = $('toasts'); if (!box) { box = document.createElement('div'); box.id = 'toasts'; box.className = 'toasts'; box.setAttribute('dir', 'rtl'); box.setAttribute('aria-live', 'assertive'); document.body.appendChild(box); }
   var t = document.createElement('button'); t.type = 'button'; t.className = 'toast' + (e.locked ? ' bad' : '');
-  t.innerHTML = '<b>' + esc(firstTwo(e.name)) + (e.locked ? ' انقفل امتحانه' : ' طلع من صفحة الامتحان') + '</b><span>' + (e.locked ? 'طلع ' + e.count + ' مرات. افتح التنبيهات لتسمحله يكمل.' : 'المرة ' + e.count + '، ' + esc(e.title)) + '</span>';
+  t.innerHTML = '<b>' + esc(firstTwo(e.name)) + (e.locked ? ' انقفل امتحانه' : ' طلع من صفحة الامتحان') + '</b><span>' + (e.locked ? 'طلع ' + e.count + ' مرات. روح للتنبيهات لتسمحله يكمل.' : 'المرة ' + e.count + '، ' + esc(e.title)) + '</span>';
   t.onclick = function () { GW.open = true; drawGuard(); t.remove(); };
   box.appendChild(t); setTimeout(function () { t.remove(); }, e.locked ? 20000 : 8000);
 }
@@ -3684,20 +3815,20 @@ function applyDark() {
   b.innerHTML = on ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'
     : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
 }
-var GUIDE_HOME = '<h3>حط المنصة كأيقونة على جوالك</h3><div class="steps2"><div><b>آيفون</b><ol><li>افتح رابط المنصة بـ <b>Safari</b>.</li><li>اضغط زر المشاركة (المربع اللي طالع منه سهم) تحت.</li><li>اختر «إضافة إلى الشاشة الرئيسية» ثم «إضافة».</li></ol></div><div><b>أندرويد</b><ol><li>افتح رابط المنصة بـ <b>Chrome</b>.</li><li>اضغط النقاط الثلاث ⋮ فوق.</li><li>اختر «إضافة إلى الشاشة الرئيسية» أو «تثبيت التطبيق».</li></ol></div></div>';
+var GUIDE_HOME = '<h3>حط المنصة كأيقونة على جوالك</h3><div class="steps2"><div><b>آيفون</b><ol><li>ادخل على رابط المنصة من <b>Safari</b>.</li><li>اضغط زر المشاركة (المربع اللي طالع منه سهم) تحت.</li><li>اختر «إضافة إلى الشاشة الرئيسية» ثم «إضافة».</li></ol></div><div><b>أندرويد</b><ol><li>ادخل على رابط المنصة من <b>Chrome</b>.</li><li>اضغط النقاط الثلاث ⋮ فوق.</li><li>اختر «إضافة إلى الشاشة الرئيسية» أو «تثبيت التطبيق».</li></ol></div></div>';
 var GUIDE_STUDENT = '<div class="guide stack">' +
   '<div><h3>الدخول</h3><p>ادخل برقمك (مثل 07) ورمزك السري اللي أعطاك إياه الأستاذ. رمزك إلك لحالك، لا تعطيه لحدا. إذا نسيته اطلب من الأستاذ رمز جديد.</p></div>' +
   '<div><h3>الدروس</h3><p>من «الدروس» اختار الوحدة، وادرس الدرس للآخر. لما تضغط «خلصت الدراسة» يتاح لك الكويز، وتشوف علامتك والحل أول ما تسلّم. زر «استمع» يقرأ لك النص بالإنجليزي، و«كمّل من محل ما وقفت» يرجعك لآخر درس.</p></div>' +
   '<div><h3>الواجبات</h3><p>كل واجب إله موعد تسليم. قبل الموعد بيوم يطلعلك تذكير فوق.</p></div>' +
-  '<div><h3>الامتحانات</h3><p>الامتحان يظهر على كامل الشاشة. لا تطلع منه ولا تفتح أي إشي ثاني: كل طلعة توصل للأستاذ، وبعد 3 طلعات يتقفل امتحانك لحد ما يسمحلك تكمل. جرّب «الامتحان التجريبي» لما يتيحه الأستاذ عشان تتعوّد.</p></div>' +
+  '<div><h3>الامتحانات</h3><p>الامتحان يظهر على كامل الشاشة. لا تطلع منه ولا تشغّل أي إشي ثاني: كل طلعة توصل للأستاذ، وبعد 3 طلعات يتقفل امتحانك لحد ما يسمحلك تكمل. جرّب «الامتحان التجريبي» لما يتيحه الأستاذ عشان تتعوّد.</p></div>' +
   '<div><h3>علاماتي والتدريب</h3><p>«علاماتي» فيها علاماتك الرسمية ونتائجك. «تدرّب على أخطائي» يعطيك أسئلة جديدة على اللي غلطت فيه، وما تنحسب علامة. «كلماتي» بطاقات لمفردات كل وحدة.</p></div>' +
   '<div><h3>الأستاذ</h3><p>من تبويب «الأستاذ» تشوف إعلاناته، وتقدر تبعتله رسالة خاصة.</p></div>' +
   GUIDE_HOME + '<div><h3>إذا صار في مشكلة</h3><p>حدّث الصفحة. إذا ضلّت، ابعت للأستاذ رسالة من المنصة أو احكيله بالحصة.</p></div></div>';
 function helpWin() {
   if (VIEW === 'teacher') {
     var w = winOpen('طريقة الاستخدام', '<div class="guide stack">' +
-      '<div><h3>وين ألاقي كل إشي</h3><ul><li><b>الرئيسية:</b> مين بحاجة متابعة، الامتحانات، الواجب الحالي، وتذكير جاهز للصف.</li><li><b>الطلاب:</b> اضغط اسم أي طالب لملفه: علاماته، أوراقه، تقرير Word/PDF، رسالة لولي أمره، وفتح أي إشي إله من جديد. أو اكتب اسمه بمربع البحث فوق القائمة.</li><li><b>جدول النتائج:</b> كل العلامات، واضغط أي علامة لتشوف ورقة الطالب.</li><li><b>الكويزات والواجبات:</b> اضغط أي واحد لتفتحه لطلاب معيّنين، أو لتحليل أسئلته.</li><li><b>الامتحانات:</b> الموعد والمادة، فتح وإغلاق، المتابعة المباشرة، والامتحان التجريبي.</li><li><b>الرموز والباركود:</b> كلمة السر، رموز الطلاب، النسخ الاحتياطي، والألوان.</li></ul></div>' +
-      '<div><h3>يوم الامتحان</h3><ol><li>من «الامتحانات» اضغط «افتح الامتحان الآن».</li><li>اضغط «متابعة مباشرة» لتشوف مين بلّش ومين سلّم.</li><li>إذا طالب طلع 3 مرات يتقفل، وتطلعلك «تنبيهات الامتحان» تحت، ومنها تسمحله يكمل.</li></ol></div>' +
+      '<div><h3>وين ألاقي كل إشي</h3><ul><li><b>الرئيسية:</b> مين بحاجة متابعة، الامتحانات، الواجب الحالي، وتذكير جاهز للصف.</li><li><b>الطلاب:</b> اضغط اسم أي طالب لملفه: علاماته، أوراقه، تقرير Word/PDF، رسالة لولي أمره، والسماح له بإعادة أي إشي. أو اكتب اسمه بمربع البحث فوق القائمة.</li><li><b>جدول النتائج:</b> كل العلامات، واضغط أي علامة لتشوف ورقة الطالب.</li><li><b>الكويزات والواجبات:</b> اضغط أي واحد لتسمح فيه لطلاب معيّنين، أو لتحليل أسئلته.</li><li><b>الامتحانات:</b> الموعد والمادة، الإتاحة والإغلاق، المتابعة المباشرة، والامتحان التجريبي.</li><li><b>الرموز والباركود:</b> كلمة السر، رموز الطلاب، النسخ الاحتياطي، والألوان.</li></ul></div>' +
+      '<div><h3>يوم الامتحان</h3><ol><li>من «الامتحانات» اضغط «أتِح الامتحان الآن».</li><li>اضغط «متابعة مباشرة» لتشوف مين بلّش ومين سلّم.</li><li>إذا طالب طلع 3 مرات يتقفل، وتطلعلك «تنبيهات الامتحان» تحت، ومنها تسمحله يكمل.</li></ol></div>' +
       '<div class="stack"><b>دليل الطالب (للطباعة أو لمجموعة الصف)</b>' + xbar('guide') + '</div></div>');
     XB.guide = { name: function () { return 'دليل الطالب - منصة الإنجليزي الأول ثانوي ج'; }, html: function () { return ('<div dir="rtl" style="font-family:Cairo,Arial,sans-serif;font-size:11pt;line-height:1.7"><h2 style="text-align:center">دليل الطالب – منصة الإنجليزي (الأول ثانوي ج)</h2>' + GUIDE_STUDENT + '</div>'); } };
   } else winOpen('طريقة الاستخدام', GUIDE_STUDENT);
@@ -3749,7 +3880,7 @@ function planWin(id) {
   for (var k = 0; k < studyDays; k++) plan.push(all.slice(k * per, (k + 1) * per));
   var row = function (l) {
     var st = d.studied[l.id], ok = l.open;
-    return '<div class="pl' + (st ? ' done' : '') + '"><span class="ck">' + (st ? '✓' : '') + '</span><span style="flex:1;min-width:0"><span class="en" style="display:inline">' + esc(l.title) + '</span> <span class="tiny muted">الوحدة ' + l.unit.slice(1) + '</span></span>' + (ok ? '<button class="btn ghost sm" type="button" data-plesson="' + l.id + '">' + (st ? 'راجع' : 'ادرس') + '</button>' : '<span class="chip lock">ما فتح</span>') + '</div>';
+    return '<div class="pl' + (st ? ' done' : '') + '"><span class="ck">' + (st ? '✓' : '') + '</span><span style="flex:1;min-width:0"><span class="en" style="display:inline">' + esc(l.title) + '</span> <span class="tiny muted">الوحدة ' + l.unit.slice(1) + '</span></span>' + (ok ? '<button class="btn ghost sm" type="button" data-plesson="' + l.id + '">' + (st ? 'راجع' : 'ادرس') + '</button>' : '<span class="chip lock">ما أُتيح</span>') + '</div>';
   };
   var html = '<div class="small muted">مقسّمة على الأيام اللي ضايلة لـ ' + esc(exName(e.id, true)) + ' (' + dFull(e.ts) + '). كل يوم شوية دروس، وآخر يوم مراجعة عامة وتدريب.</div><div class="plan">' +
     plan.map(function (ls, k) {
@@ -3803,7 +3934,7 @@ function wordsWin(unit) {
             '<div>' + sayBtn(x.w + (x.ex && W.flip ? '. ' + x.ex : ''), 'استمع') + '</div>' + (K[key(x)] ? '<span class="chip ok">حفظتها</span>' : '') + '</div>' +
           '<div class="small muted" style="text-align:center">البطاقة ' + (W.i + 1) + ' من ' + list.length + '</div>' +
           '<div class="row" style="justify-content:center"><button class="btn ghost sm" id="wdPrev" type="button"' + (W.i ? '' : ' disabled') + '>السابقة</button><button class="btn teal sm" id="wdKnow" type="button">بعرفها</button><button class="btn copper sm" id="wdNot" type="button">لسا</button><button class="btn ghost sm" id="wdNext" type="button"' + (W.i < list.length - 1 ? '' : ' disabled') + '>التالية</button></div>'
-          : '<div class="alert a-good">' + (W.all.length ? 'حفظت كل كلمات هاي الوحدة. أحسنت' : 'لسا ما فتح درس المفردات لهاي الوحدة.') + '</div>');
+          : '<div class="alert a-good">' + (W.all.length ? 'حفظت كل كلمات هاي الوحدة. أحسنت' : 'لسا ما أُتيح درس المفردات لهاي الوحدة.') + '</div>');
       each('[data-wunit]', function (b) { b.onclick = function () { busy(true); call('apiWords', S.token, b.dataset.wunit).then(function (r2) { busy(false); W.all = r2.words; W.unit = b.dataset.wunit; W.i = 0; W.flip = false; draw(); }).catch(fail); }; }, box);
       box.querySelector('#wdOnly').onchange = function () { W.only = this.checked; W.i = 0; W.flip = false; draw(); };
       wireSay(box);
@@ -3867,7 +3998,7 @@ function remindWin() {
   };
   var w = winOpen('تذكير للصف', '<div class="small muted">اختار شو بدك يكون بالتذكير. النص ما فيه أسماء ولا رموز، فتقدر تنشره بمجموعة الصف.</div><div class="stack" style="gap:6px">' +
     items.map(function (x, k) { return '<label class="small row" style="gap:8px;align-items:flex-start"><input type="checkbox" data-ri="' + k + '"' + (x.on ? ' checked' : '') + '> <span>' + esc(x.t) + '</span></label>'; }).join('') + '</div>' +
-    '<textarea id="rmTx" rows="8"></textarea><div class="row"><button class="btn" id="rmCopy" type="button">نسخ النص</button><a class="btn teal" id="rmWa" target="_blank" rel="noopener" href="#">فتح واتساب</a><span class="small" id="rmMsg"></span></div>');
+    '<textarea id="rmTx" rows="8"></textarea><div class="row"><button class="btn" id="rmCopy" type="button">نسخ النص</button><a class="btn teal" id="rmWa" target="_blank" rel="noopener" href="#">إرسال بواتساب</a><span class="small" id="rmMsg"></span></div>');
   var tx = w.querySelector('#rmTx'), upd = function () { w.querySelector('#rmWa').href = 'https://wa.me/?text=' + encodeURIComponent(tx.value); };
   var fill = function () { tx.value = make(w); upd(); };
   each('[data-ri]', function (c) { c.onchange = fill; }, w); tx.oninput = upd; fill();
@@ -3902,11 +4033,11 @@ function liveWin(id) {
     call('apiTeacherLive', S.token, id).then(function (r) {
       var c = { none: 0, doing: 0, locked: 0, done: 0 }; r.students.forEach(function (x) { c[x.status]++; });
       var list = r.students.slice().sort(function (x, y) { return ord[x.status] - ord[y.status] || (x.number < y.number ? -1 : 1); });
-      box.innerHTML = '<div class="row between"><div class="row">' + Object.keys(ST).map(function (k) { return '<span class="chip ' + ST[k][0] + '">' + ST[k][1] + ' ' + c[k] + '</span>'; }).join('') + '</div><span class="tiny muted">' + (r.state === 'open' ? 'متاح، يغلق ' + dTime(r.closeAt) : r.state === 'closed' ? 'مغلق' : 'لسا ما فتح') + '. تتحدّث كل 15 ثانية.</span></div>' +
+      box.innerHTML = '<div class="row between"><div class="row">' + Object.keys(ST).map(function (k) { return '<span class="chip ' + ST[k][0] + '">' + ST[k][1] + ' ' + c[k] + '</span>'; }).join('') + '</div><span class="tiny muted">' + (r.state === 'open' ? 'متاح، يغلق ' + dTime(r.closeAt) : r.state === 'closed' ? 'مغلق' : 'لسا ما أُتيح') + '. تتحدّث كل 15 ثانية.</span></div>' +
         '<div class="tbl"><table><thead><tr><th>الطالب</th><th>الحالة</th><th class="num">جاوب</th><th class="num">طلعات</th><th>الوقت / العلامة</th><th></th></tr></thead><tbody>' +
         list.map(function (x) {
           var t = x.status === 'done' ? cell(x.percent, '<bdi>' + x.score + '/' + x.total + '</bdi>') : (x.status === 'doing' || x.status === 'locked') ? '<bdi>' + Math.max(0, Math.round((x.endsAt - r.now) / 60000)) + ' دقيقة</bdi>' : '—';
-          return '<tr><td>' + x.number + ' ' + esc(firstTwo(x.name)) + '</td><td><span class="chip ' + ST[x.status][0] + '">' + ST[x.status][1] + '</span></td><td class="num">' + (x.total && x.status !== 'done' ? frac(x.answered, x.total) : '—') + '</td><td class="num">' + (x.leaves || '—') + '</td><td>' + t + '</td><td>' +
+          return '<tr><td>' + x.number + ' ' + esc(firstTwo(x.name)) + '</td><td><span class="chip ' + ST[x.status][0] + '">' + ST[x.status][1] + '</span></td><td class="num">' + (x.status === 'done' && x.qn ? frac(x.answered, x.qn) : x.total && x.status !== 'done' ? frac(x.answered, x.total) : '—') + '</td><td class="num">' + (x.status === 'none' ? '—' : (x.leaves || 0)) + '</td><td>' + t + '</td><td>' +
             (x.status === 'locked' ? '<button class="btn teal sm" type="button" data-lvun="' + x.attemptId + '">اسمحله يكمل</button>' : '') + '</td></tr>';
         }).join('') + '</tbody></table></div>';
       cardTables(box);
@@ -3964,7 +4095,7 @@ function installed() {
 function installBar() {
   if (installed() || lget('instHide_' + VIEW) === '1') return '';
   var who = VIEW === 'teacher' ? 'صفحة المعلم' : 'المنصة';
-  return '<div class="instbar"><span class="ti">' + ti('phone') + '</span><div style="flex:1;min-width:0"><b>ثبّت ' + who + ' على جوالك</b><div class="small muted">أيقونة على شاشة الجوال، وتفتح بكبسة وحدة زي التطبيق.</div></div><button class="btn sm" type="button" data-install>كيف؟</button><button class="btn link sm" type="button" data-insthide aria-label="إخفاء">إخفاء</button></div>';
+  return '<div class="instbar"><span class="ti">' + ti('phone') + '</span><div style="flex:1;min-width:0"><b>ثبّت ' + who + ' على جوالك</b><div class="small muted">أيقونة على شاشة الجوال، وتشتغل بكبسة وحدة زي التطبيق.</div></div><button class="btn sm" type="button" data-install>كيف؟</button><button class="btn link sm" type="button" data-insthide aria-label="إخفاء">إخفاء</button></div>';
 }
 function wireInstall(root) {
   each('[data-install]', function (b) { b.onclick = installWin; }, root);
@@ -3973,20 +4104,20 @@ function wireInstall(root) {
 function installWin() {
   var D0 = (VIEW === 'teacher' ? T.data : S.data) || window.LINKS, L = !WEB && D0 && D0.launchUrl, k = devKind(), url = siteUrl(VIEW === 'teacher');
   var bip = window.__bip ? '<div class="alert a-good stack"><b>جهازك بيقدر يثبّت الموقع بكبسة وحدة.</b><div><button class="btn" type="button" id="instNow">ثبّت الآن</button></div></div>' : '';
-  var lnk = bip + (L ? '<div class="alert a-info"><b>عشان تطلع أيقونة المنصة (النجمة)</b>: افتح هالرابط بـ Safari أو Chrome، واحفظه هو على الشاشة الرئيسية:<div class="en" style="direction:ltr;text-align:left;margin-top:4px;word-break:break-all"><a href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(url) + '</a></div></div>' : '');
-  var IOS = '<div class="ist"><b>آيفون أو آيباد</b><ol><li>افتح الرابط بـ <b>Safari</b> (مش من جوّا واتساب).</li><li>اكبس زر المشاركة <span class="kbd">⬆︎</span> تحت الشاشة.</li><li>انزل واختار <b>«إضافة إلى الشاشة الرئيسية»</b>.</li><li>اكبس <b>«إضافة»</b> فوق. صارت الأيقونة على شاشتك.</li></ol></div>';
-  var AND = '<div class="ist"><b>أندرويد</b><ol><li>افتح الرابط بـ <b>Chrome</b> (مش من جوّا واتساب).</li><li>اكبس النقاط الثلاث <span class="kbd">⋮</span> فوق.</li><li>اختار <b>«إضافة إلى الشاشة الرئيسية»</b> أو <b>«تثبيت التطبيق»</b>.</li><li>اكبس <b>«إضافة»</b>. صارت الأيقونة على شاشتك.</li></ol></div>';
+  var lnk = bip + (L ? '<div class="alert a-info"><b>عشان تطلع أيقونة المنصة (النجمة)</b>: ادخل على هالرابط من Safari أو Chrome، واحفظه هو على الشاشة الرئيسية:<div class="en" style="direction:ltr;text-align:left;margin-top:4px;word-break:break-all"><a href="' + esc(url) + '" target="_blank" rel="noopener">' + esc(url) + '</a></div></div>' : '');
+  var IOS = '<div class="ist"><b>آيفون أو آيباد</b><ol><li>ادخل على الرابط من <b>Safari</b> (مش من جوّا واتساب).</li><li>اكبس زر المشاركة <span class="kbd">⬆︎</span> تحت الشاشة.</li><li>انزل واختار <b>«إضافة إلى الشاشة الرئيسية»</b>.</li><li>اكبس <b>«إضافة»</b> فوق. صارت الأيقونة على شاشتك.</li></ol></div>';
+  var AND = '<div class="ist"><b>أندرويد</b><ol><li>ادخل على الرابط من <b>Chrome</b> (مش من جوّا واتساب).</li><li>اكبس النقاط الثلاث <span class="kbd">⋮</span> فوق.</li><li>اختار <b>«إضافة إلى الشاشة الرئيسية»</b> أو <b>«تثبيت التطبيق»</b>.</li><li>اكبس <b>«إضافة»</b>. صارت الأيقونة على شاشتك.</li></ol></div>';
   var DSK = '<div class="ist"><b>كمبيوتر (Chrome أو Edge)</b><ol><li>اكبس النقاط الثلاث <span class="kbd">⋮</span> فوق.</li><li>اختار <b>«الحفظ والمشاركة»</b> ثم <b>«إنشاء اختصار»</b> (أو «تثبيت الصفحة كتطبيق»).</li><li>علّم على «فتح كنافذة» واكبس «إنشاء».</li></ol></div>';
-  var inapp = k === 'inapp' ? '<div class="alert a-weak">إنت فاتح الرابط من جوّا تطبيق (زي واتساب). انسخ الرابط وافتحه بـ Chrome أو Safari، وبعدها اتبع الخطوات.' + (url ? '<div class="row" style="margin-top:8px"><button class="btn sm" type="button" id="instCopy">انسخ الرابط</button><span class="small" id="instMsg"></span></div>' : '') + '</div>' : '';
+  var inapp = k === 'inapp' ? '<div class="alert a-weak">إنت فاتح الرابط من جوّا تطبيق (زي واتساب). انسخ الرابط وادخل عليه من Chrome أو Safari، وبعدها اتبع الخطوات.' + (url ? '<div class="row" style="margin-top:8px"><button class="btn sm" type="button" id="instCopy">انسخ الرابط</button><span class="small" id="instMsg"></span></div>' : '') + '</div>' : '';
   var first = k === 'ios' ? IOS : k === 'android' ? AND : k === 'desktop' ? DSK : (/Android/.test(navigator.userAgent) ? AND + IOS : IOS + AND);
   var others = (k === 'ios' ? [AND, DSK] : k === 'android' ? [IOS, DSK] : k === 'desktop' ? [IOS, AND] : [DSK]).join('');
   var w = winOpen('ثبّت ' + (VIEW === 'teacher' ? 'صفحة المعلم' : 'المنصة') + ' على جهازك', lnk + inapp + first + '<details><summary class="small">أجهزة ثانية</summary><div class="stack" style="margin-top:8px">' + others + '</div></details>' +
-    '<div class="small muted">هاي أيقونة للموقع على الشاشة، مش تطبيق من المتجر: تفتح بكبسة وحدة وتحتاج إنترنت. بعد ما تثبّتها، زر التثبيت يختفي لما تفتح الموقع من الأيقونة.</div>' +
+    '<div class="small muted">هاي أيقونة للموقع على الشاشة، مش تطبيق من المتجر: تشتغل بكبسة وحدة وتحتاج إنترنت. بعد ما تثبّتها، زر التثبيت يختفي لما تدخل الموقع من الأيقونة.</div>' +
     (VIEW === 'teacher' ? '<div class="small">للطلاب: نفس الخطوات موجودة على رئيسيتهم، وبدليل الطالب اللي تطبعه من زر <b>؟</b> فوق.</div>' : ''));
   var bn = w.querySelector('#instNow');
   if (bn) bn.onclick = function () { var ev = window.__bip; if (!ev) return; ev.prompt(); (ev.userChoice || Promise.resolve({})).then(function (r) { window.__bip = null; if (r && r.outcome === 'accepted') { winBack(); notice('تمام، صار الموقع على شاشتك.'); } }); };
   var c = w.querySelector('#instCopy');
-  if (c) c.onclick = function () { var done = function () { w.querySelector('#instMsg').textContent = 'تم النسخ. افتح Chrome أو Safari والصقه.'; }; if (navigator.clipboard) navigator.clipboard.writeText(url).then(done).catch(function () { prompt('انسخ الرابط:', url); }); else prompt('انسخ الرابط:', url); };
+  if (c) c.onclick = function () { var done = function () { w.querySelector('#instMsg').textContent = 'تم النسخ. شغّل Chrome أو Safari والصقه.'; }; if (navigator.clipboard) navigator.clipboard.writeText(url).then(done).catch(function () { prompt('انسخ الرابط:', url); }); else prompt('انسخ الرابط:', url); };
 }
 
 
@@ -4018,7 +4149,7 @@ function clsDraw() {
     }).join('') + '</div></div>' +
     '<div class="psave"><button class="btn" type="button" id="clsSave">احفظ الحصة</button><span class="small" id="clsMsg">' + esc(T.clsNote || '') + '</span></div>' +
     '<div class="panel flush"><div class="ph"><h3>الحصص اللي رصدتها</h3><span class="small muted">' + hisas(C.sessions.length) + '</span></div>' + (C.sessions.length ? '<div class="tbl"><table><thead><tr><th>التاريخ</th><th>الوحدة</th><th class="num">شارك</th><th class="num">جزئيًا</th><th class="num">ما شارك</th><th class="num">غايب</th><th></th></tr></thead><tbody>' +
-      C.sessions.map(function (x) { return '<tr' + (x.date === C.date ? ' class="cur"' : '') + '><td>' + dDay(ymdTs(x.date)) + '</td><td>الوحدة ' + x.unit.slice(1) + '</td><td class="num">' + x.P + '</td><td class="num">' + x.H + '</td><td class="num">' + x.N + '</td><td class="num">' + x.A + '</td><td><button class="btn ghost sm" type="button" data-clsopen="' + x.date + '">افتح</button></td></tr>'; }).join('') + '</tbody></table></div>' : '<div class="muted small" style="padding:12px 16px">لسا ما رصدت ولا حصة.</div>') + '</div>';
+      C.sessions.map(function (x) { return '<tr' + (x.date === C.date ? ' class="cur"' : '') + '><td>' + dDay(ymdTs(x.date)) + '</td><td>الوحدة ' + x.unit.slice(1) + '</td><td class="num">' + x.P + '</td><td class="num">' + x.H + '</td><td class="num">' + x.N + '</td><td class="num">' + x.A + '</td><td><button class="btn ghost sm" type="button" data-clsopen="' + x.date + '">اعرض</button></td></tr>'; }).join('') + '</tbody></table></div>' : '<div class="muted small" style="padding:12px 16px">لسا ما رصدت ولا حصة.</div>') + '</div>';
   cardTables(box);
   T.clsNote = '';
   each('[data-pv]', function (b) { b.onclick = function () { var k = b.dataset.pv.split('|'); if (C.vals[k[0]] === k[1]) delete C.vals[k[0]]; else C.vals[k[0]] = k[1]; var y = window.scrollY; clsDraw(); window.scrollTo(0, y); }; }, box);
@@ -4198,7 +4329,7 @@ function boardWin() {
   var studs = T.data.students.slice(), rows = diamondRows(studs.length), k = 0;
   var cells = rows.map(function (n) { var r = '<div class="rw">'; for (var i = 0; i < n; i++) { var s = studs[k++]; r += '<button type="button" class="c" data-bstu="' + s.number + '" title="' + esc(s.name) + '">' + xst(boardColor(s.average)) + '<span>' + esc(s.name.split(' ')[0]) + '</span><em>' + (s.average === null ? '—' : s.average + '%') + '</em></button>'; } return r + '</div>'; }).join('');
   var lg = [['#0F5A3A', '70 فما فوق'], ['#B7862C', '50–69'], ['#C8102E', 'تحت 50 · بحاجة تقوية'], ['#D6C7B0', 'ما بدأ بعد']].map(function (x) { return '<span><i>' + xst(x[0], 16) + '</i>' + x[1] + '</span>'; }).join('');
-  var w = winOpen('لوحة تطريز الصف', '<div class="small muted">كل غرزة طالب، ولونها حسب معدّله. اضغط على أي غرزة تفتحلك ملف الطالب.</div>' +
+  var w = winOpen('لوحة تطريز الصف', '<div class="small muted">كل غرزة طالب، ولونها حسب معدّله. اضغط على أي غرزة بيطلعلك ملف الطالب.</div>' +
     '<div class="row"><button class="btn sm" id="bShow" type="button">اعرضها على شاشة الصف (بدون أسماء)</button><button class="btn ghost sm" id="bNames" type="button">إخفاء الأسماء</button></div>' +
     '<div class="board" id="bBoard">' + cells + '</div><div class="blg">' + lg + '</div>');
   var bd = w.querySelector('#bBoard'), bn = w.querySelector('#bNames');
@@ -4608,7 +4739,7 @@ function watermark(name, num) {
   call('apiLinks').then(function (l) { window.LINKS = l; }).catch(function () {});
   var tk = store('tk_' + VIEW);
   var r0 = routeNow();
-  var kicked = function (m) { if (/جهاز ثاني/.test(m || '')) { var e0 = $('err'); if (e0) e0.textContent = 'طلعت من هون لأنه حسابك انفتح من جهاز ثاني. إذا هاد جهازك، ادخل مرة ثانية.'; } };
+  var kicked = function (m) { if (/جهاز ثاني/.test(m || '')) { var e0 = $('err'); if (e0) e0.textContent = 'طلعت من هون لأنه تم الدخول على حسابك من جهاز ثاني. إذا هاد جهازك، ادخل مرة ثانية.'; } };
   if (VIEW === 'teacher') { if (r0) T.tab = r0; if (tk) { S.token = tk; loadTeacher(); } else rmResume(loadTeacher, function () { teacherLogin(); }); }
   else { if (r0) S.tab = r0; if (tk) { S.token = tk; loadHome(); } else rmResume(function () { loadHome(); }, function (m) { studentLogin(); kicked(m); }); }
 })();
