@@ -554,6 +554,10 @@ html.exammode body{min-height:100vh;min-height:100dvh}
 .glist{display:flex;flex-direction:column;gap:4px;font-size:.9rem;border-top:1px solid var(--line,#ddd);padding-top:8px}
 .sayk:hover{background:var(--copper);color:#fff}
 .duebar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--copper-l);border-inline-start:6px solid var(--copper);border-radius:12px;padding:12px 16px}
+.livegrid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}.lvc{border:1px solid var(--line);border-radius:14px;padding:12px 14px;background:var(--card);display:flex;flex-direction:column;gap:4px}
+.lvc .nm{font-weight:700;background:none;border:0;padding:0;color:inherit;font:inherit;text-align:start;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;background:#9aa3ad;margin-inline-end:6px;vertical-align:middle}.dot.on{background:#2f9e5b;box-shadow:0 0 0 3px rgba(47,158,91,.2)}
+.lvt{font-variant-numeric:tabular-nums;font-weight:700}.sdnav{display:flex;gap:6px;flex-wrap:wrap}.sdnav button{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px 12px;font:inherit;font-size:.85rem;cursor:pointer}
 .cdbox{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:12px 16px}.cdbox h3{margin:0 0 4px}
 .cdrow{display:flex;justify-content:space-between;align-items:center;gap:10px 16px;flex-wrap:wrap;padding:10px 0;border-top:1px dashed var(--line)}.cdrow:first-of-type{border-top:0}
 .cd{display:inline-flex;gap:6px;direction:rtl;flex-wrap:wrap}.cd span{display:inline-flex;flex-direction:column;align-items:center;min-width:48px;padding:4px 6px;border-radius:10px;background:var(--copper-l);line-height:1.15}
@@ -1240,6 +1244,69 @@ function cdTick() {
   if (due && S.token && VIEW !== 'teacher' && document.querySelector('#app [data-cd]')) setTimeout(function () { loadHome(S.tab); }, 1500);
 }
 function cdStart() { cdTick(); if (!CD.iv && document.querySelector('[data-cd]')) CD.iv = setInterval(cdTick, 1000); }
+/** Student page tells the platform where he is (every ~45 s while on screen), so the teacher sees who is active now. */
+var PR = { key: '', since: 0, sent: 0, iv: null };
+var PAGE_AR = { home: 'الصفحة الرئيسية', lessons: 'قائمة الدروس', hw: 'قائمة الواجبات', exams: 'قائمة الامتحانات', results: 'علاماتي', teacher: 'الإعلانات والرسائل' };
+function prWhere() {
+  if (Q && Q.r) { if (Q.id === 'PRACTICE') return { k: 'practice', id: 'PRACTICE', t: 'تدريب حر' }; var it = (S.data && S.data.items || []).filter(function (i) { return i.id === Q.id; })[0]; return { k: it ? it.type : 'quiz', id: Q.id, t: String(Q.r.title || '').replace('Quiz – ', '') }; }
+  if (LT) { var l = S.data ? lessonsOf(S.data).filter(function (x) { return x.id === LT.id; })[0] : null; return { k: 'lesson', id: LT.id, t: l ? l.title : LT.id }; }
+  return { k: 'page', id: S.tab || 'home', t: PAGE_AR[S.tab] || 'المنصة' };
+}
+function prTick() {
+  if (!S.token || VIEW === 'teacher' || document.hidden) return;
+  var w = prWhere(), key = w.k + '|' + w.id, now = Date.now();
+  if (key !== PR.key) { PR.key = key; PR.since = now + CD.off; PR.sent = 0; }
+  if (now - PR.sent < 45000) return;
+  PR.sent = now; w.since = PR.since;
+  call('apiPing', S.token, w).catch(function () {});
+}
+function prStart() { if (PR.iv || VIEW === 'teacher') return; PR.iv = setInterval(prTick, 5000); document.addEventListener('visibilitychange', function () { if (!document.hidden) { PR.sent = 0; prTick(); } }); prTick(); }
+/** Teacher: who is active now. Reloads every 30 s while the page is open; the clocks tick every second. */
+var LV = { d: null, at: 0, iv: null, busy: false };
+var KIND_AR = { lesson: 'درس', quiz: 'كويز', homework: 'واجب', test: 'امتحان', practice: 'تدريب', page: 'يتصفّح' };
+function mmss(sec) { sec = Math.max(0, Math.round(sec)); var h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), s2 = sec % 60, p = function (n) { return (n < 10 ? '0' : '') + n; }; return (h ? h + ':' + p(m) : m) + ':' + p(s2); }
+function agoAr(ms) { var m = Math.round(ms / 60000); if (m < 1) return 'هلّأ'; if (m < 60) return 'قبل ' + m + ' دقيقة'; var h = Math.round(m / 60); if (h < 24) return 'قبل ' + h + (h === 1 ? ' ساعة' : ' ساعات'); var d = Math.round(h / 24); return 'قبل ' + d + (d === 1 ? ' يوم' : d === 2 ? ' يومين' : ' أيام'); }
+function liveLoad() {
+  if (LV.busy) return; LV.busy = true;
+  call('apiTeacherNow', S.token).then(function (d) { LV.busy = false; LV.d = d; LV.at = Date.now(); LV.off = d.now - Date.now(); var b = $('liveBox'); if (b) { b.innerHTML = liveHtml(d); wireTeacher(b); liveTick(); } }).catch(function () { LV.busy = false; });
+}
+function liveTick() {
+  if (!$('liveBox')) { clearInterval(LV.iv); LV.iv = null; return; }
+  var now = Date.now() + (LV.off || 0);
+  each('[data-lsince]', function (el) { el.textContent = mmss((now - Number(el.dataset.lsince)) / 1000); });
+  if (Date.now() - LV.at > 30000 && !document.hidden) liveLoad();
+}
+function liveHtml(d) {
+  var now = d.now, on = d.students.filter(function (s) { return s.live; }), rest = d.students.slice().sort(function (a, b) { return (!!b.live - !!a.live) || ((b.lastTs || 0) - (a.lastTs || 0)); });
+  var where = function (x) { return '<span class="chip">' + KIND_AR[x.k] + '</span> ' + (x.k === 'page' ? esc(x.t) : '<span class="en" style="display:inline">' + esc(x.t) + '</span>'); };
+  var noun = function (k) { return { lesson: 'الدرس', quiz: 'الكويز', homework: 'الواجب', test: 'الامتحان', practice: 'التدريب' }[k] || ''; };
+  return '<div class="panel stack"><div class="row between"><h2><span class="dot on"></span>نشطين الآن (' + on.length + ')</h2><span class="tiny muted">بتتحدّث كل 30 ثانية</span></div>' +
+    (on.length ? '<div class="livegrid">' + on.map(function (s) {
+      var L = s.live;
+      return '<div class="lvc"><button type="button" class="nm" data-stu="' + s.number + '">' + s.number + ' ' + esc(firstTwo(s.name)) + '</button><div class="small">' + where(L) + '</div>' +
+        '<div class="small">' + (L.k === 'page' ? 'على المنصة' : 'على ' + noun(L.k) + ' هلّأ') + ' من <span class="lvt" data-lsince="' + L.since + '">' + mmss((now - L.since) / 1000) + '</span></div>' +
+        (s.cur ? '<div class="small muted">مجموع وقته على ' + noun(L.k) + ': <b>' + fmtDur(s.cur.sec) + '</b>، ' + (L.k === 'lesson' ? 'فتحه ' : 'حاوله ') + s.cur.n + (s.cur.n === 1 ? ' مرة' : ' مرات') + '</div>' : '') + '</div>';
+    }).join('') + '</div>' : '<div class="small muted">ما في ولا طالب فاتح المنصة هلّأ.</div>') + '</div>' +
+    '<div class="panel flush"><div class="ph"><h2>كل الطلاب</h2><span class="small muted">مين نشط، وآخر إشي فتحه كل واحد، ووقته على المنصة.</span></div><div class="tbl"><table><thead><tr><th>الطالب</th><th>الحالة</th><th>وين</th><th class="num">وقته الكلي</th></tr></thead><tbody>' +
+    rest.map(function (s) {
+      var w = s.live || s.lastWhat;
+      return '<tr><td><button type="button" class="btn link sm" data-stu="' + s.number + '">' + s.number + ' ' + esc(firstTwo(s.name)) + '</button></td><td class="small">' + (s.live ? '<span class="dot on"></span>نشط الآن' : '<span class="dot"></span>' + (s.lastTs ? agoAr(now - s.lastTs) : 'ما دخل لسا')) + '</td><td class="small">' + (w ? where(w) : '—') + '</td><td class="num small">' + fmtDur(s.total) + '</td></tr>';
+    }).join('') + '</tbody></table></div></div>';
+}
+function tLive() {
+  setTimeout(function () { var b = $('liveBox'); if (!b) return; if (LV.d) { b.innerHTML = liveHtml(LV.d); wireTeacher(b); } if (!LV.d || Date.now() - LV.at > 10000) liveLoad(); if (!LV.iv) LV.iv = setInterval(liveTick, 1000); }, 0);
+  return '<div class="stack"><h2>الطلاب الآن</h2><div class="small muted">مين فاتح المنصة هلّأ، وعلى أي درس أو كويز أو واجب، من قديش، ومجموع وقته على نفس الإشي. اكبس على اسم الطالب لتفتح ملفه.</div><div id="liveBox" class="stack"><div class="small muted">جاري التحميل…</div></div></div>';
+}
+/** In a student's file: what he did and how long, item by item. */
+function actHtml(s) {
+  var A = s.activity || [], L = s.live;
+  var head = L ? '<div class="small"><span class="dot on"></span><b>نشط الآن</b>: ' + KIND_AR[L.k] + ' ' + (L.k === 'page' ? esc(L.t) : '<span class="en" style="display:inline">' + esc(L.t) + '</span>') + '، من ' + mmss((s.now - L.since) / 1000) + '</div>' : '<div class="small"><span class="dot"></span>مش نشط هلّأ' + (A[0] ? '، آخر نشاط ' + agoAr(s.now - A[0].last) : '') + '</div>';
+  var tot = A.reduce(function (x, e) { return x + e.sec; }, 0), by = function (k) { return A.filter(function (e) { return k === 'lesson' ? e.k === 'lesson' : e.k !== 'lesson'; }).reduce(function (x, e) { return x + e.sec; }, 0); };
+  return '<div class="panel stack" id="sdAct"><h3>النشاط والوقت</h3>' + head +
+    '<div class="small muted">وقته الكلي ' + fmtDur(tot) + ': بالدروس ' + fmtDur(by('lesson')) + '، وبالكويزات والواجبات والامتحانات ' + fmtDur(by('x')) + '.</div>' +
+    (A.length ? '<details><summary class="small">الوقت على كل درس وكويز وواجب (' + A.length + ')</summary><div class="tbl" style="margin-top:8px;max-height:420px;overflow:auto"><table><thead><tr><th>الإشي</th><th class="num">مجموع الوقت</th><th class="num">مرات</th><th>آخر مرة</th></tr></thead><tbody>' +
+      A.map(function (e) { return '<tr><td><span class="chip">' + KIND_AR[e.k] + '</span> <span class="en" style="display:inline">' + esc(e.t) + '</span></td><td class="num">' + fmtDur(e.sec) + '</td><td class="num">' + e.n + '</td><td class="small">' + (e.last ? dFull(e.last) : '—') + '</td></tr>'; }).join('') + '</tbody></table></div></details>' : '<div class="small muted">ما في نشاط مسجّل لسا.</div>') + '</div>';
+}
 /** Every exam a student will sit that hasn't opened yet: the ones the teacher scheduled, and the mid/final dates. */
 function upcomingExams(d) {
   var now = d.calendar.now, out = [];
@@ -1315,7 +1382,7 @@ function band(html) { $('band').innerHTML = html ? '<div class="band"><div class
 function nav() { }
 /** Header links + phone menu. items: [[key, label, badge]], attr: data-tab / data-ttab */
 var SN = { items: null, cur: '', attr: '', extra: '' };
-var LXL = { home: 'H', lessons: 'L', hw: 'A', exams: 'E', results: 'M', teacher: 'T', plan: 'R', practice: 'P', words: 'W', passport: 'J', students: 'S', class: 'C', follow: 'F', book: 'G', marks: 'M', assess: 'Q', analysis: 'N', export: 'X', inbox: 'I', settings: 'O' };
+var LXL = { home: 'H', lessons: 'L', hw: 'A', exams: 'E', results: 'M', teacher: 'T', plan: 'R', practice: 'P', words: 'W', passport: 'J', students: 'S', live: 'N', class: 'C', follow: 'F', book: 'G', marks: 'M', assess: 'Q', analysis: 'N', export: 'X', inbox: 'I', settings: 'O' };
 function siteNav(items, cur, attr, extra) {
   SN = { items: items, cur: cur || '', attr: attr || '', extra: extra || '' };
   var link = function (t2) { return '<button type="button" ' + SN.attr + '="' + t2[0] + '" class="nl' + (SN.cur === t2[0] ? ' on' : '') + '"' + (SN.cur === t2[0] ? ' aria-current="page"' : '') + '><i class="lx" aria-hidden="true">' + (LXL[t2[0]] || '') + '</i>' + (ICONS[t2[0]] || (VIEW === 'teacher' ? ti(t2[0]) : '')) + '<span>' + t2[1] + '</span>' + (t2[2] ? '<span class="badge">' + t2[2] + '</span>' : '') + '</button>'; };
@@ -1453,7 +1520,7 @@ function studentLogin() {
 function loadHome(tab) {
   busy(true);
   return call('apiHome', S.token).then(function (d) {
-    busy(false); S.data = d; S.name = d.name; if (tab) S.tab = tab; watermark(d.name, d.number); CD.off = d.calendar.now - Date.now();
+    busy(false); S.data = d; S.name = d.name; if (tab) S.tab = tab; watermark(d.name, d.number); CD.off = d.calendar.now - Date.now(); prStart();
     $('logout').classList.remove('hidden');
     renderHome();
   }).catch(fail);
@@ -1992,7 +2059,7 @@ function loadTeacher() {
 function tUnits() { return T.data.course.map(function (u) { return { id: u.id, label: 'الوحدة ' + u.no }; }); }
 function asOf(id) { return T.data.assessments.filter(function (a) { return a.id === id; })[0]; }
 var TNAV = [
-  ['طلابي', [['home', 'الرئيسية'], ['students', 'الطلاب'], ['class', 'المشاركة الصفية'], ['follow', 'بحاجة متابعة'], ['book', 'جدول النتائج'], ['marks', 'العلامات الرسمية']]],
+  ['طلابي', [['home', 'الرئيسية'], ['live', 'الطلاب الآن'], ['students', 'الطلاب'], ['class', 'المشاركة الصفية'], ['follow', 'بحاجة متابعة'], ['book', 'جدول النتائج'], ['marks', 'العلامات الرسمية']]],
   ['المحتوى', [['lessons', 'الدروس والتقويم'], ['assess', 'الكويزات والواجبات'], ['exams', 'الامتحانات'], ['analysis', 'تحليل الأسئلة']]],
   ['التواصل والأدوات', [['inbox', 'الرسائل والإعلانات'], ['export', 'تصدير العلامات'], ['settings', 'الإعدادات']]]
 ];
@@ -2003,7 +2070,7 @@ function renderTeacher() {
   if (T.sem === 2) {
     h('<div class="panel stack" style="text-align:center"><h2>الفصل الثاني</h2><div class="muted">محتوى الفصل الثاني (الوحدات 6–10) لسا ما انضاف للمنصة. لما نجهّزه تظهر هون دروسه وكويزاته وواجباته وامتحاناته بنفس طريقة الفصل الأول.</div></div>', true);
   } else {
-    var views = { home: tHome, students: tStudents, class: tClass, follow: tFollow, book: tBook, marks: tMarks, lessons: tCal, assess: tAssess, exams: tExams, analysis: tAnalysis, export: tExport, inbox: tInbox, settings: tMore };
+    var views = { home: tHome, live: tLive, students: tStudents, class: tClass, follow: tFollow, book: tBook, marks: tMarks, lessons: tCal, assess: tAssess, exams: tExams, analysis: tAnalysis, export: tExport, inbox: tInbox, settings: tMore };
     if (!views[T.tab]) T.tab = 'home';
     var badge = { inbox: d.messages.length, follow: followList().length };
     var side = '<aside class="side" aria-label="أقسام صفحة المعلم"><form class="sfind" id="stuFindF" role="search"><input id="stuFind" list="stuList" placeholder="ابحث عن طالب" aria-label="ابحث عن طالب بالاسم أو الرقم" autocomplete="off"><datalist id="stuList">' + d.students.map(function (x) { return '<option value="' + x.number + ' ' + esc(x.name) + '"></option>'; }).join('') + '</datalist></form>' + TNAV.map(function (g) {
@@ -2576,12 +2643,14 @@ function studentDetail(num) {
     var draw = function () {
       var keepTop = m.scrollTop, keepDoc = window.scrollY;
       m.innerHTML = '<div class="panel stack" role="dialog" aria-modal="true"><div class="row between"><div><h2>' + esc(s.name) + '</h2><div class="small muted">رقم ' + s.number + '، الرمز <bdi>' + esc(s.code) + '</bdi>، المعدل ' + (p.average === null ? '—' : p.average + '%') + '</div></div><div class="row"><button class="btn teal sm" data-parent type="button">رسالة لولي الأمر</button><button class="btn ghost sm" data-ppage type="button">صفحة تقرير لولي الأمر</button><button class="btn ghost sm" data-cert type="button">شهادة تقدير</button>' + xbar('rep1', true) + '<button class="btn ghost sm" data-close type="button">إغلاق</button></div></div><div class="small" id="sdMsg"></div>' +
-        studentUnits(s.number, scope) +
+        '<div class="sdnav" aria-label="أقسام ملف الطالب"><button type="button" data-sdgo="sdAct">النشاط والوقت</button><button type="button" data-sdgo="sdUnits">الوحدات</button><button type="button" data-sdgo="sdMarks">العلامات الرسمية</button><button type="button" data-sdgo="sdOpen">افتح له</button><button type="button" data-sdgo="sdAtt">المحاولات</button></div>' +
+        actHtml(s) + '<span id="sdUnits"></span>' +
+        studentUnits(s.number, scope) + '<span id="sdMarks"></span>' +
         officialMarks(T.data.marks.students[s.number], T.data.markScheme, true).replace('علاماتي الرسمية', 'العلامات الرسمية') + '<div><button class="btn ghost sm" data-mdet type="button">تفصيل العلامات الرسمية</button></div>' +
         '<div class="two"><div><b style="color:var(--teal)">نقاط القوة</b><div class="small">' + (p.strong.length ? p.strong.map(function (o) { return esc(o.ar) + ' (' + o.pct + '%)'; }).join('، ') : '—') + '</div></div>' +
         '<div><b style="color:var(--bad)">بحاجة تقوية</b><div class="small">' + (p.weak.length ? p.weak.map(function (o) { return esc(o.ar) + ' (' + o.pct + '%)'; }).join('، ') : '—') + '</div></div></div>' +
-        '<div class="panel stack" style="background:var(--sky);border:0"><b>افتح له شيئًا سابقًا</b><div class="row"><select id="sgA" style="width:auto">' + T.data.assessments.map(function (a) { return '<option value="' + a.id + '">' + (a.unit === 'EX' ? '' : a.unit.replace('U', 'الوحدة ') + ' – ') + esc(a.title.replace('Quiz – ', '')) + (s.attempts.some(function (t) { return t.id === a.id; }) ? ' (حلّه)' : '') + '</option>'; }).join('') + '</select><select id="sgH" style="width:auto"><option value="2">ساعتين</option><option value="24" selected>يوم</option><option value="168">أسبوع</option></select><button class="btn teal sm" id="sgGo" type="button">افتح له</button><button class="btn ghost sm" type="button" data-bulkg="' + s.number + '">عدة كويزات وواجبات…</button><span class="small" id="sgMsg"></span></div><div class="tiny muted">إذا كان حلّه من قبل، تجيه أسئلة مختلفة.</div></div>' +
-        '<h3>المحاولات</h3>' + (s.attempts.length ? s.attempts.map(function (a) {
+        '<div class="panel stack" id="sdOpen" style="background:var(--sky);border:0"><b>افتح له شيئًا سابقًا</b><div class="row"><select id="sgA" style="width:auto">' + T.data.assessments.map(function (a) { return '<option value="' + a.id + '">' + (a.unit === 'EX' ? '' : a.unit.replace('U', 'الوحدة ') + ' – ') + esc(a.title.replace('Quiz – ', '')) + (s.attempts.some(function (t) { return t.id === a.id; }) ? ' (حلّه)' : '') + '</option>'; }).join('') + '</select><select id="sgH" style="width:auto"><option value="2">ساعتين</option><option value="24" selected>يوم</option><option value="168">أسبوع</option></select><button class="btn teal sm" id="sgGo" type="button">افتح له</button><button class="btn ghost sm" type="button" data-bulkg="' + s.number + '">عدة كويزات وواجبات…</button><span class="small" id="sgMsg"></span></div><div class="tiny muted">إذا كان حلّه من قبل، تجيه أسئلة مختلفة.</div></div>' +
+        '<h3 id="sdAtt">المحاولات</h3>' + (s.attempts.length ? s.attempts.map(function (a) {
           var act = a.allowed
             ? '<span class="chip now">مسموح إعادته' + (a.until ? ' لحد ' + esc(a.until) : '') + '</span>' + (a.forAll ? '<span class="tiny muted">مسموح للصف كامل</span>' : '<button class="btn ghost sm" data-cancel="' + a.id + '" type="button">إلغاء السماح</button>')
             : '<button class="btn ghost sm" data-reset="' + a.id + '" type="button">اسمح بإعادته</button>';
@@ -2599,6 +2668,7 @@ function studentDetail(num) {
       each('[data-ux]', function (r) { r.onclick = function () { unitWin(s.number, r.dataset.ux); }; }, m);
       each('[data-mdet]', function (b) { b.onclick = function () { marksModal(s.number); }; }, m);
       each('[data-bulkg]', function (b) { b.onclick = function () { bulkGrantWin(s.number); }; }, m);
+      each('[data-sdgo]', function (b) { b.onclick = function () { var t = m.querySelector('#' + b.dataset.sdgo); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }; }, m);
       m.querySelector('#sgGo').onclick = function () {
         var msg = m.querySelector('#sgMsg'); msg.textContent = 'جاري الفتح…';
         call('apiTeacherGrant', S.token, m.querySelector('#sgA').value, s.number, m.querySelector('#sgH').value).then(function (r) { msg.textContent = 'تم. مسموح له حتى ' + r.until + '، ووصله تنبيه.'; loadTeacher(); }).catch(function (e) { msg.textContent = e; });
@@ -3174,6 +3244,7 @@ function applyFont() { var on = lget('bigtext') === '1'; document.documentElemen
 /** Line icons for the teacher's sections (one visual language with the student's tabs). */
 var TICON = {
   home: '<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',
+  live: '<circle cx="12" cy="12" r="3"/><path d="M5.6 5.6a9 9 0 0 0 0 12.8M18.4 5.6a9 9 0 0 1 0 12.8M8.5 8.5a5 5 0 0 0 0 7M15.5 8.5a5 5 0 0 1 0 7"/>',
   students: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c.6-3.4 3-5.4 6-5.4s5.4 2 6 5.4"/><path d="M16 4.6a3 3 0 0 1 0 6"/><path d="M18 14.8c1.7.6 2.7 2.4 3 5.2"/>',
   book: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 4v16M15 4v16"/>',
   marks: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
