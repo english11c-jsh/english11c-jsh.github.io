@@ -1244,7 +1244,7 @@ function cdTick() {
   if (due && S.token && VIEW !== 'teacher' && document.querySelector('#app [data-cd]')) setTimeout(function () { loadHome(S.tab); }, 1500);
 }
 function cdStart() { cdTick(); if (!CD.iv && document.querySelector('[data-cd]')) CD.iv = setInterval(cdTick, 1000); }
-/** Student page tells the platform where he is (every ~45 s while on screen), so the teacher sees who is active now. */
+/** Student page tells the platform where he is (every ~30 s while on screen, and at once when he moves or leaves), so the teacher sees who is active now. */
 var PR = { key: '', since: 0, sent: 0, iv: null };
 var PAGE_AR = { home: 'الصفحة الرئيسية', lessons: 'قائمة الدروس', hw: 'قائمة الواجبات', exams: 'قائمة الامتحانات', results: 'علاماتي', teacher: 'الإعلانات والرسائل' };
 function prWhere() {
@@ -1256,12 +1256,20 @@ function prTick() {
   if (!S.token || VIEW === 'teacher' || document.hidden) return;
   var w = prWhere(), key = w.k + '|' + w.id, now = Date.now();
   if (key !== PR.key) { PR.key = key; PR.since = now + CD.off; PR.sent = 0; }
-  if (now - PR.sent < 45000) return;
+  if (now - PR.sent < 30000) return;
   PR.sent = now; w.since = PR.since;
   call('apiPing', S.token, w).catch(function () {});
 }
-function prStart() { if (PR.iv || VIEW === 'teacher') return; PR.iv = setInterval(prTick, 5000); document.addEventListener('visibilitychange', function () { if (!document.hidden) { PR.sent = 0; prTick(); } }); prTick(); }
-/** Teacher: who is active now. Reloads every 30 s while the page is open; the clocks tick every second. */
+/** He closed the page, switched app, locked the phone or logged out: tell the platform right away (a beacon still goes out while the page closes). */
+function prOff() {
+  if (!S.token || VIEW === 'teacher' || !PR.key) return;
+  PR.key = '';
+  var body = JSON.stringify({ fn: 'apiPing', args: [S.token, { k: 'off' }] });
+  if (WEB && window.API_URL && navigator.sendBeacon) { try { if (navigator.sendBeacon(window.API_URL, new Blob([body], { type: 'text/plain' }))) return; } catch (e) {} }
+  call('apiPing', S.token, { k: 'off' }).catch(function () {});
+}
+function prStart() { if (PR.iv || VIEW === 'teacher') return; PR.iv = setInterval(prTick, 3000); document.addEventListener('visibilitychange', function () { if (document.hidden) prOff(); else { PR.sent = 0; prTick(); } }); window.addEventListener('pagehide', prOff); prTick(); }
+/** Teacher: who is active now. Reloads every 10 s while the page is open; the clocks tick every second. */
 var LV = { d: null, at: 0, iv: null, busy: false };
 var KIND_AR = { lesson: 'درس', quiz: 'كويز', homework: 'واجب', test: 'امتحان', practice: 'تدريب', page: 'يتصفّح' };
 function mmss(sec) { sec = Math.max(0, Math.round(sec)); var h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), s2 = sec % 60, p = function (n) { return (n < 10 ? '0' : '') + n; }; return (h ? h + ':' + p(m) : m) + ':' + p(s2); }
@@ -1274,13 +1282,13 @@ function liveTick() {
   if (!$('liveBox')) { clearInterval(LV.iv); LV.iv = null; return; }
   var now = Date.now() + (LV.off || 0);
   each('[data-lsince]', function (el) { el.textContent = mmss((now - Number(el.dataset.lsince)) / 1000); });
-  if (Date.now() - LV.at > 30000 && !document.hidden) liveLoad();
+  if (Date.now() - LV.at > 10000 && !document.hidden) liveLoad();
 }
 function liveHtml(d) {
   var now = d.now, on = d.students.filter(function (s) { return s.live; }), rest = d.students.slice().sort(function (a, b) { return (!!b.live - !!a.live) || ((b.lastTs || 0) - (a.lastTs || 0)); });
   var where = function (x) { return '<span class="chip">' + KIND_AR[x.k] + '</span> ' + (x.k === 'page' ? esc(x.t) : '<span class="en" style="display:inline">' + esc(x.t) + '</span>'); };
   var noun = function (k) { return { lesson: 'الدرس', quiz: 'الكويز', homework: 'الواجب', test: 'الامتحان', practice: 'التدريب' }[k] || ''; };
-  return '<div class="panel stack"><div class="row between"><h2><span class="dot on"></span>نشطين الآن (' + on.length + ')</h2><span class="tiny muted">بتتحدّث كل 30 ثانية</span></div>' +
+  return '<div class="panel stack"><div class="row between"><h2><span class="dot on"></span>نشطين الآن (' + on.length + ')</h2><span class="tiny muted">بتتحدّث كل 10 ثواني</span></div>' +
     (on.length ? '<div class="livegrid">' + on.map(function (s) {
       var L = s.live;
       return '<div class="lvc"><button type="button" class="nm" data-stu="' + s.number + '">' + s.number + ' ' + esc(firstTwo(s.name)) + '</button><div class="small">' + where(L) + '</div>' +
@@ -1442,7 +1450,7 @@ function fail(msg) {
 }
 function alertBox(msg) { var d = document.createElement('div'); d.className = 'alert a-weak'; d.style.margin = '12px 0'; d.textContent = msg; app.prepend(d); window.scrollTo(0, 0); }
 $('logout').onclick = function () { logout(); };
-function logout() { if (GD.on) examMode(false); watermark(''); winCloseAll(); who(''); siteNav(null); store('tk_' + VIEW, null); S.token = null; $('logout').classList.add('hidden'); band(''); nav(''); VIEW === 'teacher' ? teacherLogin() : studentLogin(); }
+function logout() { prOff(); if (GD.on) examMode(false); watermark(''); winCloseAll(); who(''); siteNav(null); store('tk_' + VIEW, null); S.token = null; $('logout').classList.add('hidden'); band(''); nav(''); VIEW === 'teacher' ? teacherLogin() : studentLogin(); }
 
 // ---------- dates (Amman, UTC+3), Levantine month names
 var MONTHS = ['كانون الثاني', 'شباط', 'آذار', 'نيسان', 'أيار', 'حزيران', 'تموز', 'آب', 'أيلول', 'تشرين الأول', 'تشرين الثاني', 'كانون الأول'];
