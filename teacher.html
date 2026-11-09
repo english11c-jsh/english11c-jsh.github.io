@@ -554,6 +554,11 @@ html.exammode body{min-height:100vh;min-height:100dvh}
 .glist{display:flex;flex-direction:column;gap:4px;font-size:.9rem;border-top:1px solid var(--line,#ddd);padding-top:8px}
 .sayk:hover{background:var(--copper);color:#fff}
 .duebar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--copper-l);border-inline-start:6px solid var(--copper);border-radius:12px;padding:12px 16px}
+.cdbox{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:12px 16px}.cdbox h3{margin:0 0 4px}
+.cdrow{display:flex;justify-content:space-between;align-items:center;gap:10px 16px;flex-wrap:wrap;padding:10px 0;border-top:1px dashed var(--line)}.cdrow:first-of-type{border-top:0}
+.cd{display:inline-flex;gap:6px;direction:rtl;flex-wrap:wrap}.cd span{display:inline-flex;flex-direction:column;align-items:center;min-width:48px;padding:4px 6px;border-radius:10px;background:var(--copper-l);line-height:1.15}
+.cd b{font-size:1.25rem;font-variant-numeric:tabular-nums}.cd i{font-style:normal;font-size:.72rem;opacity:.8}.cd.sm span{min-width:40px;padding:2px 5px}.cd.sm b{font-size:1rem}
+.cd.go{font-weight:700;color:var(--ok,#2f7a4b)}
 .practice{border-inline-start:6px solid var(--copper)}
 @media print{ body.printing *{visibility:hidden} body.printing #xSheet, body.printing #xSheet *{visibility:visible} body.printing #xSheet{position:absolute;inset:0;border:0;padding:0} body.printing{background:#fff} }
 /* was @media (max-width:720px) */
@@ -1218,6 +1223,35 @@ function myCodeWin() {
       .catch(function (e) { er.textContent = String(e && e.message || e); });
   };
 }
+/** Countdown to an exam: [data-cd] holds the time it opens; the clock follows the server's time, and the page refreshes itself when it reaches zero. */
+var CD = { off: 0, iv: null, fired: {} };
+function cdHtml(ts, sm) { return '<span class="cd' + (sm ? ' sm' : '') + '" data-cd="' + ts + '" aria-live="off"></span>'; }
+function cdTick() {
+  var now = Date.now() + CD.off, els = document.querySelectorAll('[data-cd]');
+  if (!els.length) { clearInterval(CD.iv); CD.iv = null; return; }
+  var due = false;
+  each('[data-cd]', function (el) {
+    var ts = Number(el.dataset.cd), left = ts - now;
+    if (left <= 0) { el.className = el.className.replace(/ go/, '') + ' go'; el.innerHTML = 'بلّش وقته، حدّث الصفحة'; if (!CD.fired[ts]) { CD.fired[ts] = 1; due = true; } return; }
+    var sec = Math.floor(left / 1000), d = Math.floor(sec / 86400), hh = Math.floor(sec % 86400 / 3600), mm = Math.floor(sec % 3600 / 60), ss = sec % 60, p = function (n) { return (n < 10 ? '0' : '') + n; };
+    var u = function (v, l) { return '<span><b>' + v + '</b><i>' + l + '</i></span>'; };
+    el.innerHTML = (d ? u(d, d === 1 ? 'يوم' : d === 2 ? 'يومين' : d <= 10 ? 'أيام' : 'يوم') : '') + u(p(hh), 'ساعة') + u(p(mm), 'دقيقة') + u(p(ss), 'ثانية');
+  });
+  if (due && S.token && VIEW !== 'teacher' && document.querySelector('#app [data-cd]')) setTimeout(function () { loadHome(S.tab); }, 1500);
+}
+function cdStart() { cdTick(); if (!CD.iv && document.querySelector('[data-cd]')) CD.iv = setInterval(cdTick, 1000); }
+/** Every exam a student will sit that hasn't opened yet: the ones the teacher scheduled, and the mid/final dates. */
+function upcomingExams(d) {
+  var now = d.calendar.now, out = [];
+  d.items.filter(function (i) { return i.type === 'test' && i.state === 'soon' && i.openTs > now; }).forEach(function (i) { out.push({ id: i.id, name: exName(i.id, true), ts: i.openTs, min: i.minutes, end: i.closeTs, set: true }); });
+  (d.calendar.exams || []).forEach(function (e) { if (e.ts > now && !d.items.some(function (i) { return i.id === e.id && i.type === 'test'; })) out.push({ id: e.id, name: exName(e.id, true), ts: e.ts, min: e.minutes }); });
+  return out.sort(function (a, b) { return a.ts - b.ts; });
+}
+function cdCard(d) {
+  var L = upcomingExams(d); if (!L.length) return '';
+  return '<div class="cdbox"><h3>الامتحانات الجاية</h3><div class="small muted">العد التنازلي لموعد كل امتحان. زر البدء بيتفعّل لحاله أول ما يجي وقته.</div>' +
+    L.map(function (x) { return '<div class="cdrow"><div><b>' + esc(x.name) + '</b><div class="small muted">' + dFull(x.ts) + (x.min ? '، ' + x.min + ' دقيقة' : '') + (x.end ? '. مفتوح لحد ' + dFull(x.end) : '') + '</div></div>' + cdHtml(x.ts) + '</div>'; }).join('') + '</div>';
+}
 /** Each section has its own address (#/lessons), so the browser's back button and refresh work like any website. */
 var RT = { pre: (location.hash.indexOf('#teacher') === 0 ? '#teacher/' : '#/'), lock: false };
 function routeNow() { var h0 = location.hash; if (h0.indexOf(RT.pre) === 0) return h0.slice(RT.pre.length).split('?')[0]; return ''; }
@@ -1419,7 +1453,7 @@ function studentLogin() {
 function loadHome(tab) {
   busy(true);
   return call('apiHome', S.token).then(function (d) {
-    busy(false); S.data = d; S.name = d.name; if (tab) S.tab = tab; watermark(d.name, d.number);
+    busy(false); S.data = d; S.name = d.name; if (tab) S.tab = tab; watermark(d.name, d.number); CD.off = d.calendar.now - Date.now();
     $('logout').classList.remove('hidden');
     renderHome();
   }).catch(fail);
@@ -1499,6 +1533,7 @@ function renderHome(keep) {
     d.items.filter(function (i) { return i.type === 'homework' && i.canStart && !i.done && i.closeTs - d.calendar.now < 864e5 && i.closeTs > d.calendar.now; }).map(function (i) {
       return '<div class="duebar"><div><b>تذكير: موعد تسليم واجب قرّب</b><div class="small"><span class="en" style="display:inline">' + esc(i.title) + '</span> يخلص ' + dFull(i.closeTs) + '</div></div><button class="btn copper sm" data-start="' + i.id + '" type="button">حلّه الآن</button></div>';
     }).join('') +
+    cdCard(d) +
     (ann && newAnn ? '<button class="annbar" type="button" data-tab="teacher"><b>إعلان جديد من الأستاذ</b><span>' + esc(ann.text.length > 90 ? ann.text.slice(0, 90) + '…' : ann.text) + '</span>' + (newAnn > 1 ? '<em>+' + (newAnn - 1) + ' إعلان</em>' : '') + '</button>' : '');
   var y = window.scrollY;
   h('<div class="stack">' + top + body + '</div>', !!keep);
@@ -1509,6 +1544,7 @@ function renderHome(keep) {
   wireStudent();
   cardTables(app);
   showNotes();
+  cdStart();
   if (S.tab === 'home') wodLoad();
   var ms = $('msgSend');
   if (ms) ms.onclick = function () {
@@ -1581,6 +1617,7 @@ function itemRow(i) {
     : (i.state === 'soon' ? '<span class="chip lock">يتاح ' + dDay(i.openTs) + '</span>' : (i.state === 'closed' ? '<span class="chip bad">انتهى ولم تسلّم</span>' : '<span class="chip now">مسموح الآن</span>'));
   return '<div class="li"><div class="row between"><div style="min-width:0;flex:1"><div class="row">' + status + '</div>' +
     '<div class="en" style="font-weight:600;margin-top:4px">' + esc(i.title.replace('Quiz – ', '')) + '</div>' +
+    (i.type === 'test' && i.state === 'soon' && !i.done ? '<div class="small">يفتح <b>' + dFull(i.openTs) + '</b></div><div class="row small" style="margin:4px 0">باقي ' + cdHtml(i.openTs, true) + '</div>' : '') +
     '<div class="small muted">' + (i.type === 'test' ? 'يغلق ' : 'التسليم ') + dFull(i.closeTs) + (i.minutes ? '، ' + i.minutes + ' دقيقة' : '') + '</div>' +
     (i.bookTask ? '<div class="small">من الكتاب: ' + fmtMixed(i.bookTask) + '</div>' : '') +
     (i.done && !i.reviewReady && !i.canStart ? '<div class="small muted">الإجابات تظهر بعد الإغلاق.</div>' : '') +
@@ -1603,7 +1640,7 @@ function sExams() {
     var it = list.filter(function (i) { return i.id === e.id; })[0];
     if (it) return itemRow(it);
     var past = e.ts < d.calendar.now;
-    return '<div class="li"><div class="row between"><div style="flex:1"><div class="row"><span class="chip lock">' + (past ? 'مغلق' : 'موعده ' + dDay(e.ts)) + '</span></div><div style="font-weight:700;margin-top:4px">' + esc(e.title) + '</div><div class="small muted">الموعد: ' + dFull(e.ts) + '، ' + e.minutes + ' دقيقة. يتيح لك الأستاذ الامتحان في موعده.</div></div>' +
+    return '<div class="li"><div class="row between"><div style="flex:1"><div class="row"><span class="chip lock">' + (past ? 'مغلق' : 'موعده ' + dDay(e.ts)) + '</span></div><div style="font-weight:700;margin-top:4px">' + esc(e.title) + '</div>' + (past ? '' : '<div class="row small" style="margin:4px 0">باقي ' + cdHtml(e.ts, true) + '</div>') + '<div class="small muted">الموعد: ' + dFull(e.ts) + '، ' + e.minutes + ' دقيقة. يتيح لك الأستاذ الامتحان في موعده.</div></div>' +
       '<div><button class="btn ghost sm" type="button" data-early="' + esc(past ? e.title + ' مغلق حتى الآن. يتيح لك الأستاذ الامتحان في موعده.' : e.title + ' لم يحن وقته بعد. موعده ' + dFull(e.ts) + '، ويتيح لك الأستاذ الامتحان في موعده.') + '">ابدأ</button></div></div></div>';
   });
   var extra = list.filter(function (i) { return !d.calendar.exams.some(function (e) { return e.id === i.id; }); }).map(function (i) { return itemRow(i).replace('<div class="row">', '<div class="row"><span class="chip ok">تجريبي بدون علامة</span>'); });
