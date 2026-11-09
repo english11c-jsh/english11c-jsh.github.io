@@ -2122,6 +2122,17 @@ function renderTeacher() {
   if (T.tab === 'class' && T.sem !== 2) clsInit();
 }
 function wireTeacher(root) {
+  var qmFlash = function (el, ok) { el.style.outline = '2px solid ' + (ok ? '#2f9e5b' : '#b3261e'); setTimeout(function () { el.style.outline = ''; }, 1500); };
+  each('[data-qmin]', function (inp) { inp.onchange = function () {
+    var v = Math.round(Number(inp.value)); if (!(v >= 0 && v <= 180)) { qmFlash(inp, false); inp.value = (asOf(inp.dataset.qmin) || {}).minutes || 0; return; }
+    call('apiTeacherSetMinutes', S.token, [inp.dataset.qmin], v).then(function () { var a = asOf(inp.dataset.qmin); if (a) a.minutes = v; inp.value = v; qmFlash(inp, true); }).catch(function (e) { qmFlash(inp, false); alertBox(String(e && e.message || e)); });
+  }; }, root);
+  each('[data-qmall]', function (b) { b.onclick = function () {
+    var v = Math.round(Number($('qmAll').value)), msg = $('qmMsg'), ids = T.data.assessments.filter(function (a) { return a.type === 'quiz' && a.unit === T.unit; }).map(function (a) { return a.id; });
+    if ($('qmAll').value === '' || !(v >= 0 && v <= 180)) { msg.textContent = 'اكتب مدة من 0 لـ 180 دقيقة.'; return; }
+    msg.textContent = 'جاري الحفظ…';
+    call('apiTeacherSetMinutes', S.token, ids, v).then(function (r) { ids.forEach(function (id) { var a = asOf(id); if (a) a.minutes = v; var i = document.querySelector('[data-qmin="' + id + '"]'); if (i) i.value = v; }); msg.textContent = 'تم: ' + r.count + ' كويز صارت مدتها ' + (v ? v + ' دقيقة' : 'بدون وقت') + '.'; }).catch(function (e) { msg.textContent = String(e && e.message || e); });
+  }; }, root);
   each('[data-bulkg]', function (b) { b.onclick = function () { bulkGrantWin(b.dataset.bulkg || ''); }; }, root);
   each('[data-paper]', function (b) { b.onclick = function (e) { e.preventDefault(); e.stopPropagation(); var k = b.dataset.paper.split('|'); paperModal(k[0], k[1]); }; }, root);
   each('[data-stu]', function (b) { b.onclick = function () { studentDetail(b.dataset.stu); }; }, root);
@@ -2310,10 +2321,10 @@ function tAssess() {
   return '<div class="stack"><h2>الكويزات والواجبات</h2><div class="small muted">الامتحانات (الميد والفاينل) صارت بقسم «الامتحانات وبنك الأسئلة».</div>' +
     '<div class="panel row between" style="background:var(--sky);border:0"><div><b>إعادة عدة كويزات وواجبات مرة وحدة</b><div class="small muted">الوحدة كاملة أو كويزات تختارها، للصف كامل أو لطلاب معيّنين.</div></div><button class="btn teal sm" type="button" data-bulkg>اسمح بالإعادة</button></div>' +
     unitChips(tUnits(), sel, 'data-tunit') +
-    '<div class="panel flush"><div class="ph"><h2>كويزات الوحدة ' + sel.slice(1) + '</h2><span class="small muted">كل كويز يتاح للطالب بعد ما يدرس الدرس، ويضل مسموح لأسبوع بعد نهاية الوحدة. بعدها بس أنت تفتحه.</span></div><div class="tbl"><table><thead><tr><th>الكويز</th><th>الحالة</th><th class="num">حلّوا</th><th class="num">المعدل</th><th></th></tr></thead><tbody>' +
+    '<div class="panel flush"><div class="ph"><h2>كويزات الوحدة ' + sel.slice(1) + '</h2><span class="small muted">كل كويز يتاح للطالب بعد ما يدرس الدرس، ويضل مسموح لأسبوع بعد نهاية الوحدة. بعدها بس أنت تفتحه.</span></div><div class="row small" style="padding:10px 16px;gap:8px"><b>مدة كل كويزات الوحدة</b><input type="number" id="qmAll" min="0" max="180" inputmode="numeric" style="width:84px" value="' + (qz.length && qz.every(function (a) { return (a.minutes || 0) === (qz[0].minutes || 0); }) ? (qz[0].minutes || 0) : '') + '" aria-label="مدة كل كويزات الوحدة بالدقائق"> دقيقة<button class="btn ghost sm" type="button" data-qmall>طبّق على الكل</button><span class="tiny muted">0 يعني بدون وقت. وبتقدر تغيّر مدة كل كويز لحاله من الجدول.</span><span class="small" id="qmMsg"></span></div><div class="tbl"><table><thead><tr><th>الكويز</th><th>الحالة</th><th class="num">حلّوا</th><th class="num">المعدل</th><th class="num">المدة (دقيقة)</th><th></th></tr></thead><tbody>' +
     qz.map(function (a) {
       var st = a.grants.length ? '<span class="chip now">مسموح من جديد</span>' : a.state === 'open' ? '<span class="chip ok">مسموح</span>' : a.state === 'soon' ? '<span class="chip lock">يتاح ' + dDay(parseS(a.openText)) + '</span>' : '<span class="chip">مغلق</span>';
-      return '<tr><td class="en">' + esc(a.title.replace('Quiz – ', '')) + '</td><td>' + st + '</td><td class="num">' + frac(a.submitted, a.of) + '</td><td class="num">' + cell(a.average) + '</td><td><button class="btn ghost sm" data-item="' + a.id + '" type="button">مين حلّ / افتح</button></td></tr>';
+      return '<tr><td class="en">' + esc(a.title.replace('Quiz – ', '')) + '</td><td>' + st + '</td><td class="num">' + frac(a.submitted, a.of) + '</td><td class="num">' + cell(a.average) + '</td><td class="num"><input type="number" min="0" max="180" inputmode="numeric" style="width:72px;text-align:center" value="' + (a.minutes || 0) + '" data-qmin="' + a.id + '" aria-label="مدة الكويز بالدقائق"></td><td><button class="btn ghost sm" data-item="' + a.id + '" type="button">مين حلّ / افتح</button></td></tr>';
     }).join('') + '</tbody></table></div><div style="padding:10px 16px"><button class="btn ghost sm" data-xpgo="QZ|' + sel + '" type="button">تصدير علامات كويزات الوحدة (الأدائي)</button></div></div>' +
     '<h2>واجبات الوحدة ' + sel.slice(1) + '</h2><div class="small muted">التسليم الأحد والأربعاء حسب أسابيع الوحدة. الواجب يتاح لحاله قبل يومين، وتقدر تغيّر الموعد.</div>' + hws.map(function (a) { return hwCard(a, true); }).join('') + '</div>';
 }
