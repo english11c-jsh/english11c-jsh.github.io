@@ -3228,7 +3228,7 @@ function examPickWin(id) {
     return '<div class="xu"><div class="row between"><b>الوحدة ' + u.no + ' <span class="en" style="display:inline;font-weight:600">' + esc(u.title) + '</span></b><label class="small row" style="gap:6px"><input type="checkbox" data-xall="' + id + '|' + u.id + '"' + (inU === u.lessons.length ? ' checked' : '') + '> كل الوحدة</label></div><div class="xls">' +
       u.lessons.map(function (l) { return '<label class="small"><input type="checkbox" data-xl="' + id + '" data-u="' + u.id + '" value="' + l.id + '"' + (e.lessons.indexOf(l.id) >= 0 ? ' checked' : '') + '> <span class="en" style="display:inline">' + esc(l.title) + '</span></label>'; }).join('') + '</div></div>';
   }).join('');
-  var w = winOpen('مادة ' + (id === 'EX-MID' ? 'امتحان منتصف الفصل' : 'الامتحان النهائي'), '<div class="small muted">اختر الدروس اللي تدخل بالامتحان. الأسئلة تنسحب بس منها.</div>' + units +
+  var w = winOpen('مادة ' + (id === 'EX-MID' ? 'امتحان منتصف الفصل' : id === 'EX-TRY' ? 'الامتحان التجريبي' : 'الامتحان النهائي'), '<div class="small muted">اختر الدروس اللي تدخل بالامتحان. الأسئلة تنسحب بس منها.</div>' + units +
     '<div class="row"><button class="btn" type="button" data-xpsave="' + id + '">حفظ المادة</button><span class="small" id="xps"></span></div>');
   wireMarks();
   w.querySelector('[data-xpsave]').onclick = function () {
