@@ -1452,7 +1452,7 @@ function rmResume(then, orElse) {
   busy(true);
   call('apiResume', k).then(function (r) { busy(false); S.token = r.token; store('tk_' + VIEW, r.token); then(); }).catch(function (e) { busy(false); rmClear(); orElse(String(e && e.message || e)); });
 }
-function rmCheck() { return '<label class="row small" style="gap:8px;font-weight:700"><input type="checkbox" id="rm" style="width:auto;margin:0"' + (rmOn() ? ' checked' : '') + '> خلّيني داخل على هاد الجهاز</label>'; }
+function rmCheck() { return '<label class="row small" style="gap:8px;font-weight:700"><input type="checkbox" id="rm" style="width:auto;margin:0"' + (rmOn() ? ' checked' : '') + '> تذكّرني</label>'; }
 /** The browser offers to save the number + code (or the password), and fills them in next time. */
 function saveCred(id, pw) { try { if (window.PasswordCredential && navigator.credentials) navigator.credentials.store(new PasswordCredential({ id: id, password: pw, name: id })).catch(function () {}); } catch (e) {} }
 function fail(msg) {
