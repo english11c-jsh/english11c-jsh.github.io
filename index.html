@@ -1146,6 +1146,9 @@ html:not(.w-lt720)[data-theme="lexicon"] .next > div:last-child:not(:nth-child(2
 [data-theme="lexicon"] .tzb{display:none}
 html.w-lt600 #cfV .cert{aspect-ratio:auto}
 .chk{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:6px 14px;background:var(--card);cursor:pointer;font-weight:700}.chk input{width:auto;margin:0}
+details.xsched{border:1px dashed var(--line);border-radius:12px;padding:10px 12px}details.xsched summary{cursor:pointer}
+select{max-width:100%}
+.cact{display:flex;gap:6px;flex-wrap:wrap;align-items:center}.cin{width:100%;max-width:130px;min-width:0;padding:6px 8px;font-size:.9rem}html.w-lt600 .cin{max-width:none;flex:1 1 100%}
 </style>
 </head>
 <body>
@@ -1176,6 +1179,7 @@ window.addEventListener('orientationchange', function () { setTimeout(applyViewM
     <button id="darkBtn" class="tbtn" type="button" aria-pressed="false" aria-label="الوضع الليلي" title="الوضع الليلي"></button>
     <button id="helpBtn" class="tbtn" type="button" aria-label="طريقة الاستخدام" title="طريقة الاستخدام">?</button>
     <span class="who hidden" id="who"></span>
+    <button id="codeBtn" class="tbtn hidden" type="button" data-mycode>غيّر رمزي</button>
     <button id="logout" class="tbtn out hidden" type="button">خروج</button>
   </div>
   <button id="menuBtn" class="menubtn hidden" type="button" aria-expanded="false" aria-controls="drawer"><span class="mb" aria-hidden="true"><i></i><i></i><i></i></span><span>القائمة</span></button>
@@ -1198,7 +1202,22 @@ var VIEW = 'student';
 document.body.classList.toggle('tview', VIEW === 'teacher');
 var S = { token: null, name: '', data: null, tab: 'home' };
 var app = document.getElementById('app');
-function who(n) { var w = $('who'); if (!w) return; w.textContent = n || ''; w.classList.toggle('hidden', !n); }
+function who(n) { var w = $('who'); if (!w) return; w.textContent = n || ''; w.classList.toggle('hidden', !n); var cb = $('codeBtn'); if (cb) cb.classList.toggle('hidden', !n || VIEW === 'teacher'); }
+function myCodeWin() {
+  var w = winOpen('غيّر رمزك', '<div class="small muted">رمزك إلك لحالك. اختار رمز من 4 لـ 8 أرقام بتتذكره، ولا تعطيه لحدا. بعد التغيير بتضل داخل من هاد الجهاز، وأي جهاز ثاني بيطلع.</div>' +
+    '<label class="f">رمزك الحالي<input type="password" id="mcOld" inputmode="numeric" maxlength="8" autocomplete="current-password"></label>' +
+    '<label class="f">الرمز الجديد<input type="password" id="mcNew" inputmode="numeric" maxlength="8" autocomplete="new-password"></label>' +
+    '<label class="f">أعد الرمز الجديد<input type="password" id="mcNew2" inputmode="numeric" maxlength="8" autocomplete="new-password"></label>' +
+    '<div class="err" id="mcErr"></div><div class="row"><button class="btn" id="mcSave" type="button">غيّر الرمز</button></div>');
+  w.querySelector('#mcSave').onclick = function () {
+    var o = w.querySelector('#mcOld').value.trim(), n1 = w.querySelector('#mcNew').value.trim(), n2 = w.querySelector('#mcNew2').value.trim(), er = w.querySelector('#mcErr');
+    if (!/^\d{4,8}$/.test(n1)) { er.textContent = 'الرمز الجديد لازم يكون أرقام بس، من 4 لـ 8 أرقام.'; return; }
+    if (n1 !== n2) { er.textContent = 'الرمزين الجداد مش متطابقين.'; return; }
+    er.textContent = 'جاري التغيير…';
+    call('apiChangeCode', S.token, o, n1).then(function (r) { S.token = r.token; store('tk_' + VIEW, r.token); winBack(); notice('تم تغيير رمزك. احفظه منيح، وادخل فيه المرة الجاية.', 'تم'); })
+      .catch(function (e) { er.textContent = String(e && e.message || e); });
+  };
+}
 /** Each section has its own address (#/lessons), so the browser's back button and refresh work like any website. */
 var RT = { pre: (location.hash.indexOf('#teacher') === 0 ? '#teacher/' : '#/'), lock: false };
 function routeNow() { var h0 = location.hash; if (h0.indexOf(RT.pre) === 0) return h0.slice(RT.pre.length).split('?')[0]; return ''; }
@@ -1273,7 +1292,7 @@ function siteNav(items, cur, attr, extra) {
     if (VIEW === 'teacher') dr = SN.extra + TNAV.map(function (g) { return '<div class="dg"><div class="dgl">' + g[0] + '</div><div class="dgi">' + g[1].map(function (x) { var bdg = items.filter(function (i) { return i[0] === x[0]; })[0]; return link([x[0], x[1], bdg && bdg[2]]); }).join('') + '</div></div>'; }).join('');
     else dr = '<div class="dgi">' + items.map(link).join('') + '</div>';
   }
-  dr += '<div class="dtools"><button type="button" class="tbtn" data-dfont>أ+ تكبير الخط</button><button type="button" class="tbtn" data-ddark>الوضع الليلي</button><button type="button" class="tbtn" data-fhelp>طريقة الاستخدام</button>' + (installed() ? '' : '<button type="button" class="tbtn" data-install>ثبّت الموقع على جوالك</button>') + (S.token ? '<button type="button" class="tbtn out" data-dout>خروج</button>' : '') + '</div>';
+  dr += '<div class="dtools">' + (VIEW !== 'teacher' && S.token ? '<button type="button" class="tbtn" data-mycode>غيّر رمزي</button>' : '') + '<button type="button" class="tbtn" data-dfont>أ+ تكبير الخط</button><button type="button" class="tbtn" data-ddark>الوضع الليلي</button><button type="button" class="tbtn" data-fhelp>طريقة الاستخدام</button>' + (installed() ? '' : '<button type="button" class="tbtn" data-install>ثبّت الموقع على جوالك</button>') + (S.token ? '<button type="button" class="tbtn out" data-dout>خروج</button>' : '') + '</div>';
   $('drawerIn').innerHTML = dr;
   $('menuBtn').classList.toggle('hidden', false);
   var badges = items ? items.reduce(function (x, i) { return x + (Number(i[2]) || 0); }, 0) : 0;
@@ -1297,6 +1316,7 @@ function siteChrome() {
     if (t2.closest('[data-dfont]')) { lset('bigtext', lget('bigtext') === '1' ? '0' : '1'); applyFont(); return; }
     if (t2.closest('[data-ddark]')) { lset('dark', lget('dark') === '1' ? '0' : '1'); applyDark(); return; }
     if (t2.closest('[data-dout]')) { menu(false); logout(); return; }
+    if (t2.closest('[data-mycode]')) { menu(false); myCodeWin(); return; }
     if (t2.closest('#foot [data-install]')) { installWin(); return; }
     if (!t2.closest('#top')) menu(false);
   });
@@ -1314,7 +1334,7 @@ function typeName(t) { return { quiz: 'كويز', homework: 'واجب', test: '�
 var LV = { strong: 'قوي', mid: 'متوسط', weak: 'بحاجة تقوية', none: 'لم يُقَس بعد' };
 function fail(msg) {
   busy(false); msg = String(msg || '');
-  if (/الجلسة/.test(msg)) { logout(); return; }
+  if (/الجلسة/.test(msg)) { logout(); if (/جهاز ثاني/.test(msg)) { var e0 = $('err'); if (e0) e0.textContent = 'طلعت من هون لأنه حسابك انفتح من جهاز ثاني. إذا هاد جهازك، ادخل مرة ثانية.'; } return; }
   if (/مقفل/.test(msg) && Q && Q.r && Q.r.guard) { lockScreen(); return; }
   if (/لم يفتح|يفتح|يتاح|لم يُتح|سمح لك|لم يحن|خلّص دراسة|مقفل|انتهى وقت|انتهى وقته|حليت هذا|الإجابات/.test(msg)) { notice(msg); return; }
   var e = $('err'); if (e) e.textContent = msg; else notice(msg, 'تنبيه');
@@ -1387,7 +1407,7 @@ function studentLogin() {
     '<form class="panel login stack" id="f" autocomplete="off">' +
     '<div class="lgh"><img alt="" src="data:image/webp;base64,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"><div><b>منصة الإنجليزي</b><span>الأول ثانوي (ج) · 2026/2027</span></div></div><div><h1 style="text-align:center">أهلًا فيك</h1><p class="muted small" style="text-align:center;margin:0">ادخل برقمك ورمزك الخاص اللي أعطاك إياه الأستاذ.</p></div>' +
     '<label class="f">رقم الطالب<input type="text" id="num" inputmode="numeric" placeholder="مثال: 07" required></label>' +
-    '<label class="f">الرمز السري<input type="password" id="code" inputmode="numeric" placeholder="4 أرقام" required></label>' +
+    '<label class="f">الرمز السري<input type="password" id="code" inputmode="numeric" maxlength="8" placeholder="رمزك السري" required></label>' +
     '<div class="err" id="err"></div><button class="btn" type="submit">دخول</button>' + loginInstall() + '</form></div>');
   each('[data-install]', function (b) { b.onclick = installWin; }, app);
   $('f').onsubmit = function (ev) {
@@ -1982,6 +2002,10 @@ function wireTeacher(root) {
   each('[data-item]', function (b) { b.onclick = function () { itemModal(b.dataset.item); }; }, root);
   each('[data-due]', function (b) { b.onclick = function () { saveDue(b.dataset.due); }; }, root);
   each('[data-openx]', function (b) { b.onclick = function () { openExam(b.dataset.openx); }; }, root);
+  each('[data-sugx]', function (b) { b.onclick = function () { var i = $('xm_' + b.dataset.sugx); if (i) { i.value = b.dataset.m; i.focus(); } }; }, root);
+  each('[data-schedx]', function (b) { b.onclick = function () { var id = b.dataset.schedx, msg = $('xsm_' + id); msg.textContent = 'جاري الحفظ…';
+    call('apiTeacherScheduleExam', S.token, id, $('xf_' + id).value, $('xt_' + id).value, $('xm_' + id) ? $('xm_' + id).value : 45).then(function (r) { msg.textContent = 'تم. يفتح ' + dFull(parseS(r.openText)) + ' ويسكّر ' + dFull(parseS(r.closeText)) + '.'; setTimeout(loadTeacher, 900); }).catch(function (e) { msg.textContent = String(e && e.message || e); }); }; }, root);
+  each('[data-unschedx]', function (b) { b.onclick = function () { if (b.dataset.c !== '1') { b.dataset.c = '1'; b.textContent = 'متأكد؟'; return; } busy(true); call('apiTeacherUnscheduleExam', S.token, b.dataset.unschedx).then(loadTeacher).catch(fail); }; }, root);
   each('[data-closex]', function (b) { b.onclick = function () { closeExam(b.dataset.closex, b); }; }, root);
   each('[data-gb]', function (b) { b.onclick = function () { T.gb = b.dataset.gb; renderTeacher(); }; }, root);
   each('[data-tunit]', function (b) { b.onclick = function () { T.unit = b.dataset.tunit; renderTeacher(); }; }, root);
@@ -2002,10 +2026,22 @@ function solvedLine(a) {
 function examCard(a) {
   var live = a.published && a.state === 'open';
   var never = !a.published || a.state === 'soon';
+  var sched = a.published && a.state === 'soon';
+  var nowTs = T.data.calendar.now, pad = function (n) { return (n < 10 ? '0' : '') + n; };
+  var inp = function (ts) { var x = new Date(ts + 3 * 3600e3); return x.getUTCFullYear() + '-' + pad(x.getUTCMonth() + 1) + '-' + pad(x.getUTCDate()) + 'T' + pad(x.getUTCHours()) + ':' + pad(x.getUTCMinutes()); };
+  var f0 = sched ? toInput(a.openAt) : inp(Math.ceil(nowTs / 36e5) * 36e5), t0 = sched ? toInput(a.closeAt) : inp(Math.ceil(nowTs / 36e5) * 36e5 + 864e5);
+  var ex = (T.data.exams || []).filter(function (x) { return x.id === a.id; })[0], sk = ex && ex.skills;
+  var sug = sk ? Math.max(10, Math.ceil(((sk.R ? 4 : 0) + sk.R * 2 + sk.W * 1.5 + sk.V * 1) / 5) * 5) : null;
+  var plan = live ? '' : '<details class="xsched"' + (sched ? ' open' : '') + '><summary class="small"><b>أو افتحه بوقت محدّد</b> (يفتح ويسكّر لحاله)</summary><div class="stack" style="margin-top:8px">' +
+    '<div class="grid" style="display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))"><label class="f small">يفتح<input type="datetime-local" id="xf_' + a.id + '" value="' + f0 + '"></label><label class="f small">يسكّر<input type="datetime-local" id="xt_' + a.id + '" value="' + t0 + '"></label></div>' +
+    (sug ? '<div class="row small"><span>مدة الامتحان المقترحة حسب عدد أسئلته (' + (sk.R + sk.W + sk.V) + ' سؤال): <b>' + sug + ' دقيقة</b></span><button class="btn ghost sm" type="button" data-sugx="' + a.id + '" data-m="' + sug + '">استخدمها</button></div>' : '') +
+    '<div class="tiny muted">الطالب بيحل الامتحان مرة وحدة: أول ما يبلّش بياخذ مدة الامتحان، وأول ما يسلّم (أو يخلص وقته) بيتسكّر عنده. والمدة ما بتتعدّى وقت السكّر، فاللي بيبلّش متأخر بياخذ وقت أقل.</div>' +
+    '<div class="row"><button class="btn" type="button" data-schedx="' + a.id + '">' + (sched ? 'تعديل الموعد' : 'حفظ الموعد') + '</button>' + (sched ? '<button class="btn ghost" type="button" data-unschedx="' + a.id + '">إلغاء الجدولة</button>' : '') + '<span class="small" id="xsm_' + a.id + '"></span></div></div></details>';
   var inner;
   if (live) inner = '<div class="row between"><div><span class="chip ok">مسموح الآن</span> <span class="small muted">يغلق ' + dTime(parseS(a.closeText)) + '</span><div style="margin-top:6px"><b style="font-size:1.6rem"><bdi>' + a.submitted + '/' + a.of + '</bdi></b> <span class="muted small">سلّموا</span></div></div><button class="btn danger" data-closex="' + a.id + '" type="button">أغلق الامتحان الآن</button></div>';
-  else inner = (never ? '<div class="small muted">مخفي عن الطلاب لحد ما تتيحه لهم. أسئلته من بنك الأسئلة، ولكل طالب أسئلة مختلفة.</div>' : '<div class="row"><span class="chip">انتهى</span><span class="small">سلّم ' + frac(a.submitted, a.of) + '، المعدل ' + (a.average === null ? '—' : a.average + '%') + '. الطلاب يشوفوا إجاباتهم والصحيح الآن.</span></div>') +
+  else inner = (sched ? '<div class="row"><span class="chip now">مجدول</span><span class="small">يفتح <b>' + dFull(parseS(a.openText)) + '</b> ويسكّر <b>' + dFull(parseS(a.closeText)) + '</b></span></div>' : '') + (sched ? '' : never ? '<div class="small muted">مخفي عن الطلاب لحد ما تتيحه لهم. أسئلته من بنك الأسئلة، ولكل طالب أسئلة مختلفة.</div>' : '<div class="row"><span class="chip">انتهى</span><span class="small">سلّم ' + frac(a.submitted, a.of) + '، المعدل ' + (a.average === null ? '—' : a.average + '%') + '. الطلاب يشوفوا إجاباتهم والصحيح الآن.</span></div>') +
       '<div class="row"><label class="row small" style="font-weight:700">المدة <input type="number" min="5" id="xm_' + a.id + '" value="' + (a.minutes || 45) + '" style="width:84px"> دقيقة</label><button class="btn teal" data-openx="' + a.id + '" type="button">' + (never ? 'افتح الامتحان الآن' : 'افتحه مرة ثانية') + '</button></div>';
+  inner += plan;
   return '<div class="panel stack' + (live ? ' examlive' : '') + '"><div class="row between"><div class="row"><span class="chip">امتحان</span><b><bdi dir="ltr" class="en">' + esc(a.title) + '</bdi></b></div><div class="row">' + (a.submitted ? solvedLine(a) : '') + (a.published && a.state !== 'soon' ? '<button class="btn sm" data-live="' + a.id + '" type="button">متابعة مباشرة</button>' : '') + (a.submitted ? '<button class="btn ghost sm" data-ianal="' + a.id + '" type="button">تحليل الأسئلة</button><button class="btn ghost sm" data-xpgo="' + a.id + '" type="button">تصدير العلامات</button>' : '') + '</div></div>' + inner + '</div>';
 }
 
@@ -2391,8 +2427,8 @@ function tMore() {
       '<div class="bkauto"><div><b>نسخة تلقائية كل أسبوع على Google Drive</b><div class="small muted">كل جمعة الساعة 10 بالليل تنحفظ نسخة من ملف البيانات بمجلد «نسخ احتياطية – منصة الأول ثانوي ج» على Drive تبعك، وتضل آخر 8 نسخ.</div><div class="small" id="bkAutoMsg">' + (d.backup && d.backup.auto ? 'شغّال' + (d.backup.lastAuto ? '. آخر نسخة: ' + esc(d.backup.lastAuto) : '') : 'مطفي') + '</div></div><button class="btn ' + (d.backup && d.backup.auto ? 'ghost' : 'teal') + '" id="bkAuto" type="button">' + (d.backup && d.backup.auto ? 'أطفئ النسخ التلقائي' : 'شغّل النسخ التلقائي') + '</button></div></div>' +
     '<div class="panel stack"><h2>رموز الدخول</h2><div class="alert a-info small">وزّع على كل طالب رقمه ورمزه لحاله برسالة خاصة، ولا تنشر القائمة كاملة بمجموعة الصف.</div><div class="row"><button class="btn ghost sm" id="copyCodes" type="button">نسخ القائمة</button><span class="small" id="copied"></span></div><div class="small muted">أو نزّلها كقصاصات تقصّها وتعطي كل طالب قصاصته:</div>' + xbar('codes', true) +
     '<details><summary>اعرض الرموز</summary><div class="tbl" style="margin-top:8px"><table><thead><tr><th class="num">رقم</th><th>الاسم</th><th class="num">الرمز</th><th></th></tr></thead><tbody>' +
-    d.students.map(function (s) { return '<tr><td class="num">' + s.number + '</td><td>' + esc(s.name) + '</td><td class="num"><bdi data-code="' + s.number + '">' + esc(s.code) + '</bdi></td><td><button class="btn ghost sm" data-newcode="' + s.number + '" type="button">رمز جديد</button></td></tr>'; }).join('') + '</tbody></table></div></details>' +
-    '<div class="tiny muted">«رمز جديد» للطالب اللي نسي رمزه أو عرفه غيره: الرمز القديم يوقف، وإذا كان فاتح المنصة يطلع منها.</div></div></div>';
+    d.students.map(function (s) { return '<tr><td class="num">' + s.number + '</td><td>' + esc(s.name) + '</td><td class="num"><bdi data-code="' + s.number + '">' + esc(s.code) + '</bdi></td><td><div class="cact"><input class="cin" type="text" inputmode="numeric" maxlength="8" placeholder="رمز تختاره" data-cin="' + s.number + '" aria-label="رمز جديد للطالب ' + esc(s.name) + '"><button class="btn sm" data-setcode="' + s.number + '" type="button">حفظ</button><button class="btn ghost sm" data-newcode="' + s.number + '" type="button">عشوائي</button></div></td></tr>'; }).join('') + '</tbody></table></div></details>' +
+    '<div class="tiny muted">للطالب اللي نسي رمزه أو عرفه غيره: اكتب رمز من 4 لـ 8 أرقام واكبس «حفظ»، أو اكبس «عشوائي» والمنصة بتختار. الرمز القديم بيوقف، وإذا كان فاتح المنصة بيطلع منها. والطالب كمان بيقدر يغيّر رمزه بنفسه من «غيّر رمزي».</div></div></div>';
 }
 function drawQR() {
   var box = $('qrImg'); if (!box) return;
@@ -2766,7 +2802,7 @@ function tExams() {
   return '<div class="stack"><h2>الامتحانات وبنك الأسئلة</h2><div class="small muted">لكل امتحان: موعده ومدته ومادته، وزر لإتاحته وقت الامتحان. «معاينة وتعديل الأسئلة» توريك كل الأسئلة اللي ممكن تطلع بالامتحان قبل موعده، وتقدر تعدّل أو تحذف أو تضيف أسئلتك.</div>' +
     '<div class="two">' + d.exams.map(examSettings).join('') + '</div>' +
     '<div class="panel stack"><div class="row between"><div><h3>أضف امتحانات سابقة لبنك الأسئلة</h3><div class="small muted">امتحانات وزارية أو امتحانات مدرسية سابقة: الصق الأسئلة (ومعها النصوص) وتنضاف للبنك، وتدخل بالامتحانات حسب المهارة.</div></div><button class="btn" type="button" data-import>أضف أسئلة</button></div></div>' +
-    '<div class="panel stack"><h3>معاينة أي كويز أو واجب</h3><div class="row"><select id="pvSel" style="width:auto;max-width:100%">' + d.assessments.filter(function (a) { return a.type !== 'test'; }).map(function (a) { return '<option value="' + a.id + '">' + a.unit.replace('U', 'الوحدة ') + ' – ' + esc(a.title.replace('Quiz – ', '')) + '</option>'; }).join('') + '</select><button class="btn ghost sm" id="pvGo" type="button">معاينة الأسئلة</button></div></div></div>';
+    '<div class="panel stack"><h3>معاينة أي كويز أو واجب</h3><div class="row"><select id="pvSel" style="flex:1 1 220px;width:100%;max-width:100%;min-width:0">' + d.assessments.filter(function (a) { return a.type !== 'test'; }).map(function (a) { return '<option value="' + a.id + '">' + a.unit.replace('U', 'الوحدة ') + ' – ' + esc(a.title.replace('Quiz – ', '')) + '</option>'; }).join('') + '</select><button class="btn ghost sm" id="pvGo" type="button">معاينة الأسئلة</button></div></div></div>';
 }
 
 var BK = { per: 40 };
@@ -2856,6 +2892,12 @@ function wireT3() {
     var on = !(T.data.backup && T.data.backup.auto); $('bkAutoMsg').textContent = on ? 'جاري التشغيل وعمل أول نسخة…' : 'جاري الإطفاء…'; ba.disabled = true;
     call('apiTeacherAutoBackup', S.token, on).then(function (r) { T.data.backup = { auto: r.on, lastAuto: r.last, last: (T.data.backup || {}).last }; renderTeacher(); }).catch(function (e) { ba.disabled = false; $('bkAutoMsg').textContent = String(e && e.message || e); });
   };
+  each('[data-setcode]', function (b) { b.onclick = function () {
+    var n = b.dataset.setcode, inp = document.querySelector('[data-cin="' + n + '"]'), v = (inp.value || '').trim();
+    if (!/^\d{4,8}$/.test(v)) { inp.focus(); b.textContent = '4–8 أرقام'; setTimeout(function () { b.textContent = 'حفظ'; }, 1800); return; }
+    b.textContent = '…';
+    call('apiTeacherSetCode', S.token, n, v).then(function (r) { var c = document.querySelector('[data-code="' + n + '"]'); if (c) c.textContent = r.code; inp.value = ''; b.textContent = 'تم'; var st = T.data.students.filter(function (x) { return x.number === n; })[0]; if (st) st.code = r.code; setTimeout(function () { b.textContent = 'حفظ'; }, 1800); }).catch(function (e) { b.textContent = 'حفظ'; alertBox(String(e && e.message || e)); });
+  }; });
   each('[data-newcode]', function (b) { b.onclick = function () {
     if (b.dataset.c !== '1') { b.dataset.c = '1'; b.textContent = 'متأكد؟'; return; }
     b.textContent = '…';
