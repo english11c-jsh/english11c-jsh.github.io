@@ -2952,7 +2952,7 @@ function tMarks() {
   var rows = d.students.map(function (s) {
     var m = M.students[s.number];
     return '<tr><td class="stk"><button class="btn link sm" type="button" data-mk="' + s.number + '"><span class="muted small">' + s.number + '</span> ' + esc(firstTwo(s.name)) + '</button></td>' +
-      MK.map(function (k) { var x = m[k[1]]; return '<td class="num"><input class="mk" type="number" step="0.5" min="0" max="' + x.max + '" data-mi="' + k[0] + '" data-mn="' + s.number + '" value="' + (x.source === 'manual' ? x.mark : '') + '" placeholder="' + (x.auto === null ? '—' : x.auto) + '" aria-label="' + k[2] + ' ' + esc(s.name) + '"></td>'; }).join('') +
+      MK.map(function (k) { var x = m[k[1]]; return '<td class="num"><input class="mk" type="number" step="1" min="0" max="' + x.max + '" data-mi="' + k[0] + '" data-mn="' + s.number + '" value="' + (x.source === 'manual' ? x.mark : '') + '" placeholder="' + (x.auto === null ? '—' : x.auto) + '" aria-label="' + k[2] + ' ' + esc(s.name) + '"></td>'; }).join('') +
       '<td class="num"><b>' + (m.total === null ? '—' : m.total) + '</b></td></tr>';
   }).join('');
   var pu = d.course.filter(function (u) { return u.id === T.punit; })[0];
