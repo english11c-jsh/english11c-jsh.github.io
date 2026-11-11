@@ -1273,7 +1273,7 @@ function cdStart() { cdTick(); if (!CD.iv && document.querySelector('[data-cd]')
 var PR = { key: '', since: 0, sent: 0, iv: null };
 var PAGE_AR = { home: 'الصفحة الرئيسية', lessons: 'قائمة الدروس', hw: 'قائمة الواجبات', exams: 'قائمة الامتحانات', results: 'علاماتي', teacher: 'الإعلانات والرسائل' };
 function prWhere() {
-  if (Q && Q.r) { if (Q.id === 'PRACTICE') return { k: 'practice', id: 'PRACTICE', t: 'تدريب حر' }; var it = (S.data && S.data.items || []).filter(function (i) { return i.id === Q.id; })[0]; return { k: it ? it.type : 'quiz', id: Q.id, t: String(Q.r.title || '').replace('Quiz – ', '') }; }
+  if (Q && Q.r) { if (Q.id === 'PRACTICE') return { k: 'practice', id: 'PRACTICE', t: 'تدريب حر' }; var it = (S.data && S.data.items || []).filter(function (i) { return i.id === Q.id; })[0]; return { k: it ? it.type : 'quiz', id: Q.id, t: String(Q.r.title || '').replace('Quiz – ', ''), att: Q.r.attemptId }; }
   if (LT) { var l = S.data ? lessonsOf(S.data).filter(function (x) { return x.id === LT.id; })[0] : null; return { k: 'lesson', id: LT.id, t: l ? l.title : LT.id }; }
   return { k: 'page', id: S.tab || 'home', t: PAGE_AR[S.tab] || 'المنصة' };
 }
@@ -1281,9 +1281,9 @@ function prTick() {
   if (!S.token || VIEW === 'teacher' || document.hidden) return;
   var w = prWhere(), key = w.k + '|' + w.id, now = Date.now();
   if (key !== PR.key) { PR.key = key; PR.since = now + CD.off; PR.sent = 0; }
-  if (now - PR.sent < 20000) return;
+  if (now - PR.sent < (w.att ? 10000 : 20000)) return;
   PR.sent = now; w.since = PR.since; w.seen = PR.seen || (S.data && S.data.calendar.now) || 0;
-  call('apiPing', S.token, w).then(function (r) { if (r && r.nt && r.nt.at > (PR.seen || 0)) { PR.seen = r.nt.at; newsBar(r.nt); } }).catch(function () {});
+  call('apiPing', S.token, w).then(function (r) { if (r && r.ended && Q && Q.r && Q.r.attemptId === r.ended) examStopped(); if (r && r.nt && r.nt.at > (PR.seen || 0)) { PR.seen = r.nt.at; newsBar(r.nt); } }).catch(function () {});
 }
 /** He closed the page, switched app, locked the phone or logged out: tell the platform right away (a beacon still goes out while the page closes). */
 function prOff() {
@@ -1304,6 +1304,16 @@ function newsBar(nt) {
   document.body.appendChild(d);
   var go = d.querySelector('[data-nbgo]'); if (go) go.onclick = function () { d.remove(); winCloseAll(); stopLessonTimer(); loadHome(S.tab); };
   d.querySelector('[data-nbx]').onclick = function () { d.remove(); };
+}
+/** The teacher stopped this student's exam: his answers were handed in, so the exam closes on his screen. */
+function examStopped() {
+  if (!Q || !Q.r) return;
+  var aid = Q.r.attemptId, title = Q.r.title;
+  clearInterval(tick); clearInterval(GD.poll); clearTimeout(GD.dt); busy(false);
+  Q = null; examMode(false); guardOverlay(false); store('ans_' + aid, null); store('lv_' + aid, null);
+  h('<div class="center"><div class="panel login stack" style="text-align:center"><h1>تم إيقاف امتحانك</h1><div class="muted en" style="text-align:center">' + esc(title) + '</div>' +
+    '<div class="alert a-info">الأستاذ أوقف امتحانك وتم تسليم إجاباتك اللي جاوبتها.</div><button class="btn" id="stHome" type="button">ارجع للرئيسية</button></div></div>');
+  $('stHome').onclick = function () { loadHome('home'); };
 }
 function prStart() { if (PR.iv || VIEW === 'teacher') return; PR.iv = setInterval(prTick, 3000); document.addEventListener('visibilitychange', function () { if (document.hidden) prOff(); else { PR.sent = 0; prTick(); } }); window.addEventListener('pagehide', prOff); prTick(); }
 /** Teacher: who is active now. Reloads every 10 s while the page is open; the clocks tick every second. */
@@ -2002,6 +2012,7 @@ function lockScreen() {
   clearInterval(GD.poll);
   var check = function () {
     call('apiExamState', S.token, aid).then(function (r) {
+      if (r.ended) { clearInterval(GD.poll); examStopped(); return; }
       if (r.locked) return;
       clearInterval(GD.poll);
       $('lkMsg').textContent = 'الأستاذ سمحلك تكمل.'; $('lkGo').classList.remove('hidden');
@@ -2293,6 +2304,12 @@ function examCard(a) {
   if (live) inner = '<div class="row between"><div><span class="chip ok">مسموح الآن</span> <span class="small muted">يغلق ' + dTime(parseS(a.closeText)) + '</span><div style="margin-top:6px"><b style="font-size:1.6rem"><bdi>' + a.submitted + '/' + a.of + '</bdi></b> <span class="muted small">سلّموا</span></div></div><button class="btn danger" data-closex="' + a.id + '" type="button">أغلق الامتحان الآن</button></div>';
   else inner = (sched ? '<div class="row"><span class="chip now">مجدول</span><span class="small">يُتاح <b>' + dFull(parseS(a.openText)) + '</b> ويسكّر <b>' + dFull(parseS(a.closeText)) + '</b></span></div>' : '') + (sched ? '' : never ? '<div class="small muted">مخفي عن الطلاب لحد ما تتيحه لهم. أسئلته من بنك الأسئلة، ولكل طالب أسئلة مختلفة.</div>' : '<div class="row"><span class="chip">انتهى</span><span class="small">سلّم ' + frac(a.submitted, a.of) + '، المعدل ' + (a.average === null ? '—' : a.average + '%') + '. الطلاب يشوفوا إجاباتهم والصحيح الآن.</span></div>') +
       '<div class="row"><label class="row small" style="font-weight:700">المدة <input type="number" min="5" id="xm_' + a.id + '" value="' + (a.minutes || 45) + '" style="width:84px"> دقيقة</label><button class="btn teal" data-openx="' + a.id + '" type="button">' + (never ? 'أتِح الامتحان الآن' : 'أتِحه مرة ثانية') + '</button></div>';
+  if (ex && ex.pool && sk) {
+    var nS = T.data.students.length, part = function (lbl, have, need) { return lbl + ' ' + have + ' (كل طالب ' + need + ')'; };
+    var tight = [['R', 'القراءة'], ['V', 'المفردات والقواعد'], ['W', 'الكتابة']].filter(function (x) { return sk[x[0]] && ex.pool[x[0]] < sk[x[0]] * 3; }).map(function (x) { return x[1]; });
+    inner += '<div class="small muted">أسئلة البنك لهاي المادة: ' + part('قراءة', ex.pool.R, sk.R) + (ex.pool.P ? ' من ' + ex.pool.P + ' نص' : '') + '، ' + part('مفردات وقواعد', ex.pool.V, sk.V) + '، ' + part('كتابة', ex.pool.W, sk.W) + '. ترتيب الأقسام نفسه عند كل الطلاب، والأسئلة بتختلف من طالب لطالب.</div>' +
+      (tight.length ? '<div class="alert a-weak small">أسئلة ' + tight.join(' و') + ' بالبنك قليلة لهاي المادة، فرح يتكرر جزء منها بين الطلاب. لتقلّل التشابه: وسّع المادة، أو شيل «من الكتاب فقط»، أو أضف أسئلة للبنك، أو قلّل عدد أسئلة هالقسم.</div>' : '');
+  }
   inner += plan;
   return '<div class="panel stack' + (live ? ' examlive' : '') + '"><div class="row between"><div class="row"><span class="chip">امتحان</span><b><bdi dir="ltr" class="en">' + esc(a.title) + '</bdi></b></div><div class="row">' + (a.submitted ? solvedLine(a) : '') + (a.published && a.state !== 'soon' ? '<button class="btn sm" data-live="' + a.id + '" type="button">متابعة مباشرة</button>' : '') + (a.submitted ? '<button class="btn ghost sm" data-ianal="' + a.id + '" type="button">تحليل الأسئلة</button><button class="btn ghost sm" data-xpgo="' + a.id + '" type="button">تصدير العلامات</button>' : '') + '</div></div>' + inner + '</div>';
 }
@@ -4030,6 +4047,7 @@ function liveWin(id) {
   var ST = { none: ['lock', 'ما بلّش'], doing: ['now', 'عم يحل'], locked: ['bad', 'مقفل'], done: ['ok', 'سلّم'] }, ord = { locked: 0, doing: 1, none: 2, done: 3 };
   var load = function () {
     if (!w.isConnected) { clearInterval(LIVE.iv); return; }
+    if (LIVE.hold && Date.now() - LIVE.hold < 12000) return;   // he is confirming a stop: don't redraw under his finger
     call('apiTeacherLive', S.token, id).then(function (r) {
       var c = { none: 0, doing: 0, locked: 0, done: 0 }; r.students.forEach(function (x) { c[x.status]++; });
       var list = r.students.slice().sort(function (x, y) { return ord[x.status] - ord[y.status] || (x.number < y.number ? -1 : 1); });
@@ -4038,9 +4056,15 @@ function liveWin(id) {
         list.map(function (x) {
           var t = x.status === 'done' ? cell(x.percent, '<bdi>' + x.score + '/' + x.total + '</bdi>') : (x.status === 'doing' || x.status === 'locked') ? '<bdi>' + Math.max(0, Math.round((x.endsAt - r.now) / 60000)) + ' دقيقة</bdi>' : '—';
           return '<tr><td>' + x.number + ' ' + esc(firstTwo(x.name)) + '</td><td><span class="chip ' + ST[x.status][0] + '">' + ST[x.status][1] + '</span></td><td class="num">' + (x.status === 'done' && x.qn ? frac(x.answered, x.qn) : x.total && x.status !== 'done' ? frac(x.answered, x.total) : '—') + '</td><td class="num">' + (x.status === 'none' ? '—' : (x.leaves || 0)) + '</td><td>' + t + '</td><td>' +
-            (x.status === 'locked' ? '<button class="btn teal sm" type="button" data-lvun="' + x.attemptId + '">اسمحله يكمل</button>' : '') + '</td></tr>';
+            (x.status === 'locked' ? '<button class="btn teal sm" type="button" data-lvun="' + x.attemptId + '">اسمحله يكمل</button> ' : '') +
+            (x.status === 'locked' || x.status === 'doing' ? '<button class="btn ghost sm" type="button" data-lvstop="' + x.attemptId + '">أوقف وسلّم ورقته</button>' : '') + '</td></tr>';
         }).join('') + '</tbody></table></div>';
       cardTables(box);
+      each('[data-lvstop]', function (b) { b.onclick = function () {
+        if (b.dataset.c !== '1') { b.dataset.c = '1'; b.textContent = 'متأكد؟ اكبس مرة ثانية'; LIVE.hold = Date.now(); return; }
+        b.disabled = true; b.textContent = 'جاري التسليم…';
+        call('apiTeacherStopExam', S.token, b.dataset.lvstop).then(function () { LIVE.hold = 0; load(); guardPoll(); loadTeacher(); }).catch(function (e) { b.textContent = String(e && e.message || e); });
+      }; }, box);
       each('[data-lvun]', function (b) { b.onclick = function () { b.disabled = true; call('apiTeacherUnlock', S.token, b.dataset.lvun).then(function () { load(); guardPoll(); }).catch(function (e) { b.textContent = String(e && e.message || e); }); }; }, box);
     }).catch(function (e) { box.innerHTML = '<div class="err">' + esc(String(e && e.message || e)) + '</div>'; });
   };
