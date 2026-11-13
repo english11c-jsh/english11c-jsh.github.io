@@ -384,6 +384,8 @@ html.w-lt900 .sb .si{width:26px;height:26px}html.w-lt900 .sb .si svg{width:15px;
 .pcell{border:0;background:none;padding:0;cursor:pointer;border-radius:8px}
 .pcell:hover .cell,.pcell:focus-visible .cell{outline:2px solid var(--blue);outline-offset:1px}
 .modal .paper{max-width:900px}
+.xpprev{background:#fff;color:#000;border:1px solid var(--line);border-radius:10px;padding:18px;max-height:70vh;overflow:auto}
+.xpprev > div > div + div{border-top:2px dashed #bbb;margin-top:18px;padding-top:18px}
 .wbar{position:sticky;top:-16px;z-index:5;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin:-16px -16px 2px;padding:10px 14px;background:var(--deep);color:#fff;border-radius:var(--r) var(--r) 0 0}
 .wt{font-weight:800;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
 .wbtns{display:flex;gap:6px}
@@ -2255,6 +2257,7 @@ function wireTeacher(root) {
   each('[data-paper]', function (b) { b.onclick = function (e) { e.preventDefault(); e.stopPropagation(); var k = b.dataset.paper.split('|'); paperModal(k[0], k[1]); }; }, root);
   each('[data-stu]', function (b) { b.onclick = function () { studentDetail(b.dataset.stu); }; }, root);
   each('[data-live]', function (b) { b.onclick = function () { liveWin(b.dataset.live); }; }, root);
+  each('[data-xpaper]', function (b) { b.onclick = function () { examPaperWin(b.dataset.xpaper); }; }, root);
   each('[data-ianal]', function (b) { b.onclick = function () { analysisWin(b.dataset.ianal); }; }, root);
   each('[data-parentq]', function (b) { b.onclick = function () { parentWin(b.dataset.parentq); }; }, root);
   each('[data-remind]', function (b) { b.onclick = remindWin; }, root);
@@ -2310,8 +2313,136 @@ function examCard(a) {
     inner += '<div class="small muted">أسئلة البنك لهاي المادة: ' + part('قراءة', ex.pool.R, sk.R) + (ex.pool.P ? ' من ' + ex.pool.P + ' نص' : '') + '، ' + part('مفردات وقواعد', ex.pool.V, sk.V) + '، ' + part('كتابة', ex.pool.W, sk.W) + '. ترتيب الأقسام نفسه عند كل الطلاب، والأسئلة بتختلف من طالب لطالب.</div>' +
       (tight.length ? '<div class="alert a-weak small">أسئلة ' + tight.join(' و') + ' بالبنك قليلة لهاي المادة، فرح يتكرر جزء منها بين الطلاب. لتقلّل التشابه: وسّع المادة، أو شيل «من الكتاب فقط»، أو أضف أسئلة للبنك، أو قلّل عدد أسئلة هالقسم.</div>' : '');
   }
+  inner += '<div class="row"><button class="btn ghost sm" type="button" data-xpaper="' + a.id + '">ورقة الامتحان للطباعة (Word / PDF)</button></div>';
   inner += plan;
   return '<div class="panel stack' + (live ? ' examlive' : '') + '"><div class="row between"><div class="row"><span class="chip">امتحان</span><b><bdi dir="ltr" class="en">' + esc(a.title) + '</bdi></b></div><div class="row">' + (a.submitted ? solvedLine(a) : '') + (a.published && a.state !== 'soon' ? '<button class="btn sm" data-live="' + a.id + '" type="button">متابعة مباشرة</button>' : '') + (a.submitted ? '<button class="btn ghost sm" data-ianal="' + a.id + '" type="button">تحليل الأسئلة</button><button class="btn ghost sm" data-xpgo="' + a.id + '" type="button">تصدير العلامات</button>' : '') + '</div></div>' + inner + '</div>';
+}
+
+// ---------- teacher: the exam as a printable paper (one form for the class, or 2–3 forms with entirely different questions)
+var MOE_LOGO = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAcFBQYFBAcGBgYIBwcICxILCwoKCxYPEA0SGhYbGhkWGRgcICgiHB4mHhgZIzAkJiorLS4tGyIyNTEsNSgsLSz/2wBDAQcICAsJCxULCxUsHRkdLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCwsLCz/wAARCACWAJIDASIAAhEBAxEB/8QAHAAAAQUBAQEAAAAAAAAAAAAAAAMEBQYHCAIB/8QAPRAAAQMDAwIEBAMFBwQDAAAAAQIDBAAFEQYSIQcxE0FRYRQicZEjMoEVQlJyoQgWM4KSscEkQ9HhYsLx/8QAGgEBAAMBAQEAAAAAAAAAAAAAAAMEBQIGAf/EACgRAAICAQIFBAIDAAAAAAAAAAABAgMRBBIFISIxURNBYXGBkRWh0f/aAAwDAQACEQMRAD8A6RooooAooooAor5kEkZGR3qoXvUMK/Oah0lar6q13+DGDheA2+DkJUlYJ4KRlIV6bvcUBcMjOM1FC8SDqZVq/Y04MJa8T9oHZ8OT/APm3E9/3fKs90ZeZ131NprUSS+/Hutqdtc1Pib0tSYyyd+RwQo+IMjvx6141XYups3qa1fLL+y/gLadsFqVJUlC0rbCXN6EjJJUc5zwEADzyBrVFZuiB1ikAl+9aThk4IDER5zHt8xqD1WepVltDYuWtrLFTJeQ2281bH87wdwSVNhW0HGCSMYJoDWDdIib0m1FaxLUwZAT4atpQFBJO7G3OSOM59qeVlqldU4Tk27XODDuDiIwiMwLPM8JCtyypcj8YYC0AAAc5z7GlYGuX7LpkW3Vc9EaXDsiJc66tuJdDLq1ltCClOcudiMcKIOKAvlov0C+plLt7pebivqjrXtITvScKAJ74PBqRrDNEdRdRRNKouk9tmbZrZutylBQM25y1LSGSlH7pKVIzuOeSecVtSprca2/GXBTUJCGwt4uOAIa45yo4GB60A5ooBBAIOQfOigCiiigCiiigCiiigCqzcdSTrLqRTVxhMtWItB03NTwbbjDsQ6VcZKykAJ8skmpW/3yFpuxSbtcFLTGjJBUG0FalEkJSlIHckkAD1NZTqS/zeqt+h2LQ86fEjMtqTeJykbY7LbgwWVNLT8z3oOCk598AKL1VeDqi46h0faJF4U8v9l3O0qfSPBkIGWJCVAlPhqQcEg9seY4qMLprqjUHUlCNYW+a+05OXKmlhYRbSwtAUUpWDvWrelsbT22edbtpPSNn0XYWbTZoqGGGwN6sDe6rABWs+ajipugGtttkGz25mBbojMOKyNqGWUBCEj2Ap1RVT1hrqNpVUdtTRedkOBtIzgDtkn2AI+9R2WxqW6R3XXKyW2Cyy1qUEpKicAc0hBmNXCE1KaJ2ODIrFtRawvLXUWHDMpaoXiNZb8nAvgn9MnGPSkZGrLnb+o7MKA8Woqy22ttIwFZ5Ur2IyftWV/JdaxHpxnvzNWPCrHHOeeMm7kAjBGRUJatGacsltk2+32WFHhyllx9kNApcUf4gc59h2HlUFYOojNy1FIsshkJdYUEh5J4X25x5cnFXitOm+F0d0DMtpnU9s1grjeg7Awq1NxYLcSHapCpceIwkIZ8cggOKA7lOTjyGfYYomsdd6ltvUCNpi62u0QrBdpKI7MyYkutPMYJd3KKgkLPCQgpxlXc+evVHX2w2zUtnetd3hNTIb4wttwfYg9wR5EcipiIcW23xbVbI8CCyGIsZsNNNgkhCQMAc+1OayaJcbt0fuTNtvsp656KfWGolzdO523KP5Wnz5t+QX5f0F/uesdO2WfBhXK8w4ki4Y+GQ66AXc9iPLB7A9jQE1RRRQBRRRQBRRUbqG+Q9NadnXmevZFhMqeWR3OOwHuTgD3NAZx1b1HIn3BGg4sdDYltNz5txXIShEOK25uccV5oI2Jwr345FXvR2nLLprT6I9i3qhyVmX4q3lPF1SwDvKlEk5AFVPp3o4XPT8/UGrYTUu6apUmVJZfQFJaZBBZZAPkkBJx64z2rSgABgcAUAUUUUAVnvVHRr1+tRlRFthxg+IoL8hjBKT9Mce1aCSACScAdzWd696rWewQH4dveauNyWkoCEHc20SO6iOD/ACjn6VX1FcbIYl+PsuaN2q1OpZZTZOl5tyjQLg/dGUPxRgrb4JOc5HHBxTS42Z2Be13ZNwS8taFBCSOACMAdu1QmntT6uvc9q0W7wVrfV2DAO0eaifIUrryRqfT96VBmqa8P/suJaG1xHsa8stLqcrtjserjKSnsk/x8F96YaLkqkuX64OoUlxzcjaOXCDnn0TnnHtWt1kXTPqtbXLUxZ7443BksjY2+RtacHv8Awq+vBrWmnW32kutOJcbUMpUk5BHsa9PpYRhDl39zzPEXbK5u1Y8fR7oooq0Zw3uECLdbe/BnR25MWQgtutODKVpPBBrELbpRjSvVZnT2rHk3HTkq1vQrKuWkKQEFxLimFqP7yQn5T6YxjsN3qrdRdExNfaMl2aRsQ8oeJGeUM+E8Pyq+nkfYmgPejb/p24xXLXpp12TBtgDAfCXFsnH7qHlZDmPYnFWasw6VdSo+oWIVgdtbcKUzFUUKiKQqOvwleGshKeWgVDKQoDI7GtPoAooooCLv0S7TGIjdpnoglMppclwo3KUwk5WhOQQCrAGT2BNZFeLrf+ovU0dPbnChNWy2Tvjpy2VLy9HbILaVgjA3lSDwfI+lbjSQjMJkqkhlsPrSEKcCRuKQSQCe+ASePegFQMAAcV8JAGTwBX2vi0JWgoUAUqGCD5igOaeo/U64X6+uxIUtcW2xHFJZDDhT42DjxFEHntwOwBpxYtZ9RYNhRHgx5j7Lii63IejKfWUqxjClZ+X0+tMdXaRtem+o3wUQvOxmy0sNvEEJKsq29uQAB39Tmum0IShASkBKU8ADgAVRjGU5Pqw0b119VNcIxgmnz5nOMu2dTtV5TMZujzau6HD4Tf8Ap4FSli6F3OWtLl2nsQ2s8oZ/EX7jPYf1rWtXa2smi7eJF1k4cc4Zjtjc68fRKf8Ak4A9aS0TqSPqazC4MteAp1xQcZzktrHcfqMH7106UpLc8nH8je626oqMV4Q60zo+z6Uhli2RghSh+I8s7nHPqf8AjtTq+aetmoreqFdIiJDJ5GeCk+oPcGnc2dGt0N2VLeSyw0kqWtXYCk7XdYN6tjFxt0puVDkJ3NutnKVDt/vVnZHG3HIyHbNz3t8/Jjd/6EPtLW9ZLkhbYyfClfKQP5xx9xVeY0t1G0sSq3M3BlA5/wCkdC0K/wAoOD9q3zUNxjW2yypMs4YZbU44PUDy/U4H61BaJ6kWXWIMVpfwl0ZH4sN3AX/Mg9lJ9x28wKrOiLliLwaseIaj0t1kVKPbmjKLhrHqbItEm2yoMtxLyNhWIakOpHqFJxg1VNM68u+lr4JkeS68SSHmHlqUl0A8ggng8cHuK6zPaucNVWOBeOtLsWR4rLcm4IZcLBCThW0Z7Yzkjn3Nc2QlDDcsk2l1Ndu6DrSWMs6GtlwYutsjT4qw4xJbS6hQOcgjNOqaWq2xbPao1uhN+HGjNhttOc4A9/OndXkYLxnl2MhmWO/6U6sT2tGxYNvtl+gokSpMiOoRYbjSikqAThJUUnO3IyTk1c9B3OJItsiAjWEfVU6K8oyJDZQCncSQnagkADsPpUze9O2jUkVEa829iewhW9Lb6dyc+uKcwbbBtcZMeBDjw2EjCW2G0tpA+gFD4OaKKKAq3UXV40Ro2VeguGXWCC2xKdLfxHPKEkZO8jOOD2545rL+kfXKdrDVa7LdBCiJfffkNOPvnepKjluO2MAEpz3J5A7ZrbLtbGLvapMJ9KSl9pTe5SArbuSRkA/Wqxo3pXpzQs9+TZmVpEhhppaHSHMqbz+ICeQpW7nHHAwBQF0oPaig0Bzf1AkiR1Wuagcht9Cf9LbY/wDsa6LkSGosZx991DTLaSta1q2pSkckknsK5k1FLac1ffJshKlIkzJLMdScKwsKbHPoMDvWk/2gpDrXTRptqYGA/LbQtrPL6cE7R64ICj9KpaeWZT+zW18dtdS+P8Mbvs9zVvUq7XRuUu4s+OpERYScFsfkCUnkADn7mrnZrJdbfCebMyUhL+1wsxXCEEgHG4pIJPPkdvoT3qnaCs8w36PHZCFSZXCQte1LZ7knkc4HkQcjjzrbY+iL9JjtqcnwITpRyEtqeUFEDPOQO+T596+2xnN9J0tTs00KcYjLn9+H9eCnp1DqKK7Etzl1eEGYva824tLwCMfMAtXzbftT3xV6dcTatPT5EKM8lTjjDChtBHyjbkHbnH7pGe/Jp9qXRsDT1uN3u1zlyAynYttLacKJHO0gbhxyPtUZ05scHU9iiz25suHLaChIQEpUp3KuNxUDjBAAx61U9O7yV91PgiroxdZ0ByIiVMZaWtKnEPvFTa8HjfvJPfnKefY1nd0+Ktdxj3KK8qLMiOJIdQeUHPChjv8A8jit+mdMp7ySXLrFWoqKh+AU4H15zj6VkGudM3G3PM26amOw6Ul7eysLC8ngK5J8vPA9BVmqNkH1FuvUKVM9OllYb+mvdHTtku8O+2SNcYEtuZHfQCl1vgE+fHkc+R5Fc/6tlfDdW5UgHAbuKFH/ACuM1L/2bnJDb2oITssBtvwliITyFfMC4B6YAB/Sq7rtxL+r78hptXxMOTIfWs4AKMt4A88giutW8Ri/kh4WlKcseDpwUUhBfEqBHfHZ1tKx+oBperhlPkZB1w6sS9BRk261rhuzJ8daBh7EiIo/ld24IKcZxnHI86nOkfUpXUeyypb6YUWQwsI+EaeK3UjAytYIGApWcYHl3qf1hoWza3jRI14Z8SPHkpkLQkBJe2pUAhSu+35snBHanGktJ2/Run2LRbkksRysIWsDftKyoAkDnGcZ9qAnKKKKAKqdr6lacuci+MmSuGuxrdTKEpOzKWyQtxHJ3IBByfLjI5FTOpLhLtWmblcIMduTKix1vNtOL2JWpKScE+Q4rP8ApxYERr3e3JVgtz8W8vv3CNdC6045IjPEFLZRgr24Uc547DmgNRbcQ62lxCgpCwFAjzBr6ohKST2HNCUhKQlIAA4AHlXxxIW2pJ7KGDQHHU24ypc59a1rVHTIceQCOAVKyTn3wKvP9oa5SJGpdPwEqw23D+ISPLeteM/ZApnKR8B1Lct0W5zHkQ7ghtUaSvKHkBY3AY4xjPykdu2atnXPSj1x1RpOewg7JEhFtcIHCdywpH9Cv7VR0uerJscWluhDC9n/AGSfSjRsE2prUEsJkS3VK8BPkyASM4/iOD9BV+dC/iFQkv7H0tBxkrTgbgo9v0IBxXjTVlRZrVBix0+EhpB3oPqST/uaa6xceRGkqjna9HhOvtqA5JxtUPsc/UCprumBi6KpxjGD74Me6hOyNWazefdlrFvjISzHZbPAwB4hPkTuJGfQCoezR5Om9RQrpbZrrSo7yS62rlK0ZG9Jx3+Un+lOnnUIjhKCMgeuf/ymviqUs8gjPBIwT96x1xHUvtLl49j1C4XpsYcefn3OgmpokstTEPZ+OWC0EjcUtYJHHvjJ+tQHUDRMG82F+b8rNxhslaX+28JGSlXt3x6GmfTV10WeC68oKAkOxmUkdkY3KI/XA+gq93KCJyVMvYUw42ptScd88H+la+nzKG5+55vWVrdKpe3I5o6R3CRB62RG0n5ZiXWHAOMpLZUPsUim2u5UlvX2olRluIDst1lwoGQpBIyk+3FXPQeiXYPX6WrwlJjWmKmQCrnCnWglKc+vK/8ATUd1MkKjdR7junyYkfxG0ojxVlKlnaNy/RIJJ5OSTnio9VlQRocDzDpa57f8N00ZK+N0PZZGclcNrJznnaB/xU3TKzwG7XZ4sFpanEMNhAWvG5XucedPatxzhZKE2nJtEZqO9o05p+VdXIsmWiMkKLUdO5ZyQM+wGckngAE+VV/QXUeLrltwItky3PpaEhKH9qkuNFakBaVJOPzIUMHB4yMjmktdzL7bnfjGUMKtAjrZWoXcW9xC14TuytJSSO6TuTgk9+Ke6Ktdyt5mOuznH7TJQy5BYkvfEPsfJ86VO5O9O7tyrHODggV0cFrooooDy42h1tTbiErQsFKkqGQQe4IrIpTULpd1dirg2yKzadQQgwgl5DDcNbKytw7lcIR4at20d1J7eda/VK6r6Y/vPoV9tgtIuMJxEyCpwJKS+g/Ik7uCFE7cHg5FAT1n1A3eps5mPEkoZhOFlT7qQlDiweQnnJGNqgrGCFDHniXqnaG1fbLl09auz02W1HhoLcqRdCG1pcSB4m9RABwokZAAyOKuCVJWgKSQUkZBHnQGdI6Q2iZqJ6+T5Ul+Q9KMrYlWxIO/IHHPHFX6VBjTm0IksodS24h5G4flWk7kqHuCK98sqOclsnPHlXx97wmC4kBWO3PeoUo1Jy/ZNZbO3Ck847HsJw4feoq/oSWUlaAlBSpBeIz4eccH/wCJxg02VqFyNMYbmNtx0Ok/nJBwPPmn5vtrUjPxrJGOefKqMOI6a+LW/bjzy/pn1VzraeMmMXnQV2jEv26I5LiL5Qlr5nGvYp7n2I7jFNIOir1LeBfiLt7AV8z0oFCQPYd1H2ArSrtHXqxLkQWiHLjMupWlfjqbOUnKTlJB4I7Uj8K/FdN1kWiO98RtDjokKJO0EDA3YHnWWrdM+vEtvnHL9mnLW6hR2xSz8j/S1vbbdjMxELRBt6Chsq7rUeSo+5Jz7VbljdtHvUXFvtoTHQES46OPypVwD6U3f1FvuIjQQ3IJRv4JJPrxWtZxLS0wT3Z+Fzf6RkQpsk3nu+bJdmDGjypEpplCX5JSXVgcr2jCc/QVRtVdI7NqW6SrqqRJjTJGFKUlWU7gMA4P0FXeFJXIZ3ONhtQ7pyePuKUUfGBQj8p4Ur/xVpOGogpLs/wd122USzB4YREqRCZSpW5QbSCfU4r7Kksw4jsmS6llhlBcccUcBKQMkk+gFKgYGBVW1vIiuwP2XMlXO2x3m1yHrnDUG0RENkHK1nIwokDbg5GcjAJqwQlZvdo1zINkFivce92l15Lsl15LKkqCnt5WoKBC20tkBCUEEFIOT5XbTGm4+lrU5AivOuMrkvSEpXgJa8RZVsQBwlAzgCqX0biMuQrnc4bSW4S5TjDD8ZPgR56EHHjiOCUNq3BQyjAUOcDitNoAooooApKTFjzGfCksNvt7kr2OJChlJCknB8wQCPcUrRQGZ6l6WiXdJLtmIS3dJPxMhmW4Fwo7u0JVIEfb+K6RyAo7Ar5iOKvNkajwISbSi6OXGRDQnxVyHkuPndkhS8YxnnHAHHFSLraHmVtOJC0LBSpJ7EHuKyTT1tveiIs5+06QehpCVtqRKmpkqkrBwwlC934UZsFaiVYIBwATnIGu0mWhklB2E+nb7VUdDasg3LSciS/fjdXLeCqbNUwWGslPiZQNo/DCTwfQc81aoE6Lc7fHnQnkvxZLaXWnUcpWlQyCP0NAeH47EjCJbDbg7AqTkf8Aqm/93bRu3fs9jP8ALUkQFDBGQaS+Zk85U35HzT/6qvPT1Te6cU39I6UmuzKlqefKsHyQI8YRngltLaRsV4h8yR5ADt3qC0vdbiqQzZUx4oZH4p37lJU3uwoYJPIzxz5+1W+96WiXta5Di3FrU2EJT4hCQQchQx2OfOovTuhmojbMqalxmYlYWdj5VjBOE57bfPHvUEqZ+otuNngnjOr0mpLr8/r39iwnTtoUcm3R/wBEAUsxBhwlkRIrSF+ZQkDH1NONynPlbOB5r/8AFKpSEJwkYFTx01MXujBJ/SIN0n3Z4DW7/EO728qU7CgnFR37cs77DJNyiFuY6qMzl5I8VwEpUhOTyoEEEDng1YOR6mQ0tpTiHUKQkkFQUCBjg8+1ZN1F1PKvtu1HYIEqTEetbjTL7EJKX13Jt3H4KFAZbcICwU8kDk8ZwncLbrR/Ut30Vpi3RLTpMxm4/wARIijwmUrSC4pnH+ItW5QKVAgEZJ5q5aJ0MzpKG7B8KEuGw+HYQSzl1J2bVOuOK5U6rJyRgAcDigLNboMa2W2PChsJjxo7aW2m0jAQkDAFOaKKAKKKKAKKKKAKY3m2C8Wh+B8XKhF4AB+KsIdbIIIKSQR3HmCD2p9RQGST+jL1og/B6Tu8lFtnPtG62yW4C1MR4iS4oKAy2opGCEjBHGBU8xcmtHtXTVOr5are3OlJjQopUVpjsJ+VptKE5G9XzLVj1xnCavtN51vh3OE5EnxWZcZwYW08gLQoe4PFAQmiLsu/2E3lNwemQ57zjsTx4yWHGmtxSEHafmGQcE4OCM81YyQBkmsnV0qm2zVDSdKXG56egxUF+K4JYmRUOKBStBjOcpyFHBCiO/Y4pCHZurFjvV2lKNt1G3JQWUiVOcabXySlxLOClsAKCSkEZ29znNAayBHW7tSpPiY3YSrBx68V68BvzTu+pJrG5Vw1hZ7abm5oi2aelWy0/CfFl+MoKJW2lIaUVAJSlPiKDajgnaMnzmJutNWztAaXNliRW9RX+MpxJlDCAUNbyEjsFKHKdxwOc18wDUOAKq116jabs2j1ammTVItoeVHCg2pSlOJWpBSE985Qr7Vn394eqkHTMR24NwrYGpZSZdxQp+RIBUra2piMggDy3JIyADxmpWF0dnz4UqLqTV0yTAnSXJki3W9pMWOpxxW5YydyyknyyPP1r6BLWetdPzo79nu1yeuULUEFLkG3WuGVy2ThK0qVhRUFkqBSClIGzn3YHpZddTaHccuIXCuEpKZ6IQd8ANTVJKXiohKtqHMNuFKeQvdgjNabpvRmndIR1M2K0RoAV+daE5cX/Ms5Uf1NTlANLTHkxbNCjzXxIlNMIQ87/GsJAUr9Tk07oooAooooAooooAooooAooooAooooAooooBGXDiz4q40yO1JjuDC2nUBaFD3B4NfVRmFuNOKZQpbJJbUUjKMjBx6ccUUUAriiiigCiiigCiiigCiiigCiiigP/9k=';
+var XP = { forms: 1, key: true };
+function examPaperWin(id) {
+  var w = winOpen('ورقة الامتحان: ' + exName(id, true),
+    '<div class="stack"><div class="small muted">ورقة للطباعة بالإنجليزي: شعار الوزارة واسم المديرية والمدرسة، ونوع الامتحان، ومكان لاسم الطالب والتاريخ بيعبّوه بإيدهم. الأسئلة من بنك الأسئلة حسب مادة الامتحان وعدد أسئلة كل قسم.</div>' +
+    '<fieldset class="stack xpf" style="border:0;padding:0;margin:0;gap:6px"><legend class="small" style="font-weight:700;margin-bottom:4px">عدد النماذج</legend>' + [[1, 'نموذج واحد للصف كله (بدون اسم طالب)'], [2, 'نموذجين: <bdi dir="ltr">A, B</bdi>'], [3, 'ثلاث نماذج: <bdi dir="ltr">A, B, C</bdi>']].map(function (o) { return '<label class="row small"><input type="radio" name="xpf" data-xpf="' + o[0] + '"' + (XP.forms === o[0] ? ' checked' : '') + '> ' + o[1] + '</label>'; }).join('') + '</fieldset>' +
+    '<div class="tiny muted">بالنماذج: ولا سؤال ولا نص قراءة بيتكرر بين نموذج والثاني.</div>' +
+    '<label class="row small"><input type="checkbox" id="xpKey"' + (XP.key ? ' checked' : '') + '> أضف ورقة الإجابات الصحيحة (بصفحة لحالها بالآخر)</label>' +
+    '<div class="row"><button class="btn" id="xpGo" type="button">جهّز الورقة</button><span class="small" id="xpMsg" role="status"></span></div>' +
+    '<div id="xpOut" class="stack"></div></div>');
+  each('[data-xpf]', function (b) { b.onchange = function () { if (b.checked) XP.forms = Number(b.dataset.xpf); }; }, w);
+  var go = function () {
+    XP.key = $('xpKey').checked;
+    var msg = $('xpMsg'), out = $('xpOut'); msg.textContent = 'جاري التجهيز…'; out.innerHTML = '';
+    call('apiTeacherExamPaper', S.token, id, XP.forms).then(function (r) {
+      msg.textContent = '';
+      var SN = { R: 'القراءة', V: 'المفردات', W: 'الكتابة والقواعد' };
+      if (!Array.isArray(r.forms)) {
+        out.innerHTML = '<div class="alert a-weak">أسئلة البنك لهاي المادة ما بتكفي لـ ' + r.want + ' نماذج مختلفة تمامًا: ' + r.short.map(function (x) { return SN[x.S] + ' فيها ' + x.have + ' سؤال وبدها ' + x.need; }).join('، ') + '.' +
+          (r.maxForms > 1 ? ' بتكفي لـ ' + r.maxForms + ' نماذج.' : ' بتكفي لنموذج واحد بس.') + ' لتزيدها: وسّع مادة الامتحان، أو شيل «من الكتاب فقط»، أو أضف أسئلة للبنك.</div>' +
+          '<div class="row"><button class="btn ghost" type="button" id="xpFew">جهّز ' + (r.maxForms > 1 ? r.maxForms + ' نماذج' : 'نموذج واحد') + '</button></div>';
+        $('xpFew').onclick = function () { XP.forms = r.maxForms; w.querySelector('[data-xpf="' + r.maxForms + '"]').checked = true; go(); };
+        return;
+      }
+      var warn = r.short && r.short.length ? '<div class="alert a-weak small">البنك ما فيه أسئلة كفاية: ' + r.short.map(function (x) { return SN[x.S] + ' ' + x.have + ' من ' + x.need; }).join('، ') + '. الورقة طلعت بالأسئلة الموجودة.</div>' : '';
+      var nm = exName(id, true) + (r.forms.length > 1 ? ' - ' + r.forms.length + ' نماذج' : '');
+      XB.xpaper = { name: function () { return nm; }, html: function () { return xpHtml(r, XP.key); }, opts: { portrait: true }, docx: function () { return xpDocx(r, XP.key); } };
+      out.innerHTML = warn + '<div class="row xbar" data-xbar="xpaper"><button class="btn" data-xf="docx" type="button">تنزيل Word</button><button class="btn ghost" data-xf="pdf" type="button">تنزيل PDF</button><span class="small xmsg" role="status"></span></div>' +
+        '<div class="small muted">المعاينة تحت. ملف Word بتقدر تعدّل عليه قبل الطباعة.</div><div class="xpprev">' + xpHtml(r, XP.key) + '</div>';
+    }).catch(function (e) { msg.textContent = String(e && e.message || e); });
+  };
+  $('xpGo').onclick = go;
+}
+function xpOptsCls(c) { var m = Math.max.apply(null, c.map(function (x) { return String(x).length; })); return m <= 18 ? 4 : m <= 40 ? 2 : 1; }
+function xpHead(r, label) {
+  var line = 'font-size:11pt;margin:0;line-height:1.35';
+  return '<div style="text-align:center"><img src="' + MOE_LOGO + '" alt="" style="width:78px;height:auto"></div>' +
+    '<div style="text-align:center;font-weight:bold"><p style="' + line + '">The Hashemite Kingdom of Jordan</p><p style="' + line + '">Ministry of Education and Human Resource Development</p>' +
+    '<p style="' + line + '">Directorate of Education – Wadi Al-Seer District</p><p style="' + line + '">Jameel Shaker Secondary School for Boys</p></div>' +
+    '<div style="border-top:2px solid #000;border-bottom:1px solid #000;margin:8px 0 6px;padding:5px 0;text-align:center"><p style="margin:0;font-size:13pt;font-weight:bold">English Language – ' + r.kind + (label ? ' – Form ' + label : '') + '</p>' +
+    '<p style="margin:0;font-size:10.5pt">Grade 11 (First Secondary) · ' + r.term + ' · Time: ' + r.minutes + ' minutes · Total: ' + r.total + ' marks</p></div>' +
+    '<div style="display:flex;justify-content:space-between;gap:24px;font-size:11.5pt;margin:12px 0 4px"><span>Name: ______________________________________</span><span>Date: ____ / ____ / ________</span></div>';
+}
+function xpForm(r, f) {
+  var PN = ['One', 'Two', 'Three'], shown = {};
+  return xpHead(r, f.label) + f.parts.map(function (pt, pi) {
+    var body = pt.items.map(function (it, ii) {
+      var last = pi === f.parts.length - 1 && ii === pt.items.length - 1;
+      var pass = '';
+      if (it.ps && !shown[it.ps] && r.passages[it.ps]) { shown[it.ps] = 1; var P = r.passages[it.ps]; pass = '<div style="border:1px solid #888;padding:8px 10px;margin:6px 0 8px;font-size:11pt"><p style="margin:0 0 4px;font-weight:bold;text-align:center">' + esc(P.title) + '</p>' + P.paras.map(function (p) { return '<p style="margin:0 0 5px;text-align:justify">' + (p.label ? '<b>' + esc(p.label) + '</b> ' : '') + esc(p.text) + '</p>'; }).join('') + '</div>'; }
+      var k = xpOptsCls(it.c);
+      return pass + '<div class="nobrk" style="margin:0 0 5px;font-size:11pt;line-height:1.45"><p style="margin:0">' + it.n + '. ' + esc(it.q) + '</p><div style="display:grid;grid-template-columns:repeat(' + k + ',1fr);gap:1px 14px;padding-left:22px">' +
+        it.c.map(function (c, i) { return '<span>' + 'abcdef'.charAt(i) + ') ' + esc(c) + '</span>'; }).join('') + '</div>' + (last ? '<p style="text-align:center;margin:16px 0 0;font-weight:bold">Good luck</p>' : '') + '</div>';
+    }).join('');
+    return '<p style="margin:12px 0 6px;font-size:12pt;font-weight:bold;border-bottom:1px solid #000">Section ' + PN[pi] + ': ' + pt.title + ' <span style="font-weight:normal">(' + pt.marks + ' marks)</span></p>' +
+      '<p style="margin:0 0 6px;font-size:10.5pt;font-style:italic">Choose the correct answer.</p>' + body;
+  }).join('');
+}
+function xpKeyPage(r, f) {
+  return '<div style="text-align:center;font-weight:bold"><p style="margin:0;font-size:13pt">Answer Key – English Language – ' + r.kind + (f.label ? ' – Form ' + f.label : '') + '</p><p style="margin:0 0 10px;font-size:10.5pt;font-weight:normal">Grade 11 (First Secondary) · ' + r.term + '</p></div>' +
+    f.parts.map(function (pt) { return '<p style="margin:8px 0 4px;font-weight:bold">' + pt.title + '</p><div style="display:grid;grid-template-columns:repeat(5,1fr);gap:4px 10px;font-size:11.5pt">' + pt.items.map(function (it) { return '<span>' + it.n + '. <b>' + it.ans + '</b></span>'; }).join('') + '</div>'; }).join('');
+}
+function xpHtml(r, key) {
+  var pages = r.forms.map(function (f) { return xpForm(r, f); });
+  if (key) r.forms.forEach(function (f) { pages.push(xpKeyPage(r, f)); });
+  return '<div dir="ltr" style="font-family:\'Times New Roman\',Georgia,serif;color:#000;background:#fff;text-align:left">' + pages.map(function (p, i) { return '<div style="' + (i ? 'break-before:page;page-break-before:always;' : '') + 'padding:4px 6px">' + p + '</div>'; }).join('') + '</div>';
+}
+/** Word: a real editable exam (left-to-right, Times New Roman), each form and each answer key on its own pages. */
+function xpDocx(r, key) {
+  return needLibs(['docx']).then(function () {
+    var D = window.docx, FONT = 'Times New Roman';
+    var logo = Uint8Array.from(atob(MOE_LOGO.split(',')[1]), function (c) { return c.charCodeAt(0); });
+    var T = function (t, o) { o = o || {}; return new D.TextRun({ text: String(t), font: FONT, size: (o.size || 11.5) * 2, bold: !!o.bold, italics: !!o.it }); };
+    var P = function (runs, o) { o = o || {}; return new D.Paragraph({ alignment: o.al || D.AlignmentType.LEFT, spacing: { before: o.before || 0, after: o.after == null ? 40 : o.after }, indent: o.ind ? { left: o.ind } : undefined, keepNext: !!o.next, border: o.border, tabStops: o.tabs, children: Array.isArray(runs) ? runs : [runs] }); };
+    var C = D.AlignmentType.CENTER;
+    var head = function (label) {
+      return [new D.Paragraph({ alignment: C, children: [new D.ImageRun({ data: logo, transformation: { width: 74, height: 76 } })] }),
+        P(T('The Hashemite Kingdom of Jordan', { bold: true, size: 11 }), { al: C, after: 0 }), P(T('Ministry of Education and Human Resource Development', { bold: true, size: 11 }), { al: C, after: 0 }),
+        P(T('Directorate of Education – Wadi Al-Seer District', { bold: true, size: 11 }), { al: C, after: 0 }), P(T('Jameel Shaker Secondary School for Boys', { bold: true, size: 11 }), { al: C, after: 80 }),
+        P(T('English Language – ' + r.kind + (label ? ' – Form ' + label : ''), { bold: true, size: 13 }), { al: C, after: 0, border: { top: { style: D.BorderStyle.SINGLE, size: 12, color: '000000', space: 4 } } }),
+        P(T('Grade 11 (First Secondary) · ' + r.term + ' · Time: ' + r.minutes + ' minutes · Total: ' + r.total + ' marks', { size: 10.5 }), { al: C, after: 160, border: { bottom: { style: D.BorderStyle.SINGLE, size: 6, color: '000000', space: 4 } } }),
+        P([T('Name: ______________________________________'), new D.TextRun({ text: '\tDate: ____ / ____ / ________', font: FONT, size: 23 })], { after: 160, tabs: [{ type: D.TabStopType.RIGHT, position: 9600 }] })];
+    };
+    var opts = function (c) {
+      var k = xpOptsCls(c), lab = function (i) { return 'abcdef'.charAt(i) + ') ' + c[i]; }, rows = [];
+      if (k === 4) rows.push(c.map(function (_, i) { return i; }));
+      else if (k === 2) for (var i = 0; i < c.length; i += 2) rows.push([i, i + 1].filter(function (j) { return j < c.length; }));
+      else c.forEach(function (_, i) { rows.push([i]); });
+      var step = k === 4 ? 2400 : 4800;
+      return rows.map(function (row, ri) { return P(row.map(function (i, j) { return new D.TextRun({ text: (j ? '\t' : '') + lab(i), font: FONT, size: 23 }); }), { ind: 360, after: ri === rows.length - 1 ? 100 : 0, next: ri < rows.length - 1, tabs: [1, 2, 3].map(function (t) { return { type: D.TabStopType.LEFT, position: 360 + step * t }; }) }); });
+    };
+    var PN = ['One', 'Two', 'Three'];
+    var formKids = function (f) {
+      var kids = head(f.label), shown = {};
+      f.parts.forEach(function (pt, pi) {
+        kids.push(P([T('Section ' + PN[pi] + ': ' + pt.title + ' ', { bold: true, size: 12 }), T('(' + pt.marks + ' marks)', { size: 12 })], { before: 160, after: 40, next: true, border: { bottom: { style: D.BorderStyle.SINGLE, size: 6, color: '000000', space: 2 } } }));
+        kids.push(P(T('Choose the correct answer.', { it: true, size: 10.5 }), { after: 80, next: true }));
+        pt.items.forEach(function (it) {
+          if (it.ps && !shown[it.ps] && r.passages[it.ps]) {
+            shown[it.ps] = 1; var Pp = r.passages[it.ps], bd = { style: D.BorderStyle.SINGLE, size: 4, color: '888888', space: 4 };
+            kids.push(P(T(Pp.title, { bold: true }), { al: C, after: 40, border: { top: bd, left: bd, right: bd } }));
+            Pp.paras.forEach(function (p, i) { kids.push(new D.Paragraph({ alignment: D.AlignmentType.JUSTIFIED, spacing: { after: 60 }, border: i === Pp.paras.length - 1 ? { bottom: bd, left: bd, right: bd } : { left: bd, right: bd }, children: (p.label ? [T(p.label + ' ', { bold: true, size: 11 })] : []).concat([T(p.text, { size: 11 })]) })); });
+            kids.push(P(T(''), { after: 60 }));
+          }
+          kids.push(P(T(it.n + '. ' + it.q), { after: 20, next: true }));
+          opts(it.c).forEach(function (p) { kids.push(p); });
+        });
+      });
+      kids.push(P(T('Good luck', { bold: true }), { al: C, before: 200 }));
+      return kids;
+    };
+    var keyKids = function (f) {
+      var kids = [P(T('Answer Key – English Language – ' + r.kind + (f.label ? ' – Form ' + f.label : ''), { bold: true, size: 13 }), { al: C, after: 0 }), P(T('Grade 11 (First Secondary) · ' + r.term, { size: 10.5 }), { al: C, after: 200 })];
+      f.parts.forEach(function (pt) {
+        kids.push(P(T(pt.title, { bold: true }), { before: 120, after: 60 }));
+        for (var i = 0; i < pt.items.length; i += 5) kids.push(P(pt.items.slice(i, i + 5).map(function (it, j) { return new D.TextRun({ text: (j ? '\t' : '') + it.n + '. ' + it.ans, font: FONT, size: 24, bold: true }); }), { tabs: [1, 2, 3, 4].map(function (t) { return { type: D.TabStopType.LEFT, position: 1900 * t }; }) }));
+      });
+      return kids;
+    };
+    var page = { size: { width: 11906, height: 16838 }, margin: { top: 720, bottom: 720, left: 900, right: 900 } };
+    var secs = r.forms.map(function (f) { return { properties: { page: page }, children: formKids(f) }; });
+    if (key) r.forms.forEach(function (f) { secs.push({ properties: { page: page }, children: keyKids(f) }); });
+    return D.Packer.toBlob(new D.Document({ sections: secs }));
+  });
 }
 
 function hwCard(a, full) {
@@ -4503,6 +4634,7 @@ function xPdf(html, o) {
       var pageH = W * ch / cw;
       var cand = [];
       Array.prototype.forEach.call(sec.querySelectorAll('tr,p,h1,h2,h3,h4,li,img,svg,.qcard,.att,table,div'), function (n) {
+        var k0 = n.parentNode && n.parentNode.closest ? n.parentNode.closest('.nobrk') : null; if (k0 && sec.contains(k0)) return;   // keep a question with its choices
         var r = n.getBoundingClientRect(); if (r.height > 0 && r.height < pageH) cand.push(r.bottom - top0);
       });
       cand.sort(function (a, b) { return a - b; });
