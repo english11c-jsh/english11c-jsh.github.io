@@ -2335,7 +2335,7 @@ function examPaperWin(id) {
     var msg = $('xpMsg'), out = $('xpOut'); msg.textContent = 'جاري التجهيز…'; out.innerHTML = '';
     call('apiTeacherExamPaper', S.token, id, XP.forms).then(function (r) {
       msg.textContent = '';
-      var SN = { R: 'القراءة', V: 'المفردات', W: 'الكتابة والقواعد' };
+      var SN = { R: 'القراءة', V: 'المفردات', G: 'القواعد', W: 'الكتابة' };
       if (!Array.isArray(r.forms)) {
         out.innerHTML = '<div class="alert a-weak">أسئلة البنك لهاي المادة ما بتكفي لـ ' + r.want + ' نماذج مختلفة تمامًا: ' + r.short.map(function (x) { return SN[x.S] + ' فيها ' + x.have + ' سؤال وبدها ' + x.need; }).join('، ') + '.' +
           (r.maxForms > 1 ? ' بتكفي لـ ' + r.maxForms + ' نماذج.' : ' بتكفي لنموذج واحد بس.') + ' لتزيدها: وسّع مادة الامتحان، أو شيل «من الكتاب فقط»، أو أضف أسئلة للبنك.</div>' +
@@ -2359,23 +2359,36 @@ function xpHead(r, label) {
     '<div style="text-align:center;font-weight:bold"><p style="' + line + '">The Hashemite Kingdom of Jordan</p><p style="' + line + '">Ministry of Education and Human Resource Development</p>' +
     '<p style="' + line + '">Directorate of Education – Wadi Al-Seer District</p><p style="' + line + '">Jameel Shaker Secondary School for Boys</p></div>' +
     '<div style="border-top:2px solid #000;border-bottom:1px solid #000;margin:8px 0 6px;padding:5px 0;text-align:center"><p style="margin:0;font-size:13pt;font-weight:bold">English Language – ' + r.kind + (label ? ' – Form ' + label : '') + '</p>' +
-    '<p style="margin:0;font-size:10.5pt">Grade 11 (First Secondary) · ' + r.term + ' · Time: ' + r.minutes + ' minutes · Total: ' + r.total + ' marks</p></div>' +
-    '<div style="display:flex;justify-content:space-between;gap:24px;font-size:11.5pt;margin:12px 0 4px"><span>Name: ______________________________________</span><span>Date: ____ / ____ / ________</span></div>';
+    '<p style="margin:0;font-size:10.5pt">Grade: 11 · ' + r.term + ' · Time: ' + r.minutes + ' minutes · Total: ' + r.total + ' marks</p></div>' +
+    '<div style="display:flex;justify-content:space-between;gap:18px;font-size:11.5pt;margin:12px 0 4px"><span>Name: ______________________________</span><span>Section: ________</span><span>Date: ____ / ____ / ________</span></div>';
+}
+var XP_NAVY = '#1F3864', XP_PN = ['One', 'Two', 'Three', 'Four', 'Five'];
+function xpEach(pt) { return '(' + (pt.per === 1 ? '1 mark' : pt.per + ' marks') + ' each)'; }
+function xpHow(pt) { return (pt.key === 'R' ? 'Read the text, then circle the correct answer a, b, c or d. ' : 'Circle the correct answer a, b, c or d. ') + xpEach(pt); }
+/** Answer table: numbers in one row, an empty box under each, 20 to a row. */
+function xpTable(n) {
+  var rows = [], cell = 'border:1px solid #000;text-align:center;font-size:9.5pt;padding:2px 0';
+  for (var i = 1; i <= n; i += 20) {
+    var nums = []; for (var k = i; k < i + 20 && k <= n; k++) nums.push(k);
+    rows.push('<table style="border-collapse:collapse;width:100%;table-layout:fixed;margin:0 0 8px"><tr>' + nums.map(function (k) { return '<td style="' + cell + ';background:#E8ECF4;font-weight:bold">' + k + '</td>'; }).join('') + '</tr><tr>' + nums.map(function () { return '<td style="' + cell + ';height:22px"></td>'; }).join('') + '</tr></table>');
+  }
+  return '<div class="nobrk"><p style="margin:12px 0 6px;font-weight:bold;color:' + XP_NAVY + '">Answer Table: write the letter of your answer (a, b, c or d) under each number.</p>' + rows.join('') +
+    '<p style="text-align:center;margin:18px 0 0;font-weight:bold;color:' + XP_NAVY + '">Best wishes!</p><p style="text-align:center;margin:0;font-weight:bold">T. Mustafa Al Awamleh</p></div>';
 }
 function xpForm(r, f) {
-  var PN = ['One', 'Two', 'Three'], shown = {};
+  var shown = {}, n = 0;
   return xpHead(r, f.label) + f.parts.map(function (pt, pi) {
-    var body = pt.items.map(function (it, ii) {
-      var last = pi === f.parts.length - 1 && ii === pt.items.length - 1;
+    var body = pt.items.map(function (it) {
+      n++;
       var pass = '';
-      if (it.ps && !shown[it.ps] && r.passages[it.ps]) { shown[it.ps] = 1; var P = r.passages[it.ps]; pass = '<div style="border:1px solid #888;padding:8px 10px;margin:6px 0 8px;font-size:11pt"><p style="margin:0 0 4px;font-weight:bold;text-align:center">' + esc(P.title) + '</p>' + P.paras.map(function (p) { return '<p style="margin:0 0 5px;text-align:justify">' + (p.label ? '<b>' + esc(p.label) + '</b> ' : '') + esc(p.text) + '</p>'; }).join('') + '</div>'; }
+      if (it.ps && !shown[it.ps] && r.passages[it.ps]) { shown[it.ps] = 1; var P = r.passages[it.ps]; pass = '<div style="padding:4px 2px;margin:4px 0 8px;font-size:11pt"><p style="margin:0 0 4px;font-weight:bold;text-align:center;color:' + XP_NAVY + '">' + esc(P.title) + '</p>' + P.paras.map(function (p) { return '<p style="margin:0 0 5px;text-align:justify">' + (p.label ? '<b>[' + esc(p.label) + ']</b> ' : '') + esc(p.text) + '</p>'; }).join('') + '</div>'; }
       var k = xpOptsCls(it.c);
       return pass + '<div class="nobrk" style="margin:0 0 5px;font-size:11pt;line-height:1.45"><p style="margin:0">' + it.n + '. ' + esc(it.q) + '</p><div style="display:grid;grid-template-columns:repeat(' + k + ',1fr);gap:1px 14px;padding-left:22px">' +
-        it.c.map(function (c, i) { return '<span>' + 'abcdef'.charAt(i) + ') ' + esc(c) + '</span>'; }).join('') + '</div>' + (last ? '<p style="text-align:center;margin:16px 0 0;font-weight:bold">Good luck</p>' : '') + '</div>';
+        it.c.map(function (c, i) { return '<span>' + 'abcdef'.charAt(i) + ') ' + esc(c) + '</span>'; }).join('') + '</div></div>';
     }).join('');
-    return '<p style="margin:12px 0 6px;font-size:12pt;font-weight:bold;border-bottom:1px solid #000">Section ' + PN[pi] + ': ' + pt.title + ' <span style="font-weight:normal">(' + pt.marks + ' marks)</span></p>' +
-      '<p style="margin:0 0 6px;font-size:10.5pt;font-style:italic">Choose the correct answer.</p>' + body;
-  }).join('');
+    return '<p style="margin:12px 0 2px;font-size:12.5pt;font-weight:bold;color:' + XP_NAVY + '">Question ' + XP_PN[pi] + ': ' + pt.title + ' (' + pt.marks + ' marks)</p>' +
+      '<p style="margin:0 0 6px;font-size:10.5pt;font-style:italic">' + xpHow(pt) + '</p>' + body;
+  }).join('') + xpTable(n);
 }
 function xpKeyPage(r, f) {
   return '<div style="text-align:center;font-weight:bold"><p style="margin:0;font-size:13pt">Answer Key – English Language – ' + r.kind + (f.label ? ' – Form ' + f.label : '') + '</p><p style="margin:0 0 10px;font-size:10.5pt;font-weight:normal">Grade 11 (First Secondary) · ' + r.term + '</p></div>' +
@@ -2399,9 +2412,10 @@ function xpDocx(r, key) {
         P(T('The Hashemite Kingdom of Jordan', { bold: true, size: 11 }), { al: C, after: 0 }), P(T('Ministry of Education and Human Resource Development', { bold: true, size: 11 }), { al: C, after: 0 }),
         P(T('Directorate of Education – Wadi Al-Seer District', { bold: true, size: 11 }), { al: C, after: 0 }), P(T('Jameel Shaker Secondary School for Boys', { bold: true, size: 11 }), { al: C, after: 80 }),
         P(T('English Language – ' + r.kind + (label ? ' – Form ' + label : ''), { bold: true, size: 13 }), { al: C, after: 0, border: { top: { style: D.BorderStyle.SINGLE, size: 12, color: '000000', space: 4 } } }),
-        P(T('Grade 11 (First Secondary) · ' + r.term + ' · Time: ' + r.minutes + ' minutes · Total: ' + r.total + ' marks', { size: 10.5 }), { al: C, after: 160, border: { bottom: { style: D.BorderStyle.SINGLE, size: 6, color: '000000', space: 4 } } }),
-        P([T('Name: ______________________________________'), new D.TextRun({ text: '\tDate: ____ / ____ / ________', font: FONT, size: 23 })], { after: 160, tabs: [{ type: D.TabStopType.RIGHT, position: 9600 }] })];
+        P(T('Grade: 11 · ' + r.term + ' · Time: ' + r.minutes + ' minutes · Total: ' + r.total + ' marks', { size: 10.5 }), { al: C, after: 160, border: { bottom: { style: D.BorderStyle.SINGLE, size: 6, color: '000000', space: 4 } } }),
+        P([T('Name: ______________________________'), new D.TextRun({ text: '\tSection: ________', font: FONT, size: 23 }), new D.TextRun({ text: '\tDate: ____ / ____ / ________', font: FONT, size: 23 })], { after: 160, tabs: [{ type: D.TabStopType.CENTER, position: 5900 }, { type: D.TabStopType.RIGHT, position: 10100 }] })];
     };
+    var NAVY = '1F3864';
     var opts = function (c) {
       var k = xpOptsCls(c), lab = function (i) { return 'abcdef'.charAt(i) + ') ' + c[i]; }, rows = [];
       if (k === 4) rows.push(c.map(function (_, i) { return i; }));
@@ -2410,25 +2424,39 @@ function xpDocx(r, key) {
       var step = k === 4 ? 2400 : 4800;
       return rows.map(function (row, ri) { return P(row.map(function (i, j) { return new D.TextRun({ text: (j ? '\t' : '') + lab(i), font: FONT, size: 23 }); }), { ind: 360, after: ri === rows.length - 1 ? 100 : 0, next: ri < rows.length - 1, tabs: [1, 2, 3].map(function (t) { return { type: D.TabStopType.LEFT, position: 360 + step * t }; }) }); });
     };
-    var PN = ['One', 'Two', 'Three'];
+    var table = function (n) {
+      var out = [P(new D.TextRun({ text: 'Answer Table: write the letter of your answer (a, b, c or d) under each number.', font: FONT, size: 23, bold: true, color: NAVY }), { before: 200, after: 80, next: true })];
+      var bd = { style: D.BorderStyle.SINGLE, size: 6, color: '000000' }, borders = { top: bd, bottom: bd, left: bd, right: bd };
+      for (var i = 1; i <= n; i += 20) {
+        var nums = []; for (var k = i; k < i + 20 && k <= n; k++) nums.push(k);
+        var w = Math.floor(10100 / nums.length);
+        var cellOf = function (txt, shade) { return new D.TableCell({ width: { size: w, type: D.WidthType.DXA }, borders: borders, shading: shade ? { type: D.ShadingType.CLEAR, color: 'auto', fill: 'E8ECF4' } : undefined, children: [new D.Paragraph({ alignment: C, children: [new D.TextRun({ text: txt, font: FONT, size: 19, bold: !!shade })] })] }); };
+        out.push(new D.Table({ width: { size: w * nums.length, type: D.WidthType.DXA }, columnWidths: nums.map(function () { return w; }), rows: [new D.TableRow({ cantSplit: true, children: nums.map(function (k) { return cellOf(String(k), true); }) }), new D.TableRow({ cantSplit: true, height: { value: 420, rule: D.HeightRule.ATLEAST }, children: nums.map(function () { return cellOf('', false); }) })] }));
+        out.push(P(T(''), { after: 80 }));
+      }
+      out.push(P(new D.TextRun({ text: 'Best wishes!', font: FONT, size: 24, bold: true, color: NAVY }), { al: C, before: 200, next: true }));
+      out.push(P(T('T. Mustafa Al Awamleh', { bold: true }), { al: C }));
+      return out;
+    };
+    var PN = XP_PN;
     var formKids = function (f) {
-      var kids = head(f.label), shown = {};
+      var kids = head(f.label), shown = {}, n = 0;
       f.parts.forEach(function (pt, pi) {
-        kids.push(P([T('Section ' + PN[pi] + ': ' + pt.title + ' ', { bold: true, size: 12 }), T('(' + pt.marks + ' marks)', { size: 12 })], { before: 160, after: 40, next: true, border: { bottom: { style: D.BorderStyle.SINGLE, size: 6, color: '000000', space: 2 } } }));
-        kids.push(P(T('Choose the correct answer.', { it: true, size: 10.5 }), { after: 80, next: true }));
+        kids.push(P(new D.TextRun({ text: 'Question ' + PN[pi] + ': ' + pt.title + ' (' + pt.marks + ' marks)', font: FONT, size: 25, bold: true, color: NAVY }), { before: 160, after: 20, next: true }));
+        kids.push(P(T(xpHow(pt), { it: true, size: 10.5 }), { after: 80, next: true }));
         pt.items.forEach(function (it) {
+          n++;
           if (it.ps && !shown[it.ps] && r.passages[it.ps]) {
-            shown[it.ps] = 1; var Pp = r.passages[it.ps], bd = { style: D.BorderStyle.SINGLE, size: 4, color: '888888', space: 4 };
-            kids.push(P(T(Pp.title, { bold: true }), { al: C, after: 40, border: { top: bd, left: bd, right: bd } }));
-            Pp.paras.forEach(function (p, i) { kids.push(new D.Paragraph({ alignment: D.AlignmentType.JUSTIFIED, spacing: { after: 60 }, border: i === Pp.paras.length - 1 ? { bottom: bd, left: bd, right: bd } : { left: bd, right: bd }, children: (p.label ? [T(p.label + ' ', { bold: true, size: 11 })] : []).concat([T(p.text, { size: 11 })]) })); });
+            shown[it.ps] = 1; var Pp = r.passages[it.ps];
+            kids.push(P(new D.TextRun({ text: Pp.title, font: FONT, size: 23, bold: true, color: NAVY }), { al: C, after: 40 }));
+            Pp.paras.forEach(function (p) { kids.push(new D.Paragraph({ alignment: D.AlignmentType.JUSTIFIED, spacing: { after: 60 }, children: (p.label ? [T('[' + p.label + '] ', { bold: true, size: 11 })] : []).concat([T(p.text, { size: 11 })]) })); });
             kids.push(P(T(''), { after: 60 }));
           }
           kids.push(P(T(it.n + '. ' + it.q), { after: 20, next: true }));
           opts(it.c).forEach(function (p) { kids.push(p); });
         });
       });
-      kids.push(P(T('Good luck', { bold: true }), { al: C, before: 200 }));
-      return kids;
+      return kids.concat(table(n));
     };
     var keyKids = function (f) {
       var kids = [P(T('Answer Key – English Language – ' + r.kind + (f.label ? ' – Form ' + f.label : ''), { bold: true, size: 13 }), { al: C, after: 0 }), P(T('Grade 11 (First Secondary) · ' + r.term, { size: 10.5 }), { al: C, after: 200 })];
