@@ -1759,7 +1759,7 @@ function sLessons() {
   var weeks = {}; ls.forEach(function (l) { (weeks[l.week] = weeks[l.week] || []).push(l); });
   var past = d.calendar.now > cal.endTs;
   return '<div class="stack">' + pageHead('الدروس', 'اختار الوحدة، وادرس الدرس للآخر، وبعدين حل الكويز.') + unitChips(unitList(d), S.unit, 'data-unit') +
-    '<div><h2>الوحدة ' + U.no + ': <span class="en" style="display:inline">' + esc(U.title) + '</span></h2><div class="small muted">' + dDay(cal.startTs) + ' – ' + dDay(cal.endTs - 2 * 864e5) + '. ' +
+    '<div><h2>الوحدة ' + U.no + ': <span class="en" style="display:inline">' + esc(U.title) + '</span></h2><div class="small muted">' + dDay(cal.startTs) + ' – ' + dDay(cal.lastDay || cal.endTs - 2 * 864e5) + '. ' +
     (past ? 'هذه وحدة سابقة: تقدر ترجع لشرح أي درس، أما الكويزات فتتاح بس إذا سمح لك الأستاذ.' : 'ادرس الدرس للآخر واضغط «خلصت الدراسة»، ويتاح لك الكويز.') + '</div></div>' +
     Object.keys(weeks).map(function (w) {
       var first = weeks[w][0];
@@ -2885,7 +2885,7 @@ function tCal() {
     '<div class="small muted">حسب تقويم وزارة التربية: دوام الطلبة من ' + dDay(cal.semStart) + '، وامتحانات نهاية الفصل من ' + dDay(cal.examsFrom) + ' إلى ' + dDay(cal.examsTo) + '. كل وحدة 3 أسابيع. إذا تقدّمت أو تأخرت بالخطة غيّر بداية الوحدة، ودروسها تتحرك معها. وتقدر تتيح أي درس قبل موعده أو تسكّره من الجداول تحت.</div></div>' +
     '<div class="panel flush"><div class="ph"><h2>خطة الوحدات</h2></div><div class="tbl"><table><thead><tr><th>الوحدة</th><th>الفترة</th><th>على المنصة</th><th>بداية الوحدة</th></tr></thead><tbody>' +
     cal.units.map(function (u) {
-      return '<tr><td style="white-space:nowrap"><b>' + u.no + '</b> <span class="en" style="display:inline">' + esc(u.title) + '</span></td><td class="small" style="white-space:nowrap">' + dDay(u.startTs) + ' – ' + dDay(u.endTs - 2 * 864e5) + '</td><td>' + (u.ready ? '<span class="chip ok">جاهزة</span>' : '<span class="chip lock">قيد الإعداد</span>') + '</td>' +
+      return '<tr><td style="white-space:nowrap"><b>' + u.no + '</b> <span class="en" style="display:inline">' + esc(u.title) + '</span></td><td class="small" style="white-space:nowrap">' + dDay(u.startTs) + ' – ' + dDay(u.lastDay || u.endTs - 2 * 864e5) + '</td><td>' + (u.ready ? '<span class="chip ok">جاهزة</span>' : '<span class="chip lock">قيد الإعداد</span>') + '</td>' +
         '<td><div class="row" style="flex-wrap:nowrap"><input type="date" id="us_' + u.id + '" value="' + u.start + '" style="width:auto;min-height:38px"><button class="btn sm" data-ustart="' + u.id + '" type="button">حفظ</button></div><span class="tiny" id="uss_' + u.id + '"></span></td></tr>';
     }).join('') + '</tbody></table></div></div>' +
     unitChips(tUnits(), T.unit, 'data-tunit') +
@@ -3122,7 +3122,7 @@ function tMarks() {
     return '<tr><td>' + s.number + ' ' + esc(firstTwo(s.name)) + '</td><td class="num">' + (auto === null ? '<span class="muted">—</span>' : '<b>' + auto + '</b> <span class="tiny muted">(' + hisas(u.classN) + ')</span>') + '</td><td class="num"><input class="mk pk" type="number" step="0.5" min="0" max="' + sc.CLASS.max + '" data-pn="' + s.number + '" data-old="' + v + '" value="' + v + '" placeholder="—" aria-label="علامة يدوية بدل الحصص"></td><td class="num">' + (u ? '<b>' + u.mark + '</b>' : '<span class="muted">لم تُقطع</span>') + '</td></tr>';
   }).join('');
   return '<div class="stack"><h2>العلامات الرسمية</h2>' +
-    '<div class="panel stack"><div class="small"><b>الميد (30)</b> و<b>الفاينل (40)</b> يتوزعوا على القراءة والكتابة والمعاني. <b>تقييم الأداء (30)</b> ينحسب لكل وحدة لحالها: القراءة 6 + الكتابة والقواعد 6 + المعاني 6 (من حلّه بالكويزات والواجبات) + دراسة الدروس 4 + الحضور 4 (دخوله الدروس بأسبوعها) + المشاركة داخل الصف 4 (تكتبها أنت). علامة الفصل = معدل الوحدات المقطوعة، وتتحدّث تلقائيًا.</div></div>' +
+    '<div class="panel stack"><div class="small"><b>الميد (30)</b> و<b>الفاينل (40)</b> يتوزعوا على القراءة والكتابة والمعاني. <b>تقييم الأداء (30)</b> ينحسب لكل وحدة لحالها: القراءة 6 + الكتابة والقواعد 6 + المعاني 6 (من حلّه بالكويزات والواجبات) + دراسة الدروس 4 + الحضور 4 (دخوله الدروس بأسبوعها) + المشاركة 4 (من دخوله للمنصة: كل أسبوع من الوحدة دخل فيه بينحسب له، والوحدات اللي رصدت مشاركتها بالحصص بتضل على رصدك). علامة الفصل = معدل الوحدات المقطوعة، وتتحدّث تلقائيًا.</div></div>' +
     midBaseHtml(d) +
     '<div class="panel flush"><div class="ph"><h2>المادة المقطوعة</h2><span class="small muted">الأدائي ينحسب من المقطوع بس</span></div><div class="tbl"><table><thead><tr><th>الوحدة</th><th>شو انقطع منها</th><th class="num">دروس محسوبة</th></tr></thead><tbody>' + cov + '</tbody></table></div>' +
       '<div class="tiny muted" style="padding:10px 16px">«تلقائي» يعني حسب التقويم: كل درس وصل موعده (أو أتحته أنت) ينحسب.</div></div>' +
